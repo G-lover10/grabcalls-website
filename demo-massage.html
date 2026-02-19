@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Massage — AI Assistant Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #7B886B;
+            --primary-dark: #5C6950;
+            --accent: #C4A265;
+            --accent-light: #F5ECD7;
+            --dark: #2C2C2C;
+            --white: #ffffff;
+            --light: #FAF8F5;
+            --gray: #888;
+            --warm: #F5F0EB;
+        }
+        body { font-family: 'Georgia', 'Times New Roman', serif; background: var(--light); color: var(--dark); }
+
+        nav {
+            background: var(--dark);
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { color: var(--white); font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+        .logo span { color: var(--accent); }
+        .nav-lang {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        .nav-lang a {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            margin: 0 6px;
+        }
+        .nav-lang a.active { font-weight: bold; text-decoration: underline; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #3D4A35 0%, #2C2C2C 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 20px 50px;
+        }
+        .hero h1 { font-size: 36px; margin-bottom: 12px; font-weight: 700; }
+        .hero h1 span { color: var(--accent); }
+        .hero p { font-size: 17px; color: #bbb; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+        .hero-cn { font-size: 22px; color: var(--accent); margin-top: 8px; }
+
+        /* DEMO SECTION */
+        .demo-section {
+            max-width: 500px;
+            margin: -30px auto 40px;
+            padding: 0 16px;
+        }
+
+        /* CHAT WIDGET */
+        .chat-widget {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .chat-header-text h3 { font-size: 16px; font-weight: 600; }
+        .chat-header-text p { font-size: 12px; opacity: 0.8; }
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .chat-messages {
+            height: 420px;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--warm);
+        }
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.55;
+            animation: fadeUp 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.bot {
+            background: var(--white);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message.system {
+            background: var(--accent-light);
+            color: var(--dark);
+            align-self: center;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 10px;
+            padding: 8px 16px;
+        }
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--white);
+            border-radius: 18px;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .typing-indicator span {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #aaa;
+            animation: typeBounce 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typeBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .quick-reply {
+            background: var(--white);
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .quick-reply:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .chat-input input:focus { border-color: var(--primary); }
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* APPOINTMENT FORM */
+        .appointment-form {
+            background: var(--accent-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 4px 0;
+        }
+        .appointment-form h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        .form-row {
+            margin-bottom: 8px;
+        }
+        .form-row label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 3px;
+        }
+        .form-row select, .form-row input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .form-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* INFO CARDS */
+        .info-section {
+            max-width: 500px;
+            margin: 0 auto 60px;
+            padding: 0 16px;
+        }
+        .info-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .info-card .icon { font-size: 36px; margin-bottom: 10px; }
+        .info-card h3 { font-size: 18px; margin-bottom: 6px; }
+        .info-card p { color: var(--gray); font-size: 14px; line-height: 1.6; font-family: -apple-system, sans-serif; }
+
+        /* CTA */
+        .cta {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .cta h2 { font-size: 28px; margin-bottom: 8px; }
+        .cta .cn { color: var(--accent); font-size: 20px; margin-bottom: 16px; }
+        .cta p { color: #aaa; margin-bottom: 24px; font-size: 15px; font-family: -apple-system, sans-serif; }
+        .cta a {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        footer {
+            background: #222;
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            font-family: -apple-system, sans-serif;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Real <span>Massage</span></div>
+    <div class="nav-lang">
+        <a class="active" onclick="setLang('en')">EN</a> |
+        <a onclick="setLang('cn')">中文</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <h1>Try Our <span>AI Assistant</span></h1>
+    <div class="hero-cn">试试我们的AI智能助手</div>
+    <p>Chat below to see how AI can book appointments, answer questions, and help your customers — 24/7.</p>
+</section>
+
+<section class="demo-section">
+    <div class="chat-widget">
+        <div class="chat-header">
+            <div class="chat-avatar">🧖</div>
+            <div class="chat-header-text">
+                <h3>Real Massage AI</h3>
+                <p><span class="status-dot"></span>Online — Ready to help</p>
+            </div>
+        </div>
+        <div class="chat-messages" id="messages">
+            <div class="message bot">Welcome to Real Massage! 🧖‍♀️ I can help you book an appointment, check availability, or answer questions about our services. How can I help?</div>
+            <div class="message bot">欢迎！我也会说中文。</div>
+            <div class="quick-replies" id="quick-replies">
+                <button class="quick-reply" onclick="sendQuick('I want to book a massage')">Book appointment</button>
+                <button class="quick-reply" onclick="sendQuick('What services do you offer?')">Services & prices</button>
+                <button class="quick-reply" onclick="sendQuick('What are your hours?')">Hours</button>
+                <button class="quick-reply" onclick="sendQuick('Do you accept walk-ins?')">Walk-ins?</button>
+                <button class="quick-reply" onclick="sendQuick('我想预约按摩')">中文预约</button>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter')send()">
+            <button onclick="send()">➤</button>
+        </div>
+    </div>
+</section>
+
+<section class="info-section">
+    <div class="info-card">
+        <div class="icon">📞</div>
+        <h3>Never Miss a Call</h3>
+        <p>AI answers every call instantly — even when therapists are busy with clients or after hours.</p>
+    </div>
+    <div class="info-card">
+        <div class="icon">🌏</div>
+        <h3>中英文双语 · Bilingual</h3>
+        <p>Speaks Chinese and English fluently. Customers get help in their preferred language.</p>
+    </div>
+    <div class="info-card">
+        <div class="icon">📅</div>
+        <h3>Auto-Books Appointments</h3>
+        <p>Checks availability, books the appointment, sends confirmation text, and syncs to Google Calendar.</p>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Want This For Your Business?</h2>
+    <div class="cn">想要为您的生意装一个吗？</div>
+    <p>Free setup. No contracts. Cancel anytime.</p>
+    <a href="tel:+12056059842">Call Eric: (205) 605-9842</a>
+</section>
+
+<footer>
+    <p>Powered by <a href="https://grabcalls.com">GrabCalls.com</a> — AI for Local Businesses</p>
+</footer>
+
+<script>
+const RESPONSES = {
+    booking: {
+        trigger: /book|appointment|schedule|预约|reserve/i,
+        replies: [
+            "I'd love to help you book! What type of massage are you looking for?",
+            "We offer: Swedish ($70/hr), Deep Tissue ($85/hr), Hot Stone ($95/hr), Thai ($80/hr), Couples ($150/hr), and Foot Reflexology ($45/30min)."
+        ],
+        followUp: "booking_type"
+    },
+    booking_cn: {
+        trigger: /我想预约|想要按摩|预约按摩|中文/i,
+        replies: [
+            "好的！我来帮您预约。请问您想要什么类型的按摩？",
+            "我们提供：瑞典按摩($70/小时)、深层组织按摩($85/小时)、热石按摩($95/小时)、泰式按摩($80/小时)、情侣按摩($150/小时)、足底按摩($45/30分钟)"
+        ]
+    },
+    services: {
+        trigger: /services|offer|menu|price|pricing|cost|多少钱|服务/i,
+        replies: [
+            "Here's our service menu:",
+            "🧘 Swedish Massage — $70/hr (relaxing, gentle-medium pressure)\n💪 Deep Tissue — $85/hr (firm pressure, targets knots)\n🔥 Hot Stone — $95/hr (heated stones for deep relaxation)\n🙆 Thai Massage — $80/hr (stretching & pressure points)\n💑 Couples — $150/hr (side-by-side for two)\n🦶 Foot Reflexology — $45/30min\n\nAll massages also available as 90-min sessions ($100-$130).",
+            "Which one interests you? I can book you right now!"
+        ]
+    },
+    hours: {
+        trigger: /hours|open|close|when|time|几点|营业/i,
+        replies: [
+            "Our hours are:\n📅 Monday - Saturday: 10am - 8pm\n📅 Sunday: 11am - 6pm\n\nWant to book an appointment?"
+        ]
+    },
+    walkins: {
+        trigger: /walk.?in|drop.?in|available now|today/i,
+        replies: [
+            "We do accept walk-ins when we have availability! But booking ahead guarantees your spot. Want me to check what's open today?",
+            "Just let me know your preferred time and I'll see what we have!"
+        ]
+    },
+    swedish: {
+        trigger: /swedish|relax|gentle|瑞典/i,
+        replies: [
+            "Great choice! Swedish massage is our most popular — perfect for relaxation. 😌",
+            "Would you like a 60-minute ($70) or 90-minute ($100) session? And what day/time works best?"
+        ],
+        showForm: true
+    },
+    deeptissue: {
+        trigger: /deep tissue|firm|knot|tight|muscle|stiff|深层/i,
+        replies: [
+            "Deep Tissue is perfect for working out tension and knots. 💪",
+            "Would you like a 60-minute ($85) or 90-minute ($120) session? What day works for you?"
+        ],
+        showForm: true
+    },
+    hotstone: {
+        trigger: /hot stone|stone|热石/i,
+        replies: [
+            "Hot Stone massage is incredibly relaxing — the heated stones melt away tension. 🔥",
+            "Would you like a 60-minute ($95) or 90-minute ($130) session? When would you like to come in?"
+        ],
+        showForm: true
+    },
+    couples: {
+        trigger: /couples|partner|two|together|情侣/i,
+        replies: [
+            "A Couples Massage is a wonderful experience! You'll be side-by-side in our couples room. 💑",
+            "It's $150 for a 60-minute session. When would you and your partner like to come in?"
+        ],
+        showForm: true
+    },
+    foot: {
+        trigger: /foot|feet|reflexology|足底|脚/i,
+        replies: [
+            "Foot Reflexology is amazing! Pressure points on your feet affect your whole body. 🦶",
+            "It's just $45 for a 30-minute session. Quick, effective, and you'll feel incredible after. When would you like to come in?"
+        ],
+        showForm: true
+    },
+    tip: {
+        trigger: /tip|gratuity/i,
+        replies: ["Tips are always appreciated but never required! If you'd like to show appreciation, 15-20% is customary. Our therapists love what they do! 😊"]
+    },
+    parking: {
+        trigger: /park|where|location|address|directions|地址/i,
+        replies: ["We have free parking right in front of our location! Easy to find, plenty of spots. See you soon! 🅿️"]
+    },
+    gift: {
+        trigger: /gift|card|certificate|present|礼物/i,
+        replies: ["Yes! Gift cards are available in any amount — they make a wonderful gift! 🎁 You can purchase them in-store. Would you like to buy one?"]
+    },
+    _default: {
+        replies: [
+            "Thanks for asking! For the best answer, I'd recommend coming in or giving us a call at the number below.",
+            "In the meantime, would you like to book an appointment? I can help with that right now! 😊"
+        ]
+    }
+};
+
+let conversationState = null;
+
+function addMsg(text, type) {
+    const div = document.getElementById('messages');
+    const msg = document.createElement('div');
+    msg.className = 'message ' + type;
+    msg.innerHTML = text.replace(/\n/g, '<br>');
+    div.appendChild(msg);
+    div.scrollTop = div.scrollHeight;
+}
+
+function showTyping() {
+    const div = document.getElementById('messages');
+    const t = document.createElement('div');
+    t.className = 'typing-indicator';
+    t.id = 'typing';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    div.appendChild(t);
+    div.scrollTop = div.scrollHeight;
+}
+
+function hideTyping() {
+    const t = document.getElementById('typing');
+    if (t) t.remove();
+}
+
+function clearQuickReplies() {
+    const qr = document.getElementById('quick-replies');
+    if (qr) qr.remove();
+    document.querySelectorAll('.quick-replies').forEach(e => e.remove());
+}
+
+function showBookingForm() {
+    const div = document.getElementById('messages');
+    const form = document.createElement('div');
+    form.className = 'message bot';
+    form.innerHTML = `
+        <div class="appointment-form">
+            <h4>📅 Book Your Appointment</h4>
+            <div class="form-row">
+                <label>Service</label>
+                <select id="bk-service">
+                    <option>Swedish Massage - $70/hr</option>
+                    <option>Deep Tissue - $85/hr</option>
+                    <option>Hot Stone - $95/hr</option>
+                    <option>Thai Massage - $80/hr</option>
+                    <option>Couples - $150/hr</option>
+                    <option>Foot Reflexology - $45/30min</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Date</label>
+                <input type="date" id="bk-date" min="${new Date().toISOString().split('T')[0]}">
+            </div>
+            <div class="form-row">
+                <label>Preferred Time</label>
+                <select id="bk-time">
+                    <option>10:00 AM</option>
+                    <option>11:00 AM</option>
+                    <option>12:00 PM</option>
+                    <option>1:00 PM</option>
+                    <option>2:00 PM</option>
+                    <option>3:00 PM</option>
+                    <option>4:00 PM</option>
+                    <option>5:00 PM</option>
+                    <option>6:00 PM</option>
+                    <option>7:00 PM</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Your Name</label>
+                <input type="text" id="bk-name" placeholder="Full name">
+            </div>
+            <div class="form-row">
+                <label>Phone Number</label>
+                <input type="tel" id="bk-phone" placeholder="(555) 123-4567">
+            </div>
+            <button class="form-submit" onclick="submitBooking()">✓ Confirm Booking</button>
+        </div>
+    `;
+    div.appendChild(form);
+    div.scrollTop = div.scrollHeight;
+}
+
+function submitBooking() {
+    const service = document.getElementById('bk-service')?.value || '';
+    const date = document.getElementById('bk-date')?.value || '';
+    const time = document.getElementById('bk-time')?.value || '';
+    const name = document.getElementById('bk-name')?.value || '';
+    const phone = document.getElementById('bk-phone')?.value || '';
+
+    if (!name || !phone || !date) {
+        addMsg("Please fill in your name, phone, and date to complete the booking! 😊", "bot");
+        return;
+    }
+
+    addMsg("Confirming appointment...", "system");
+
+    setTimeout(() => {
+        addMsg(`✅ Appointment Confirmed!\n\n📋 ${service}\n📅 ${date} at ${time}\n👤 ${name}\n📱 ${phone}\n\nYou'll receive a confirmation text shortly. Please arrive 10 minutes early. We look forward to seeing you! 🧖‍♀️\n\n预约已确认！请提前10分钟到达。`, "bot");
+        addMsg("📱 Confirmation text sent! (demo)", "system");
+        addMsg("📅 Added to Google Calendar (demo)", "system");
+    }, 1500);
+}
+
+function findResponse(text) {
+    for (const [key, data] of Object.entries(RESPONSES)) {
+        if (key === '_default') continue;
+        if (data.trigger && data.trigger.test(text)) return data;
+    }
+    return RESPONSES._default;
+}
+
+function processMessage(text) {
+    clearQuickReplies();
+    addMsg(text, 'user');
+
+    const response = findResponse(text);
+
+    showTyping();
+
+    response.replies.forEach((reply, i) => {
+        setTimeout(() => {
+            if (i === 0) hideTyping();
+            addMsg(reply, 'bot');
+            if (i < response.replies.length - 1) {
+                showTyping();
+                setTimeout(hideTyping, 700);
+            }
+            if (i === response.replies.length - 1 && response.showForm) {
+                setTimeout(showBookingForm, 600);
+            }
+        }, 800 + (i * 1100));
+    });
+}
+
+function send() {
+    const input = document.getElementById('userInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    processMessage(text);
+}
+
+function sendQuick(text) {
+    processMessage(text);
+}
+
+function setLang(lang) {
+    document.querySelectorAll('.nav-lang a').forEach(a => a.classList.remove('active'));
+    event.target.classList.add('active');
+    // In production, this would swap all text. For demo, it shows the bot can handle both.
+    if (lang === 'cn') {
+        clearQuickReplies();
+        addMsg("已切换到中文模式 🇨🇳", "system");
+        addMsg("您好！欢迎来到 Real Massage。我可以帮您预约、查看服务或回答问题。请问有什么可以帮您的？", "bot");
+    }
+}
+</script>
+
+</body>
+</html>

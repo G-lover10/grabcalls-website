@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Our AI Live — GrabCalls.com</title>
+    <meta name="description" content="Try our AI chatbots live. See how AI can answer calls, chat with customers, and book appointments for your business.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --accent: #FF6B35;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f5f5f5;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #333;
+            background: var(--light);
+        }
+
+        /* --- NAV --- */
+        nav {
+            background: var(--dark);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            color: var(--white);
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+        .logo span { color: var(--primary); }
+        .nav-cta {
+            background: var(--accent);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+        /* --- HERO --- */
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        .hero h1 span { color: var(--primary); }
+        .hero p {
+            font-size: 20px;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* --- DEMO CARDS --- */
+        .demos {
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .demo-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .demo-header {
+            padding: 30px 30px 0;
+        }
+        .demo-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+        .demo-icon.dental { background: #E3F2FD; }
+        .demo-icon.plumbing { background: #FFF3E0; }
+        .demo-icon.realestate { background: #F3E5F5; }
+        .demo-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .demo-card .subtitle {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .demo-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 0 30px;
+        }
+
+        /* --- CHAT WIDGET --- */
+        .chat-container {
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            padding: 20px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.bot {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message.typing {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .typing-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); }
+            40% { transform: scale(1); }
+        }
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .chat-input input:focus { border-color: var(--primary); }
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.2s;
+        }
+        .chat-input button:hover { background: var(--primary-dark); }
+
+        /* Quick reply buttons */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .quick-reply {
+            background: var(--white);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-reply:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- CTA SECTION --- */
+        .cta-section {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .cta-section p {
+            font-size: 18px;
+            color: #b0b0b0;
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* --- STATS BAR --- */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px 20px;
+            background: white;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .demos { grid-template-columns: 1fr; margin-top: -20px; }
+            .stats { gap: 30px; }
+            nav { padding: 12px 20px; }
+            .logo { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">Grab<span>Calls</span></a>
+    <a href="#cta" class="nav-cta">Book Free Demo Call</a>
+</nav>
+
+<section class="hero">
+    <div class="hero-badge">Live Interactive Demos</div>
+    <h1>Try Our <span>AI</span> Right Now</h1>
+    <p>Chat with real AI assistants built for local businesses. No signup needed — just start typing.</p>
+</section>
+
+<section class="demos">
+
+    <!-- DENTAL DEMO -->
+    <div class="demo-card">
+        <div class="demo-header">
+            <div class="demo-icon dental">🦷</div>
+            <h3>Dental Office Assistant</h3>
+            <div class="subtitle">Bright Smile Dental — AI Receptionist</div>
+        </div>
+        <p>See how an AI handles patient inquiries, books appointments, and answers questions about dental services — 24/7.</p>
+        <div class="chat-container" id="dental-chat">
+            <div class="chat-messages" id="dental-messages">
+                <div class="message bot">Hi there! Welcome to Bright Smile Dental. 😊 I'm your AI assistant. How can I help you today?</div>
+                <div class="quick-replies">
+                    <button class="quick-reply" onclick="sendQuickReply('dental', 'I need to book a cleaning')">Book a cleaning</button>
+                    <button class="quick-reply" onclick="sendQuickReply('dental', 'What are your hours?')">Your hours?</button>
+                    <button class="quick-reply" onclick="sendQuickReply('dental', 'Do you accept insurance?')">Insurance?</button>
+                    <button class="quick-reply" onclick="sendQuickReply('dental', 'I have a toothache')">Toothache</button>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="dental-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMessage('dental')">
+                <button onclick="sendMessage('dental')">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLUMBING DEMO -->
+    <div class="demo-card">
+        <div class="demo-header">
+            <div class="demo-icon plumbing">🔧</div>
+            <h3>Plumber After-Hours Bot</h3>
+            <div class="subtitle">QuickFix Plumbing — 24/7 AI Dispatch</div>
+        </div>
+        <p>It's 10pm and a pipe just burst. See how an AI handles emergency calls, qualifies the issue, and dispatches help.</p>
+        <div class="chat-container" id="plumbing-chat">
+            <div class="chat-messages" id="plumbing-messages">
+                <div class="message bot">Hey! Thanks for reaching out to QuickFix Plumbing. 🔧 We're here 24/7. What's going on?</div>
+                <div class="quick-replies">
+                    <button class="quick-reply" onclick="sendQuickReply('plumbing', 'I have a burst pipe!')">Burst pipe!</button>
+                    <button class="quick-reply" onclick="sendQuickReply('plumbing', 'My toilet is clogged')">Clogged toilet</button>
+                    <button class="quick-reply" onclick="sendQuickReply('plumbing', 'How much do you charge?')">Pricing?</button>
+                    <button class="quick-reply" onclick="sendQuickReply('plumbing', 'I need a quote for a bathroom remodel')">Remodel quote</button>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="plumbing-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMessage('plumbing')">
+                <button onclick="sendMessage('plumbing')">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REAL ESTATE DEMO -->
+    <div class="demo-card">
+        <div class="demo-header">
+            <div class="demo-icon realestate">🏠</div>
+            <h3>Real Estate Agent Bot</h3>
+            <div class="subtitle">Premier Homes Realty — AI Lead Qualifier</div>
+        </div>
+        <p>A potential buyer visits your listing at midnight. See how AI qualifies them, answers questions, and books a showing.</p>
+        <div class="chat-container" id="realestate-chat">
+            <div class="chat-messages" id="realestate-messages">
+                <div class="message bot">Welcome to Premier Homes Realty! 🏠 I'm here to help you find your perfect home. Are you looking to buy, sell, or just browsing?</div>
+                <div class="quick-replies">
+                    <button class="quick-reply" onclick="sendQuickReply('realestate', 'I want to buy a home')">Looking to buy</button>
+                    <button class="quick-reply" onclick="sendQuickReply('realestate', 'I want to sell my home')">Want to sell</button>
+                    <button class="quick-reply" onclick="sendQuickReply('realestate', 'What homes do you have under 300k?')">Homes under $300k</button>
+                    <button class="quick-reply" onclick="sendQuickReply('realestate', 'Can I schedule a showing?')">Schedule showing</button>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="realestate-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMessage('realestate')">
+                <button onclick="sendMessage('realestate')">➤</button>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <div class="stat-number">&lt; 1s</div>
+        <div class="stat-label">Response Time</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Always Available</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">40%</div>
+        <div class="stat-label">More Appointments</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">$0</div>
+        <div class="stat-label">To Try Right Now</div>
+    </div>
+</section>
+
+<section class="cta-section" id="cta">
+    <h2>Want One For Your Business?</h2>
+    <p>Book a free 15-minute call. We'll build a custom demo for YOUR business — live on the call.</p>
+    <a href="https://grabcalls.com/booking" class="cta-button">Book Your Free Demo Call →</a>
+</section>
+
+<footer>
+    <p>&copy; 2026 GrabCalls.com | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
+    <p style="margin-top:8px">AI-Powered Customer Communication for Local Businesses</p>
+    <p style="margin-top:4px">Springville, AL | (205) 914-3390 | grabcalls@gmail.com</p>
+</footer>
+
+<script>
+// --- CHATBOT DEMO RESPONSES ---
+// These are scripted responses to simulate an AI chatbot for demo purposes
+// In production, these would connect to a real AI backend
+
+const responses = {
+    dental: {
+        'I need to book a cleaning': [
+            "I'd love to help you book a cleaning! 🦷",
+            "We have openings this week. Could I get your name and preferred day — morning or afternoon?"
+        ],
+        'What are your hours?': [
+            "We're open Monday-Friday 8am-5pm and Saturday 9am-2pm.",
+            "Would you like to book an appointment? I can check availability right now!"
+        ],
+        'Do you accept insurance?': [
+            "Yes! We accept most major insurance plans including Delta Dental, Cigna, MetLife, Aetna, and Blue Cross Blue Shield.",
+            "If you're not sure about your plan, just share your provider and I'll check for you. Want to go ahead and book?"
+        ],
+        'I have a toothache': [
+            "I'm sorry to hear that! 😟 Toothaches can be really uncomfortable.",
+            "We keep emergency slots open each day. Can I book you in for today or tomorrow? I just need your name and phone number to get you scheduled ASAP."
+        ],
+        '_default': [
+            "Great question! Let me help with that.",
+            "For the most detailed answer, I'd recommend booking a quick appointment with Dr. Johnson. Want me to check available times? Just takes 30 seconds!"
+        ]
+    },
+    plumbing: {
+        'I have a burst pipe!': [
+            "Oh no! A burst pipe is an emergency — let's get someone to you fast. 🚨",
+            "First: Can you locate the main water shut-off valve and turn it off? It's usually near your water meter.",
+            "I'm flagging this as urgent. What's your address and phone number? We'll have a technician call you within 10 minutes."
+        ],
+        'My toilet is clogged': [
+            "That's no fun! 😅 Let me help.",
+            "Has a plunger not worked, or is it a recurring issue? If it keeps happening, it could be a deeper blockage we should look at.",
+            "We can get someone out today or tomorrow. What works better for your schedule?"
+        ],
+        'How much do you charge?': [
+            "Great question! Our rates are transparent:",
+            "• Service call: $79 (waived if you proceed with repair)\n• Standard repairs: $150-$400\n• Emergency/after-hours: $99 service call\n• Free estimates on larger projects",
+            "Want me to schedule a free estimate? No obligation."
+        ],
+        'I need a quote for a bathroom remodel': [
+            "Exciting! Bathroom remodels are one of our specialties. 🛁",
+            "To give you an accurate quote, we'd need to do a quick in-home assessment (free, takes about 30 min).",
+            "When would be a good time? We have openings this week."
+        ],
+        '_default': [
+            "Got it! Our team handles all kinds of plumbing issues.",
+            "Want me to schedule a service call? We can usually get someone out same-day or next-day. Just need your address and preferred time!"
+        ]
+    },
+    realestate: {
+        'I want to buy a home': [
+            "Exciting! 🎉 Let's find your dream home.",
+            "A few quick questions to narrow things down:\n• What area/neighborhood are you interested in?\n• What's your budget range?\n• How many bedrooms do you need?",
+            "Or if you'd prefer, I can set up a quick call with one of our agents who specializes in buyer representation!"
+        ],
+        'I want to sell my home': [
+            "Great timing! The market is moving well right now. 📈",
+            "We offer free home valuations — I can have one of our agents do a comparative market analysis for your property.",
+            "What's the address of the home you're looking to sell? I'll set that up for you right away."
+        ],
+        'What homes do you have under 300k?': [
+            "Let me check our current listings under $300k! 🏡",
+            "We currently have 12 properties in that range, including:\n• 3BR/2BA in Oak Ridge — $275k\n• 2BR/1BA downtown condo — $229k\n• 4BR/2BA in Meadowbrook — $295k",
+            "Want me to send you the full list with photos? I just need your email. Or I can book a showing for any of these!"
+        ],
+        'Can I schedule a showing?': [
+            "Absolutely! I'd love to set that up. 🗓️",
+            "Which property are you interested in seeing? And what days/times work best for you?",
+            "Our agents are available evenings and weekends too!"
+        ],
+        '_default': [
+            "Thanks for your interest! Our agents are experts in the local market.",
+            "I can help you with information or set up a quick call. What would be most helpful?"
+        ]
+    }
+};
+
+function findResponse(industry, message) {
+    const industryResponses = responses[industry];
+    const lowerMessage = message.toLowerCase();
+
+    // Check for keyword matches
+    for (const [key, value] of Object.entries(industryResponses)) {
+        if (key === '_default') continue;
+        if (lowerMessage.includes(key.toLowerCase()) ||
+            key.toLowerCase().includes(lowerMessage)) {
+            return value;
+        }
+    }
+
+    // Check for partial keyword matches
+    const keywords = {
+        dental: {
+            'book|appointment|schedule|cleaning': 'I need to book a cleaning',
+            'hour|open|close|time': 'What are your hours?',
+            'insurance|cover|plan|accept': 'Do you accept insurance?',
+            'pain|hurt|ache|emergency|tooth': 'I have a toothache'
+        },
+        plumbing: {
+            'burst|flood|water|leak|broken': 'I have a burst pipe!',
+            'clog|toilet|drain|backup': 'My toilet is clogged',
+            'price|cost|charge|rate|much': 'How much do you charge?',
+            'remodel|renovation|bathroom|kitchen': 'I need a quote for a bathroom remodel'
+        },
+        realestate: {
+            'buy|purchase|looking': 'I want to buy a home',
+            'sell|selling|list': 'I want to sell my home',
+            'under|budget|afford|cheap|price': 'What homes do you have under 300k?',
+            'show|tour|visit|see': 'Can I schedule a showing?'
+        }
+    };
+
+    const industryKeywords = keywords[industry] || {};
+    for (const [pattern, key] of Object.entries(industryKeywords)) {
+        if (new RegExp(pattern, 'i').test(lowerMessage)) {
+            return industryResponses[key];
+        }
+    }
+
+    return industryResponses['_default'];
+}
+
+function addMessage(industry, text, type) {
+    const messagesDiv = document.getElementById(industry + '-messages');
+    const msg = document.createElement('div');
+    msg.className = 'message ' + type;
+    msg.textContent = text;
+    messagesDiv.appendChild(msg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function showTyping(industry) {
+    const messagesDiv = document.getElementById(industry + '-messages');
+    const typing = document.createElement('div');
+    typing.className = 'message typing';
+    typing.id = industry + '-typing';
+    typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    messagesDiv.appendChild(typing);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function removeTyping(industry) {
+    const typing = document.getElementById(industry + '-typing');
+    if (typing) typing.remove();
+}
+
+function clearQuickReplies(industry) {
+    const messagesDiv = document.getElementById(industry + '-messages');
+    const replies = messagesDiv.querySelectorAll('.quick-replies');
+    replies.forEach(r => r.remove());
+}
+
+function sendMessage(industry) {
+    const input = document.getElementById(industry + '-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    clearQuickReplies(industry);
+    addMessage(industry, message, 'user');
+    input.value = '';
+
+    const responseTexts = findResponse(industry, message);
+
+    showTyping(industry);
+
+    responseTexts.forEach((text, index) => {
+        setTimeout(() => {
+            if (index === 0) removeTyping(industry);
+            addMessage(industry, text, 'bot');
+            if (index < responseTexts.length - 1) {
+                showTyping(industry);
+                setTimeout(() => removeTyping(industry), 800);
+            }
+        }, 1000 + (index * 1200));
+    });
+}
+
+function sendQuickReply(industry, message) {
+    clearQuickReplies(industry);
+    addMessage(industry, message, 'user');
+
+    const responseTexts = findResponse(industry, message);
+
+    showTyping(industry);
+
+    responseTexts.forEach((text, index) => {
+        setTimeout(() => {
+            if (index === 0) removeTyping(industry);
+            addMessage(industry, text, 'bot');
+            if (index < responseTexts.length - 1) {
+                showTyping(industry);
+                setTimeout(() => removeTyping(industry), 800);
+            }
+        }, 1000 + (index * 1200));
+    });
+}
+</script>
+
+</body>
+</html>

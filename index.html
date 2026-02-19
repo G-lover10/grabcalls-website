@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrabCalls — AI Chatbots & Voice Agents for Local Businesses</title>
+    <meta name="description" content="Never miss another customer. AI chatbots and voice agents that answer every call, chat with every visitor, and book appointments 24/7.">
+    <meta property="og:title" content="GrabCalls — AI That Never Sleeps">
+    <meta property="og:description" content="AI chatbots and voice agents for local businesses. Answer every call, capture every lead.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://grabcalls.com">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #E8F5E9;
+            --accent: #FF6B35;
+            --accent-dark: #E85D2C;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --white: #ffffff;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --text: #333;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); }
+        a { text-decoration: none; }
+
+        /* NAV */
+        nav {
+            background: var(--dark);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .logo { color: white; font-size: 24px; font-weight: 800; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #ccc; font-size: 15px; transition: color 0.2s; }
+        .nav-links a:hover { color: white; }
+        .nav-cta {
+            background: var(--accent) !important;
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: white;
+            padding: 160px 20px 100px;
+            text-align: center;
+        }
+        .hero-label {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.15;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        .hero h1 span { color: var(--primary); }
+        .hero p {
+            font-size: 20px;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 16px 36px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: border-color 0.2s;
+            display: inline-block;
+        }
+        .btn-secondary:hover { border-color: white; }
+
+        /* PROBLEM */
+        .problem {
+            padding: 80px 20px;
+            background: white;
+            text-align: center;
+        }
+        .section-label {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 50px;
+        }
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .problem-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .problem-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .problem-stat {
+            font-size: 42px;
+            font-weight: 800;
+            color: #e53935;
+            margin-bottom: 8px;
+        }
+        .problem-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .problem-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* SOLUTION */
+        .solution {
+            padding: 80px 20px;
+            background: var(--light);
+        }
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .solution-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .solution-card:hover { transform: translateY(-5px); }
+        .solution-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .solution-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .solution-card p {
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-list li::before {
+            content: "✓";
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 16px;
+        }
+        .price-tag {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        .price-tag strong {
+            font-size: 28px;
+            color: var(--dark);
+        }
+
+        /* HOW IT WORKS */
+        .how-it-works {
+            padding: 80px 20px;
+            background: white;
+            text-align: center;
+        }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .step {
+            position: relative;
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 auto 16px;
+        }
+        .step h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step p {
+            color: var(--gray);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 80px 20px;
+            background: var(--light);
+        }
+        .faq-list {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .faq-question {
+            padding: 20px 24px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .faq-question:hover { background: #f0f0f0; }
+        .faq-arrow {
+            font-size: 20px;
+            transition: transform 0.3s;
+            color: var(--gray);
+        }
+        .faq-answer {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding: 0 24px 20px;
+        }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+        /* LEAD FORM */
+        .lead-form-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: white;
+            text-align: center;
+        }
+        .lead-form {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .lead-form h3 {
+            color: var(--dark);
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .form-consent {
+            margin: 16px 0;
+        }
+        .form-consent label {
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        .form-consent input[type="checkbox"] {
+            margin-top: 3px;
+            width: auto;
+        }
+        .form-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .form-submit:hover { background: var(--accent-dark); }
+        .form-note {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 12px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: #888;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        footer a { color: var(--primary); }
+        .footer-links { margin-bottom: 16px; }
+        .footer-links a { margin: 0 12px; font-size: 14px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero { padding: 120px 20px 60px; }
+            .hero h1 { font-size: 36px; }
+            .section-title { font-size: 30px; }
+            nav { padding: 12px 20px; }
+            .nav-links { display: none; }
+            .lead-form { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Grab<span>Calls</span></div>
+    <div class="nav-links">
+        <a href="#problem">Why AI?</a>
+        <a href="#solutions">Services</a>
+        <a href="#how">How It Works</a>
+        <a href="/demo">Try Live Demo</a>
+        <a href="#faq">FAQ</a>
+        <a href="#form" class="nav-cta">Get Free Guide</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-label">AI-Powered Customer Communication</div>
+    <h1>Stop Losing Customers to <span>Your Voicemail</span></h1>
+    <p>AI chatbots and voice agents that answer every call, chat with every website visitor, and book appointments for your business — 24/7, 365.</p>
+    <div class="hero-buttons">
+        <a href="#form" class="btn-primary">Get Your Free AI Guide →</a>
+        <a href="/demo" class="btn-secondary">Try Live Demo</a>
+    </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+    <div class="section-label">The Problem</div>
+    <div class="section-title">Your Customers Are Leaving</div>
+    <div class="section-subtitle">And most of the time, you don't even know it.</div>
+    <div class="problem-grid">
+        <div class="problem-card">
+            <div class="problem-icon">📱</div>
+            <div class="problem-stat">62%</div>
+            <h3>Calls Go Unanswered</h3>
+            <p>The average local business misses more than half of incoming calls. Every missed call is a customer choosing your competitor.</p>
+        </div>
+        <div class="problem-card">
+            <div class="problem-icon">💻</div>
+            <div class="problem-stat">97%</div>
+            <h3>Visitors Leave Your Site</h3>
+            <p>Almost all website visitors leave without taking action. They had questions. Nobody was there to answer them.</p>
+        </div>
+        <div class="problem-card">
+            <div class="problem-icon">🌙</div>
+            <div class="problem-stat">46%</div>
+            <h3>Search After Hours</h3>
+            <p>Nearly half of local searches happen when you're closed. If they can't reach you, they move on to whoever they can.</p>
+        </div>
+    </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="solution" id="solutions">
+    <div style="text-align:center">
+        <div class="section-label">The Solution</div>
+        <div class="section-title">AI That Never Sleeps</div>
+        <div class="section-subtitle">Professional, friendly, always available.</div>
+    </div>
+    <div class="solution-grid">
+        <div class="solution-card">
+            <div class="solution-badge">Most Popular</div>
+            <h3>AI Website Chatbot</h3>
+            <p>A smart chat widget that greets every visitor, answers their questions, qualifies leads, and books appointments — instantly.</p>
+            <ul class="feature-list">
+                <li>Greets visitors in under 1 second</li>
+                <li>Answers FAQs about your services</li>
+                <li>Qualifies leads automatically</li>
+                <li>Books appointments into your calendar</li>
+                <li>Works on any website platform</li>
+                <li>Custom-trained for your business</li>
+            </ul>
+            <div class="price-tag">Starting at <strong>$97</strong>/month</div>
+        </div>
+        <div class="solution-card">
+            <div class="solution-badge">High Impact</div>
+            <h3>AI Voice Agent</h3>
+            <p>An AI that answers your phone calls, handles inquiries, and routes urgent calls to you — so you never miss a customer again.</p>
+            <ul class="feature-list">
+                <li>Answers every call on the first ring</li>
+                <li>Natural, human-like conversation</li>
+                <li>Handles FAQs and common questions</li>
+                <li>Books appointments by phone</li>
+                <li>Routes urgent calls to you/team</li>
+                <li>24/7, weekends, and holidays</li>
+            </ul>
+            <div class="price-tag">Starting at <strong>$197</strong>/month</div>
+        </div>
+        <div class="solution-card">
+            <div class="solution-badge">Best Value</div>
+            <h3>Full AI Package</h3>
+            <p>Chatbot + Voice Agent + Automated Follow-Up. The complete system that captures, qualifies, and books — on autopilot.</p>
+            <ul class="feature-list">
+                <li>Everything in Chatbot + Voice Agent</li>
+                <li>Automated SMS/email follow-up</li>
+                <li>Missed call text-back</li>
+                <li>Lead nurture sequences</li>
+                <li>Monthly performance reports</li>
+                <li>Priority support</li>
+            </ul>
+            <div class="price-tag">Starting at <strong>$397</strong>/month</div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how">
+    <div class="section-label">Simple Setup</div>
+    <div class="section-title">Live in 48 Hours</div>
+    <div class="section-subtitle">We handle everything. You just approve.</div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Free Demo Call</h3>
+            <p>15 minutes. We show you a live AI customized for your industry. No pitch — just a demo.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>We Build It</h3>
+            <p>We train the AI on your business, services, FAQs, and brand voice. You review and approve.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Go Live</h3>
+            <p>We install it on your website and/or phone system. Takes minutes. No tech skills needed.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Watch It Work</h3>
+            <p>Leads come in, appointments get booked, customers get helped — 24/7. You focus on what you do best.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+    <div style="text-align:center">
+        <div class="section-label">Questions?</div>
+        <div class="section-title">Frequently Asked</div>
+        <div class="section-subtitle" style="margin-bottom:40px">Everything you need to know.</div>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How much does it cost? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">Chatbot plans start at $97/month. Voice agents start at $197/month. The full package is $397/month. Every plan includes setup, customization, training, and ongoing support. No hidden fees.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How long does setup take? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">Most chatbots go live within 48 hours. Voice agents typically take 3-5 business days. We handle everything — you just review and approve the final version.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Will it sound/look robotic? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">Not at all. Our AI uses advanced natural language processing to have real, flowing conversations. We customize the personality, tone, and responses specifically for your business and brand voice.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What if I already have a website? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">Perfect — the chatbot is a small widget that plugs right into your existing site. No redesign needed. It works with WordPress, Wix, Squarespace, custom sites, and everything else.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Can I try it before I commit? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">Absolutely! Book a free 15-minute demo call and we'll show you a live preview built for your specific business. You can also try our interactive demos right now at grabcalls.com/demo.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What happens if the AI can't answer something? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">If the AI encounters a question it can't handle, it gracefully offers to connect the customer with you directly — via text, email, or scheduling a callback. You stay in control.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Is there a contract or commitment? <span class="faq-arrow">▼</span></div>
+            <div class="faq-answer">No long-term contracts. All plans are month-to-month. You can cancel anytime. We keep customers by delivering results, not with contracts.</div>
+        </div>
+    </div>
+</section>
+
+<!-- LEAD FORM -->
+<section class="lead-form-section" id="form">
+    <div class="section-label" style="color:var(--primary)">Free Download</div>
+    <h2 style="font-size:36px;font-weight:800;margin-bottom:16px">Get Your Free AI Strategy Guide</h2>
+    <p style="color:#aaa;max-width:500px;margin:0 auto 40px;font-size:18px">Discover the 5 ways local businesses are using AI to close more deals without hiring more staff.</p>
+    <div class="lead-form">
+        <h3 style="color:var(--dark)">Download the Free Guide</h3>
+        <form id="leadForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" required placeholder="Your first name">
+            </div>
+            <div class="form-group">
+                <label for="businessName">Business Name *</label>
+                <input type="text" id="businessName" name="businessName" required placeholder="Your business name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="you@yourbusiness.com">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
+            </div>
+            <div class="form-group">
+                <label for="businessType">Business Type</label>
+                <select id="businessType" name="businessType">
+                    <option value="">Select your industry...</option>
+                    <option value="dental">Dental</option>
+                    <option value="hvac">HVAC</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="realestate">Real Estate</option>
+                    <option value="legal">Legal</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="autorepair">Auto Repair</option>
+                    <option value="medical">Medical</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-consent">
+                <label>
+                    <input type="checkbox" name="consentNonMarketing">
+                    I agree to receive appointment reminders and service notifications via SMS. Msg & data rates may apply. Reply STOP to opt out. <a href="/privacy-policy" style="color:var(--primary)">Privacy Policy</a> | <a href="/terms-of-service" style="color:var(--primary)">Terms</a>
+                </label>
+            </div>
+            <div class="form-consent">
+                <label>
+                    <input type="checkbox" name="consentMarketing">
+                    I also agree to receive occasional marketing messages and AI tips from GrabCalls.com. You can unsubscribe anytime by replying STOP.
+                </label>
+            </div>
+            <button type="submit" class="form-submit">Send Me the Free Guide →</button>
+            <div class="form-note">Takes 30 seconds. No credit card required.</div>
+        </form>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-links">
+        <a href="/demo">Live Demo</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+    </div>
+    <p>&copy; 2026 GrabCalls.com | AI-Powered Customer Communication</p>
+    <p style="margin-top:8px">579 Cody Cir, Springville, AL 35146 | (205) 914-3390 | grabcalls@gmail.com</p>
+</footer>
+
+<script>
+function toggleFaq(el) {
+    el.parentElement.classList.toggle('open');
+}
+
+function handleSubmit(e) {
+    e.preventDefault();
+    // In production, this sends to GHL via API or form embed
+    // For now, show success message
+    const form = document.getElementById('leadForm');
+    form.innerHTML = `
+        <div style="text-align:center;padding:40px 0">
+            <div style="font-size:48px;margin-bottom:16px">🎉</div>
+            <h3 style="color:var(--dark);margin-bottom:12px">Check Your Email!</h3>
+            <p style="color:var(--gray);line-height:1.6">Your AI Strategy Guide is on its way.<br>
+            While you wait, why not <a href="/demo" style="color:var(--primary);font-weight:600">try our live AI demos</a>?</p>
+        </div>
+    `;
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
+});
+</script>
+
+</body>
+</html>

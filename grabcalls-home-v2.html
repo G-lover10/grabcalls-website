@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GrabCalls - AI Voice Agents & Chatbots for Local Businesses. Never miss another customer call. 24/7 AI answering, appointment booking, and automated follow-ups.">
+    <meta name="keywords" content="AI voice agent, AI chatbot, business automation, appointment booking, local business AI, Springville AL">
+    <meta name="theme-color" content="#0066CC">
+    <title>GrabCalls - AI Voice Agents & Chatbots for Local Business | Never Miss a Call</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #0066CC;
+            --color-primary-light: #00B4D8;
+            --color-primary-accent: #00D9FF;
+            --color-primary-dark: #004B87;
+            --color-white: #FFFFFF;
+            --color-light: #F5F7FA;
+            --color-gray: #666666;
+            --color-dark: #333333;
+            --color-charcoal: #1A1A2E;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-error: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%);
+            --gradient-accent: linear-gradient(135deg, #00D9FF 0%, #0096C7 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 102, 204, 0.08);
+            --shadow-md: 0 8px 24px rgba(0, 102, 204, 0.12);
+            --shadow-lg: 0 16px 48px rgba(0, 102, 204, 0.16);
+            --shadow-xl: 0 24px 64px rgba(0, 102, 204, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--color-dark);
+            background: var(--color-white);
+            overflow-x: hidden;
+        }
+
+        /* ==================== HEADER & NAV ==================== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--color-white);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0.75rem;
+        }
+
+        .logo-svg {
+            width: 50px;
+            height: auto;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-center a {
+            color: var(--color-dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            padding: 0.75rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-cta:active {
+            transform: translateY(0);
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            position: relative;
+            padding: 10rem 2rem;
+            background: linear-gradient(135deg, #0066CC 0%, #00B4D8 50%, #00D9FF 100%);
+            color: var(--color-white);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            animation: slideInUp 0.8s ease-out;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            font-weight: 400;
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--color-white);
+            border: 2px solid var(--color-white);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* ==================== STATS SECTION ==================== */
+        .stats-section {
+            padding: 4rem 2rem;
+            background: var(--color-charcoal);
+            color: var(--color-white);
+            position: relative;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* ==================== PROBLEM SECTION ==================== */
+        .problem {
+            padding: 6rem 2rem;
+            background: var(--color-light);
+            text-align: center;
+        }
+
+        .problem h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .problem p {
+            font-size: 1.2rem;
+            color: var(--color-gray);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .problem-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            background: var(--color-white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .problem-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+        }
+
+        /* ==================== COMPARISON SECTION ==================== */
+        .comparison {
+            padding: 6rem 2rem;
+            background: var(--color-white);
+        }
+
+        .comparison h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .comparison-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .comparison-column {
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .comparison-column.before {
+            background: var(--color-light);
+            border: 2px solid #ddd;
+        }
+
+        .comparison-column.after {
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 180, 216, 0.05) 100%);
+            border: 2px solid var(--color-primary);
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .comparison-list {
+            list-style: none;
+        }
+
+        .comparison-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .comparison-list li::before {
+            content: '✕';
+            font-weight: 900;
+            color: #ccc;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .comparison-column.after .comparison-list li::before {
+            content: '✓';
+            color: var(--color-success);
+        }
+
+        /* ==================== SERVICES SECTION ==================== */
+        .services {
+            padding: 6rem 2rem;
+            background: var(--color-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--color-gray);
+        }
+
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--color-white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+        }
+
+        .service-card p {
+            color: var(--color-gray);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .service-card ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .service-card li {
+            padding: 0.5rem 0;
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-card li::before {
+            content: '✓';
+            color: var(--color-success);
+            font-weight: 900;
+            font-size: 1.25rem;
+        }
+
+        /* ==================== INDUSTRY TABS ==================== */
+        .industry-section {
+            padding: 6rem 2rem;
+            background: var(--color-light);
+        }
+
+        .industry-tabs {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.75rem;
+            border: 2px solid var(--color-primary);
+            background: var(--color-white);
+            color: var(--color-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .tab-content.active {
+            display: grid;
+        }
+
+        .tab-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .tab-text p {
+            color: var(--color-gray);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .tab-features {
+            list-style: none;
+        }
+
+        .tab-features li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--color-dark);
+        }
+
+        .tab-features li::before {
+            content: '→';
+            color: var(--color-primary);
+            font-weight: 900;
+            font-size: 1.25rem;
+        }
+
+        /* ==================== PRICING SECTION ==================== */
+        .pricing {
+            padding: 6rem 2rem;
+            background: var(--color-white);
+        }
+
+        .pricing-intro {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: var(--color-success);
+            color: var(--color-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .pricing-card {
+            background: var(--color-white);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--color-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+            background: linear-gradient(to bottom, var(--color-white) 0%, rgba(0, 102, 204, 0.02) 100%);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .pricing-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .pricing-badge-card {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .price-period {
+            color: var(--color-gray);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--color-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--color-success);
+            font-weight: 900;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* ==================== TESTIMONIALS ==================== */
+        .testimonials {
+            padding: 6rem 2rem;
+            background: var(--color-light);
+        }
+
+        .testimonial-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .testimonial-card {
+            background: var(--color-white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '★★★★★';
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--color-warning);
+            font-size: 1rem;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--color-dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .testimonial-business {
+            color: var(--color-gray);
+            font-size: 0.9rem;
+        }
+
+        /* ==================== TRUST BADGES ==================== */
+        .trust-section {
+            padding: 4rem 2rem;
+            background: var(--color-charcoal);
+            color: var(--color-white);
+            text-align: center;
+        }
+
+        .trust-badges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .trust-badge {
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .trust-badge:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .trust-badge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .trust-badge h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .trust-badge p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        /* ==================== CTA SECTION ==================== */
+        .cta-final {
+            padding: 6rem 2rem;
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            text-align: center;
+        }
+
+        .cta-final h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-final p {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        /* ==================== DEMO SECTION ==================== */
+        .demo {
+            padding: 6rem 2rem;
+            background: var(--color-white);
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .demo-card {
+            background: var(--color-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--color-primary);
+            transition: all 0.3s;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            background: var(--color-white);
+        }
+
+        .demo-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .demo-phone {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 1.5rem 0;
+        }
+
+        .demo-phone a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--color-charcoal);
+            color: var(--color-white);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--color-white);
+            font-weight: 700;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-primary-light);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ==================== CHATBOT WIDGET ==================== */
+        .chatbot-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            border: none;
+            font-size: 1.75rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: var(--shadow-lg); }
+            50% { box-shadow: var(--shadow-xl); }
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 380px;
+            max-width: calc(100vw - 4rem);
+            height: 550px;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chatbot-window.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            background: var(--color-light);
+            color: var(--color-dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background: var(--color-primary);
+            color: var(--color-white);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-gray);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.5; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        .chatbot-quick-replies {
+            padding: 0 1.5rem 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .quick-reply {
+            background: var(--color-light);
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .quick-reply:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .chatbot-input {
+            padding: 1rem 1.5rem;
+            border-top: 2px solid var(--color-light);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--color-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .chatbot-send {
+            background: var(--gradient-primary);
+            color: var(--color-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.05);
+        }
+
+        /* ==================== CALCULATOR SECTION ==================== */
+        .calculator {
+            padding: 6rem 2rem;
+            background: var(--color-light);
+        }
+
+        .calculator-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .calculator h2 {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .calculator-content {
+            background: var(--color-white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .calculator-input {
+            margin-bottom: 2rem;
+        }
+
+        .calculator-input label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        .calculator-input input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-light);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .calculator-input input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .calculator-input input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            border: none;
+        }
+
+        .calculator-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .calculator-result {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            border: 2px solid var(--color-primary);
+            text-align: center;
+        }
+
+        .calculator-result p {
+            color: var(--color-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .calculator-result .big-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-content {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-content.active {
+                grid-template-columns: 1fr;
+            }
+
+            .service-cards,
+            .pricing-cards,
+            .demo-options,
+            .testimonial-cards,
+            .trust-badges {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .pricing-card.featured:hover {
+                transform: translateY(-10px);
+            }
+
+            .chatbot-window {
+                width: calc(100vw - 2rem);
+                right: 1rem;
+                bottom: 5rem;
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .calculator-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* ==================== ANIMATIONS & UTILITIES ==================== */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <nav>
+            <a href="#" class="logo">
+                <svg class="logo-svg" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#0066CC;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00B4D8;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0096C7;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <g id="icon">
+                        <rect x="20" y="30" width="60" height="100" rx="8" fill="none" stroke="url(#primaryGradient)" stroke-width="3"/>
+                        <rect x="28" y="45" width="44" height="65" rx="4" fill="#F0F7FF" stroke="url(#primaryGradient)" stroke-width="2"/>
+                        <path d="M 35 65 Q 42 70 50 65" fill="none" stroke="url(#accentGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M 33 78 Q 42 85 51 78" fill="none" stroke="url(#accentGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M 36 92 Q 42 96 50 92" fill="none" stroke="url(#accentGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="58" cy="55" r="3" fill="url(#accentGradient)"/>
+                        <circle cx="65" cy="62" r="2.5" fill="url(#accentGradient)" opacity="0.7"/>
+                    </g>
+                    <text x="110" y="80" style="font-family: 'Segoe UI', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: -1px;" fill="url(#primaryGradient)">GrabCalls</text>
+                    <text x="110" y="120" style="font-family: 'Segoe UI', sans-serif; font-size: 16px; font-weight: 500; letter-spacing: 2px;" fill="#00B4D8">AI THAT ANSWERS</text>
+                    <line x1="110" y1="130" x2="280" y2="130" stroke="url(#accentGradient)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </a>
+            <ul class="nav-center">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#industries">Industries</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#demo">Demo</a></li>
+            </ul>
+            <a href="tel:+12059143390" class="nav-cta">Call Now</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Never Miss Another Customer Call</h1>
+            <p>AI That Answers Your Phone 24/7, Books Appointments & Grows Your Business</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="btn btn-primary">📅 Schedule Free Demo</a>
+                <a href="tel:+12056059842" class="btn btn-secondary">📞 Try Live Demo: (205) 605-9842</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" data-target="5000">0</div>
+                <div class="stat-label">Calls Answered Annually</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="85">0</div>
+                <div class="stat-label">% Increase in Conversions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="500">0</div>
+                <div class="stat-label">Average Value Per Customer</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="24">0</div>
+                <div class="stat-label">/7 Availability</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <h2>The Cost of Missed Calls</h2>
+        <p>Every second your phone rings is an opportunity or a loss</p>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <h3>62%</h3>
+                <p>of customers won't leave a voicemail</p>
+            </div>
+            <div class="problem-card">
+                <h3>85%</h3>
+                <p>call your competitor next</p>
+            </div>
+            <div class="problem-card">
+                <h3>$500+</h3>
+                <p>average value per missed customer</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison">
+        <h2>Before & After GrabCalls AI</h2>
+        <div class="comparison-container">
+            <div class="comparison-column before">
+                <div class="comparison-title">❌ Without AI</div>
+                <ul class="comparison-list">
+                    <li>Missed calls during busy hours</li>
+                    <li>Voicemails piling up</li>
+                    <li>Customers going to competitors</li>
+                    <li>Lost revenue from no-shows</li>
+                    <li>Manual appointment scheduling</li>
+                    <li>After-hours customers ignored</li>
+                    <li>No customer follow-ups</li>
+                </ul>
+            </div>
+            <div class="comparison-column after">
+                <div class="comparison-title">✓ With GrabCalls</div>
+                <ul class="comparison-list">
+                    <li>Every call answered instantly</li>
+                    <li>AI handles common questions</li>
+                    <li>Customers book on their own</li>
+                    <li>24/7 revenue generation</li>
+                    <li>Automatic scheduling & confirmations</li>
+                    <li>After-hours leads captured</li>
+                    <li>Smart follow-up automation</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="section-header">
+            <h2>AI Solutions Built for Local Businesses</h2>
+            <p>Professional, affordable services designed to grow your customer base</p>
+        </div>
+
+        <div class="service-cards">
+            <div class="service-card">
+                <div class="service-icon">📞</div>
+                <h3>AI Voice Agent</h3>
+                <p>Your 24/7 virtual receptionist that never sleeps, never takes a break, and never misses a call.</p>
+                <ul>
+                    <li>Answers all incoming calls instantly</li>
+                    <li>Books appointments directly to your calendar</li>
+                    <li>Answers common customer questions</li>
+                    <li>Takes messages and sends notifications</li>
+                    <li>Sounds professional and natural</li>
+                    <li>Available nights, weekends, holidays</li>
+                </ul>
+                <a href="#pricing" class="btn btn-primary" style="width: 100%; text-align: center;">Learn More</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">💬</div>
+                <h3>AI Website Chatbot</h3>
+                <p>Convert website visitors into customers with instant, intelligent responses 24/7.</p>
+                <ul>
+                    <li>Instant responses to visitor questions</li>
+                    <li>Captures leads while you sleep</li>
+                    <li>Books appointments automatically</li>
+                    <li>Provides pricing and service info</li>
+                    <li>Works on any device</li>
+                    <li>Customized to your business</li>
+                </ul>
+                <a href="#pricing" class="btn btn-primary" style="width: 100%; text-align: center;">Learn More</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <h3>Professional Website</h3>
+                <p>Modern, mobile-optimized website that turns visitors into customers.</p>
+                <ul>
+                    <li>Fast, mobile-responsive design</li>
+                    <li>SEO optimized for Google</li>
+                    <li>Integrated booking system</li>
+                    <li>Contact forms that work</li>
+                    <li>Google Maps integration</li>
+                    <li>Professional, trustworthy appearance</li>
+                </ul>
+                <a href="#pricing" class="btn btn-primary" style="width: 100%; text-align: center;">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Industry Tabs Section -->
+    <section id="industries" class="industry-section">
+        <div class="industry-tabs">
+            <div class="section-header">
+                <h2>Perfect for Your Industry</h2>
+                <p>See how GrabCalls works for businesses like yours</p>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="dental">🦷 Dental</button>
+                <button class="tab-btn" data-tab="hvac">❄️ HVAC</button>
+                <button class="tab-btn" data-tab="plumbing">🔧 Plumbing</button>
+                <button class="tab-btn" data-tab="realestate">🏠 Real Estate</button>
+            </div>
+
+            <div id="dental" class="tab-content active">
+                <div class="tab-text">
+                    <h3>Dental Practices</h3>
+                    <p>Stop losing patients to missed appointments. Our AI answers emergency after-hours calls, books regular appointments, and reminds patients of check-ups.</p>
+                    <ul class="tab-features">
+                        <li>24/7 emergency call handling</li>
+                        <li>Automatic appointment confirmations</li>
+                        <li>Insurance and payment inquiries</li>
+                        <li>Reduces no-show rate by 40%</li>
+                    </ul>
+                </div>
+                <div style="background: linear-gradient(135deg, #0066CC 0%, #00B4D8 100%); border-radius: 12px; height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🦷</div>
+            </div>
+
+            <div id="hvac" class="tab-content">
+                <div class="tab-text">
+                    <h3>HVAC Companies</h3>
+                    <p>Seasonal demand spikes? Our AI handles peak hours, qualifies emergency calls, and schedules technician visits automatically.</p>
+                    <ul class="tab-features">
+                        <li>Priority emergency call routing</li>
+                        <li>Service type qualification</li>
+                        <li>Technician schedule coordination</li>
+                        <li>Handles 50+ calls during peak times</li>
+                    </ul>
+                </div>
+                <div style="background: linear-gradient(135deg, #00D9FF 0%, #0096C7 100%); border-radius: 12px; height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">❄️</div>
+            </div>
+
+            <div id="plumbing" class="tab-content">
+                <div class="tab-text">
+                    <h3>Plumbing Businesses</h3>
+                    <p>Emergency calls come around the clock. Our AI qualifies urgency, captures details, and dispatches your team instantly.</p>
+                    <ul class="tab-features">
+                        <li>Emergency vs routine detection</li>
+                        <li>Detailed issue capture</li>
+                        <li>Instant team notifications</li>
+                        <li>Reduces response time by 60%</li>
+                    </ul>
+                </div>
+                <div style="background: linear-gradient(135deg, #0066CC 0%, #004B87 100%); border-radius: 12px; height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🔧</div>
+            </div>
+
+            <div id="realestate" class="tab-content">
+                <div class="tab-text">
+                    <h3>Real Estate Agents</h3>
+                    <p>Never miss a buyer or seller inquiry. AI schedules showings, answers property questions, and captures leads 24/7.</p>
+                    <ul class="tab-features">
+                        <li>Showing schedule management</li>
+                        <li>Property information delivery</li>
+                        <li>Buyer/seller qualification</li>
+                        <li>40% more leads captured</li>
+                    </ul>
+                </div>
+                <div style="background: linear-gradient(135deg, #00B4D8 0%, #00D9FF 100%); border-radius: 12px; height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🏠</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="calculator">
+        <div class="calculator-container">
+            <h2>How Much Are You Losing to Missed Calls?</h2>
+
+            <div class="calculator-content">
+                <div class="calculator-input">
+                    <label for="calls-per-month">Calls Per Month</label>
+                    <input type="range" id="calls-per-month" min="10" max="500" value="50">
+                    <div class="calculator-value"><span id="calls-display">50</span> calls</div>
+                </div>
+
+                <div class="calculator-input">
+                    <label for="conversion-rate">Current Answer Rate</label>
+                    <input type="range" id="conversion-rate" min="20" max="95" value="60">
+                    <div class="calculator-value"><span id="rate-display">60</span>%</div>
+                </div>
+
+                <div class="calculator-input">
+                    <label for="customer-value">Average Customer Value</label>
+                    <input type="range" id="customer-value" min="100" max="5000" value="500" step="100">
+                    <div class="calculator-value">$<span id="value-display">500</span></div>
+                </div>
+
+                <div class="calculator-result">
+                    <p>Monthly revenue from missed calls:</p>
+                    <div class="big-number">$<span id="result">10,000</span></div>
+                    <p style="margin-top: 1rem; color: var(--color-success); font-weight: 700;">GrabCalls captures 95% of these calls</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="section-header">
+            <h2>Simple, Transparent Pricing</h2>
+            <p>No hidden fees. No long-term contracts. Cancel anytime.</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <span class="pricing-badge">✓ NO CONTRACTS • Cancel Anytime • Money-Back Guarantee</span>
+        </div>
+
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3>AI Voice Agent</h3>
+                <div class="price">$197<span style="font-size: 1.5rem;">/mo</span></div>
+                <div class="price-period">+ $497 one-time setup</div>
+                <ul class="pricing-features">
+                    <li>24/7 AI phone answering</li>
+                    <li>Unlimited incoming calls</li>
+                    <li>Appointment booking</li>
+                    <li>Message taking & routing</li>
+                    <li>Custom voice & personality</li>
+                    <li>Calendar integration</li>
+                    <li>Call analytics & recordings</li>
+                    <li>Free support & updates</li>
+                </ul>
+                <a href="tel:+12059143390" class="btn btn-primary" style="width: 100%; text-align: center;">Get Started</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <div class="pricing-badge-card">MOST POPULAR</div>
+                <h3>Complete Package</h3>
+                <div class="price">$497<span style="font-size: 1.5rem;">/mo</span></div>
+                <div class="price-period">+ $997 one-time setup</div>
+                <ul class="pricing-features">
+                    <li>Everything in Voice Agent</li>
+                    <li>Professional custom website</li>
+                    <li>AI chatbot on your site</li>
+                    <li>SEO optimization</li>
+                    <li>Booking system integration</li>
+                    <li>Google Business setup</li>
+                    <li>Email & SMS follow-ups</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="tel:+12059143390" class="btn btn-primary" style="width: 100%; text-align: center;">Get Started</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Website Only</h3>
+                <div class="price">$297<span style="font-size: 1.5rem;">/mo</span></div>
+                <div class="price-period">+ $697 one-time setup</div>
+                <ul class="pricing-features">
+                    <li>Professional custom website</li>
+                    <li>AI chatbot widget</li>
+                    <li>Mobile-optimized design</li>
+                    <li>SEO basics included</li>
+                    <li>Contact form integration</li>
+                    <li>Google Maps embed</li>
+                    <li>Fast loading speed</li>
+                    <li>Free hosting included</li>
+                </ul>
+                <a href="tel:+12059143390" class="btn btn-primary" style="width: 100%; text-align: center;">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-header">
+            <h2>What Business Owners Are Saying</h2>
+            <p>Real results from real local businesses</p>
+        </div>
+
+        <div class="testimonial-cards">
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "We were losing 10-15 calls per week. Now the AI handles everything perfectly. Haven't missed a booking opportunity in months."
+                </div>
+                <div class="testimonial-author">Dr. Sarah Chen</div>
+                <div class="testimonial-business">Family Dentistry, Birmingham AL</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Best investment we've made. The AI answers after-hours calls, books appointments, and handled basic questions. Paid for itself in the first month."
+                </div>
+                <div class="testimonial-author">Mike Rodriguez</div>
+                <div class="testimonial-business">Rodriguez HVAC, Huntsville AL</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Our old website wasn't getting leads. New site with chatbot has us booking 3-4 new clients every week. Game changer for our business."
+                </div>
+                <div class="testimonial-author">Jennifer Williams</div>
+                <div class="testimonial-business">Williams Real Estate, Springville AL</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "I was skeptical about AI handling calls, but it's incredible. Sounds natural, knows when to transfer to me, captures all the details. Highly recommend."
+                </div>
+                <div class="testimonial-author">James Thompson</div>
+                <div class="testimonial-business">Thompson Plumbing, Tuscaloosa AL</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="trust-section">
+        <h2 style="margin-bottom: 3rem; font-size: clamp(2rem, 5vw, 2.5rem);">Why Businesses Trust GrabCalls</h2>
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <div class="trust-badge-icon">🔒</div>
+                <h3>100% Secure</h3>
+                <p>Enterprise-grade encryption and compliance with all privacy standards</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">⚡</div>
+                <h3>Instant Setup</h3>
+                <p>Live and answering calls in 24-48 hours</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">💪</div>
+                <h3>No Contract</h3>
+                <p>30-day money-back guarantee. Cancel anytime, no questions asked</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">🎯</div>
+                <h3>Local Expert</h3>
+                <p>Built by Eric Glover, serving Alabama businesses since 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="demo-container">
+            <div class="section-header">
+                <h2>Try It Yourself - Right Now</h2>
+                <p>No appointment needed. Hear how our AI answers real calls.</p>
+            </div>
+
+            <div class="demo-options">
+                <div class="demo-card">
+                    <h3>📞 Call Our Demo Line</h3>
+                    <p>Speak with a live AI voice agent</p>
+                    <div class="demo-phone"><a href="tel:+12056059842">(205) 605-9842</a></div>
+                    <p style="color: var(--color-gray); font-size: 0.95rem;">Try asking to book an appointment or ask about pricing</p>
+                </div>
+
+                <div class="demo-card">
+                    <h3>💬 Chat With AI Now</h3>
+                    <p>Click the chat button (bottom-right) to talk with our assistant</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('chatbotToggle').click()" style="margin-top: 1rem; width: 100%;">Open Chat</button>
+                    <p style="color: var(--color-gray); font-size: 0.95rem; margin-top: 1rem;">Ask about services or book a demo</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-final">
+        <h2>Ready to Stop Missing Calls?</h2>
+        <p>Join hundreds of local businesses capturing every customer opportunity</p>
+        <div class="cta-buttons">
+            <a href="tel:+12059143390" class="btn btn-primary">Call Eric: (205) 914-3390</a>
+            <a href="#demo" class="btn btn-secondary">Try Demo Line</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>GrabCalls</h4>
+                <p>AI-powered phone answering and customer engagement for local businesses.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Proudly serving Alabama and beyond.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Services</h4>
+                <a href="#services">AI Voice Agents</a>
+                <a href="#services">Website Chatbots</a>
+                <a href="#services">Professional Websites</a>
+                <a href="#pricing">View Pricing</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#demo">Try Demo</a>
+                <a href="#industries">Industries</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-service.html">Terms of Service</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Eric Glover</p>
+                <p>Springville, AL 35146</p>
+                <a href="tel:+12059143390">(205) 914-3390</a>
+                <a href="mailto:grabcalls@gmail.com">grabcalls@gmail.com</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 GrabCalls.com - All rights reserved. | AI That Answers Your Calls</p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+        <button class="chatbot-toggle" id="chatbotToggle">💬</button>
+
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>GrabCalls AI Assistant</h3>
+                <button class="chatbot-close" id="chatbotClose">✕</button>
+            </div>
+
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot">
+                    👋 Hi! I'm the GrabCalls AI assistant. I can help you learn about our services, see how AI can help your business, or book a demo. What's on your mind?
+                </div>
+            </div>
+
+            <div class="chatbot-quick-replies" id="quickReplies">
+                <button class="quick-reply" data-message="What is GrabCalls?">What is GrabCalls?</button>
+                <button class="quick-reply" data-message="How much does it cost?">Pricing</button>
+                <button class="quick-reply" data-message="How does it work?">How it works</button>
+                <button class="quick-reply" data-message="Book a demo">Book Demo</button>
+            </div>
+
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message...">
+                <button class="chatbot-send" id="chatbotSend">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Animated counter
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target);
+            const duration = 2000;
+            const start = 0;
+            const startTime = Date.now();
+
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (target - start) * progress);
+                element.textContent = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            update();
+        }
+
+        // Trigger counter on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => {
+                        if (!counter.animated) {
+                            counter.animated = true;
+                            animateCounter(counter);
+                        }
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) observer.observe(statsSection);
+
+        // Calculator
+        const callsInput = document.getElementById('calls-per-month');
+        const rateInput = document.getElementById('conversion-rate');
+        const valueInput = document.getElementById('customer-value');
+
+        function updateCalculator() {
+            const calls = parseInt(callsInput.value);
+            const rate = parseInt(rateInput.value);
+            const value = parseInt(valueInput.value);
+
+            const missedCalls = calls * (1 - rate / 100);
+            const loss = Math.round(missedCalls * value);
+
+            document.getElementById('calls-display').textContent = calls;
+            document.getElementById('rate-display').textContent = rate;
+            document.getElementById('value-display').textContent = value;
+            document.getElementById('result').textContent = loss.toLocaleString();
+        }
+
+        callsInput.addEventListener('input', updateCalculator);
+        rateInput.addEventListener('input', updateCalculator);
+        valueInput.addEventListener('input', updateCalculator);
+        updateCalculator();
+
+        // Industry tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                const tabId = btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Chatbot
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const quickReplies = document.querySelectorAll('.quick-reply');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotWindow.classList.add('active');
+            chatbotInput.focus();
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+        });
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.textContent = text;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+            chatbotMessages.appendChild(typingDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        function getResponse(message) {
+            const lower = message.toLowerCase();
+
+            if (lower.includes('grabcalls') || lower.includes('what is') || lower.includes('who')) {
+                return "GrabCalls provides AI voice agents and chatbots for local businesses. We help you never miss a customer call by answering 24/7, booking appointments, and capturing leads automatically. Established 2025, serving Alabama and beyond.";
+            }
+
+            if (lower.includes('price') || lower.includes('cost') || lower.includes('much')) {
+                return "Our pricing is simple:\n\n📞 Voice Agent: $197/mo + $497 setup\n💬 Website + Chatbot: $297/mo + $697 setup\n🚀 Complete Package: $497/mo + $997 setup\n\nNo contracts - cancel anytime with 30-day money-back guarantee!";
+            }
+
+            if (lower.includes('how') || lower.includes('work')) {
+                return "It's simple! We set up an AI that answers your business calls or chats with website visitors. The AI can book appointments, answer common questions, and capture leads 24/7. Most businesses are up and running within 24-48 hours.";
+            }
+
+            if (lower.includes('demo') || lower.includes('book') || lower.includes('schedule')) {
+                return "Great! You can:\n\n1. Call Eric directly: (205) 914-3390\n2. Try our demo line: (205) 605-9842\n3. Or I can capture your info for a callback\n\nWhich works best for you?";
+            }
+
+            if (lower.includes('industry') || lower.includes('business') || lower.includes('dental') || lower.includes('hvac') || lower.includes('plumb')) {
+                return "We work with all types of local businesses - dental, HVAC, plumbing, real estate, salons, contractors, medical practices, and more. If you get customer calls, we can help! Check out the Industries section to see your business type.";
+            }
+
+            if (lower.includes('contract') || lower.includes('cancel') || lower.includes('guarantee')) {
+                return "No long-term contracts! You can cancel anytime with 30 days notice. We also offer a 30-day money-back guarantee if you're not satisfied. We're confident you'll love the results!";
+            }
+
+            if (lower.includes('call') || lower.includes('voice') || lower.includes('phone')) {
+                return "Our AI voice agent answers your business phone 24/7. It sounds natural, handles common questions, books appointments, and takes messages. It's like having a professional receptionist who never takes a break!";
+            }
+
+            if (lower.includes('website') || lower.includes('chatbot')) {
+                return "We also build professional websites with AI chatbots built in. The chatbot answers visitor questions, captures leads, and books appointments automatically - even while you sleep!";
+            }
+
+            return "That's a great question! For more details:\n\n1. Call Eric: (205) 914-3390\n2. Try our voice demo: (205) 605-9842\n3. Fill out a contact form\n\nI'm also here if you have other questions!";
+        }
+
+        function sendMessage() {
+            const text = chatbotInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            chatbotInput.value = '';
+
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = getResponse(text);
+                addMessage(response);
+            }, 800);
+        }
+
+        chatbotSend.addEventListener('click', sendMessage);
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        quickReplies.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.dataset.message;
+                chatbotInput.value = text;
+                sendMessage();
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                const href = anchor.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
