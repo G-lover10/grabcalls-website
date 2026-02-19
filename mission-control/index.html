@@ -1252,22 +1252,29 @@ const DEFAULT_STATE = {
   ],
   tasks: {
     todo: [
-      { id: 1, title: 'Activate n8n workflows (toggle ON)', tag: 'n8n', agent: 'Eric' },
-      { id: 2, title: 'Add GHL Private Token to n8n vars', tag: 'ghl', agent: 'Eric' },
-      { id: 3, title: 'Point grabcalls.com → GitHub Pages (Cloudflare CNAME)', tag: 'website', agent: 'Eric' },
-      { id: 4, title: 'Set up GHL webhook for Contact Created', tag: 'ghl', agent: 'Claude' },
-      { id: 5, title: 'Test Discord bot voice DM feature', tag: 'discord', agent: 'Eric' },
+      { id: 1, title: 'Get n8n API key — voice-assistant.app.n8n.cloud → Settings → API Keys', tag: 'n8n', agent: 'Eric' },
+      { id: 2, title: 'Finish Telegram pairing — msg @GrabCalls_bot, run openclaw pairing approve telegram CODE', tag: 'discord', agent: 'Eric' },
+      { id: 3, title: 'Add GHL Private Token to .env and n8n project vars', tag: 'ghl', agent: 'Eric' },
+      { id: 4, title: 'Sign up Oracle Cloud — cloud.oracle.com (free, needs credit card for ID only)', tag: 'system', agent: 'Eric' },
+      { id: 5, title: 'Set up Gmail App Password — myaccount.google.com → Security → App Passwords → Mail', tag: 'system', agent: 'Eric' },
+      { id: 6, title: 'Activate all 5 n8n workflows (after API key added to .env)', tag: 'n8n', agent: 'Claude' },
+      { id: 7, title: 'Point grabcalls.com to GitHub Pages (Cloudflare CNAME → g-lover10.github.io)', tag: 'website', agent: 'Eric' },
+      { id: 8, title: 'A2P 10DLC registration — $49 startup, ~2 weeks approval', tag: 'ghl', agent: 'Eric' },
     ],
     inprogress: [
-      { id: 6, title: 'Build Mission Control dashboard', tag: 'website', agent: 'Claude' },
-      { id: 7, title: 'Research Tristynn McGowan TikTok dashboard', tag: 'website', agent: 'Claude' },
+      { id: 9, title: 'File cleanup — review C:\\AI_Employee\\READY-FOR-TRASH.md then tell Claude to delete', tag: 'system', agent: 'Eric' },
+      { id: 10, title: 'Real Massage client — in-person visit with flyer + live demo', tag: 'ghl', agent: 'Eric' },
     ],
     done: [
-      { id: 8, title: 'Rebuild Discord bot index.js', tag: 'discord', agent: 'Claude' },
-      { id: 9, title: 'Create GitHub repos + push code', tag: 'website', agent: 'Claude' },
-      { id: 10, title: 'Enable GitHub Pages for website', tag: 'website', agent: 'Claude' },
-      { id: 11, title: 'Add AI news to morning briefing', tag: 'n8n', agent: 'Claude' },
-      { id: 12, title: 'Fix n8n variable names (ghlApiToke)', tag: 'n8n', agent: 'Claude' },
+      { id: 11, title: 'Rebuild Discord bot index.js with Notion + multi-AI', tag: 'discord', agent: 'Claude' },
+      { id: 12, title: 'Wire all 4 Notion databases into bot + .env', tag: 'discord', agent: 'Claude' },
+      { id: 13, title: 'Create GitHub repos + push code + GitHub Pages live', tag: 'website', agent: 'Claude' },
+      { id: 14, title: 'Build 5 n8n workflow JSONs (morning brief, intel, notifier, security, follow-up)', tag: 'n8n', agent: 'Claude' },
+      { id: 15, title: 'Mission Control dashboard built + pushed to GitHub Pages', tag: 'website', agent: 'Claude' },
+      { id: 16, title: 'OpenClaw gateway installed as Windows Scheduled Task', tag: 'system', agent: 'Claude' },
+      { id: 17, title: 'Print flyers built — HVAC, Dental, Plumbing, Roofing, Massage', tag: 'ghl', agent: 'Claude' },
+      { id: 18, title: 'Morning brief Task Scheduler job registered (8AM daily)', tag: 'n8n', agent: 'Claude' },
+      { id: 19, title: 'READY-FOR-TRASH.md created — Spring Nails + old scripts ready to clean up', tag: 'system', agent: 'Claude' },
     ]
   },
   pipeline: [
@@ -1293,7 +1300,7 @@ const DEFAULT_STATE = {
     'n8n var: ghlApiToke (NOT ghlApiToken — too long)',
     'Discord bot: GrabCalls#6976 | Groq/DeepSeek/Cerebras routing',
   ],
-  nextId: 20,
+  nextId: 30,
 };
 
 let state = loadState() || DEFAULT_STATE;
