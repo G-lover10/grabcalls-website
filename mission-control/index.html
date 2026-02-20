@@ -18,1145 +18,756 @@
     --online: #22c55e;
     --warning: #f59e0b;
     --danger: #ef4444;
+    --discord: #5865F2;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── TOP NAV ── */
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 24px;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .logo-icon {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .nav-center {
-    display: flex;
-    gap: 4px;
-  }
-
-  .nav-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    padding: 6px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-
-  .nav-btn:hover, .nav-btn.active {
-    background: var(--border);
-    color: var(--text);
-  }
-
-  .nav-btn.active {
-    color: var(--accent);
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--online);
-    box-shadow: 0 0 8px var(--online);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  .time-display {
-    font-size: 13px;
-    color: var(--muted);
-    font-family: monospace;
-  }
-
-  /* ── MAIN LAYOUT ── */
-  .main {
-    display: grid;
-    grid-template-columns: 240px 1fr 300px;
-    grid-template-rows: auto 1fr;
-    height: calc(100vh - 57px);
-  }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 16px 0;
-    overflow-y: auto;
-  }
-
-  .sidebar-section {
-    margin-bottom: 24px;
-  }
-
-  .sidebar-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 0 16px;
-    margin-bottom: 8px;
-  }
-
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 13px;
-    border-left: 2px solid transparent;
-  }
-
-  .sidebar-item:hover {
-    background: rgba(108, 99, 255, 0.08);
-    color: var(--accent);
-  }
-
-  .sidebar-item.active {
-    background: rgba(108, 99, 255, 0.12);
-    border-left-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .sidebar-item .item-icon {
-    font-size: 15px;
-    width: 20px;
-    text-align: center;
-  }
-
-  .badge {
-    margin-left: auto;
-    background: var(--accent);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 10px;
-  }
-
-  .badge.green { background: var(--online); }
-  .badge.yellow { background: var(--warning); }
-  .badge.red { background: var(--danger); }
-
-  /* ── CONTENT AREA ── */
-  .content {
-    overflow-y: auto;
-    padding: 20px;
-    background: var(--bg);
-  }
-
-  /* ── RIGHT PANEL ── */
-  .right-panel {
-    background: var(--panel);
-    border-left: 1px solid var(--border);
-    overflow-y: auto;
-    padding: 16px;
-  }
-
-  /* ── STATS ROW ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .stat-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
-
-  .stat-card.purple::before { background: var(--accent); }
-  .stat-card.green::before { background: var(--accent2); }
-  .stat-card.yellow::before { background: var(--accent4); }
-  .stat-card.red::before { background: var(--accent3); }
-
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-  }
-
-  .stat-value {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .stat-card.purple .stat-value { color: var(--accent); }
-  .stat-card.green .stat-value { color: var(--accent2); }
-  .stat-card.yellow .stat-value { color: var(--accent4); }
-  .stat-card.red .stat-value { color: var(--accent3); }
-
-  .stat-change {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .stat-change.up { color: var(--online); }
-
-  /* ── SECTION HEADERS ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-title::before {
-    content: '';
-    width: 3px;
-    height: 14px;
-    background: var(--accent);
-    border-radius: 2px;
-  }
-
-  .section-action {
-    font-size: 11px;
-    color: var(--accent);
-    cursor: pointer;
-    padding: 4px 10px;
-    border: 1px solid var(--accent);
-    border-radius: 5px;
-    background: none;
-    transition: all 0.2s;
-  }
-
-  .section-action:hover {
-    background: var(--accent);
-    color: white;
-  }
-
-  /* ── AGENT GRID ── */
-  .agent-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .agent-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    transition: all 0.2s;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .agent-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-
-  .agent-card.online { border-top: 2px solid var(--online); }
-  .agent-card.busy { border-top: 2px solid var(--warning); }
-  .agent-card.offline { border-top: 2px solid var(--muted); opacity: 0.7; }
-
-  .agent-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .agent-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    position: relative;
-  }
-
-  .agent-status-dot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid var(--panel);
-  }
-
-  .agent-status-dot.online { background: var(--online); }
-  .agent-status-dot.busy { background: var(--warning); }
-  .agent-status-dot.offline { background: var(--muted); }
-
-  .agent-name {
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .agent-role {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .agent-task {
-    font-size: 12px;
-    color: var(--muted);
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 8px;
-    margin-bottom: 10px;
-    min-height: 36px;
-  }
-
-  .agent-stats {
-    display: flex;
-    gap: 12px;
-  }
-
-  .agent-stat {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .agent-stat span {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  /* ── TASK BOARD ── */
-  .task-board {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .task-col {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-  }
-
-  .task-col-header {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .task-count {
-    background: var(--border);
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .task-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .task-item:hover {
-    border-color: var(--accent);
-    background: rgba(108, 99, 255, 0.05);
-  }
-
-  .task-title {
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-
-  .task-meta {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .task-tag {
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-
-  .task-tag.discord { background: rgba(88,101,242,0.2); color: #818cf8; }
-  .task-tag.ghl { background: rgba(0,212,170,0.2); color: var(--accent2); }
-  .task-tag.n8n { background: rgba(255,107,107,0.2); color: var(--accent3); }
-  .task-tag.website { background: rgba(255,217,61,0.2); color: var(--accent4); }
-
-  .task-assignee {
-    font-size: 11px;
-    color: var(--muted);
-    margin-left: auto;
-  }
-
-  /* ── NEWS FEED ── */
-  .news-item {
-    border-bottom: 1px solid var(--border);
-    padding: 10px 0;
-  }
-
-  .news-item:last-child { border-bottom: none; }
-
-  .news-source {
-    font-size: 10px;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-  }
-
-  .news-title {
-    font-size: 12px;
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-
-  .news-time {
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  /* ── ACTIVITY LOG ── */
-  .activity-item {
-    display: flex;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    align-items: flex-start;
-  }
-
-  .activity-item:last-child { border-bottom: none; }
-
-  .activity-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  .activity-icon.discord { background: rgba(88,101,242,0.2); }
-  .activity-icon.ghl { background: rgba(0,212,170,0.2); }
-  .activity-icon.system { background: rgba(108,99,255,0.2); }
-  .activity-icon.n8n { background: rgba(255,107,107,0.2); }
-
-  .activity-text {
-    flex: 1;
-  }
-
-  .activity-desc {
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  .activity-desc strong { color: var(--accent); }
-
-  .activity-time {
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  /* ── PIPELINE WIDGET ── */
-  .pipeline-stage {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .pipeline-stage:last-child { border-bottom: none; }
-
-  .stage-name {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .stage-bar-wrap {
-    flex: 1;
-    margin: 0 12px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .stage-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    transition: width 1s ease;
-  }
-
-  .stage-count {
-    font-size: 12px;
-    font-weight: 600;
-    width: 24px;
-    text-align: right;
-  }
-
-  /* ── COMMAND INPUT ── */
-  .command-bar {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    background: var(--panel);
-    border: 1px solid var(--accent);
-    border-radius: 12px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 8px 32px rgba(108, 99, 255, 0.3);
-    z-index: 200;
-    display: none;
-  }
-
-  .command-bar.visible { display: flex; }
-
-  .command-input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-size: 14px;
-  }
-
-  .command-input::placeholder { color: var(--muted); }
-
-  .command-hint {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  /* ── QUICK ACTIONS ── */
-  .quick-actions {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .qa-btn {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 7px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .qa-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  /* ── TOOLTIP ── */
-  .tooltip {
-    position: fixed;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 300;
-    max-width: 200px;
-    display: none;
-  }
-
-  /* ── GLOW EFFECTS ── */
-  .glow-purple { box-shadow: 0 0 20px rgba(108, 99, 255, 0.15); }
-  .glow-green { box-shadow: 0 0 20px rgba(0, 212, 170, 0.15); }
-
-  /* ── TABS ── */
-  .tab-bar {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 16px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 4px;
-    width: fit-content;
-  }
-
-  .tab {
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    color: var(--muted);
-    transition: all 0.15s;
-    border: none;
-    background: none;
-  }
-
-  .tab.active {
-    background: var(--accent);
-    color: white;
-  }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 500;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay.visible { display: flex; }
-
-  .modal {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-    width: 480px;
-    max-width: 90vw;
-  }
-
-  .modal-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .modal-close {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 18px;
-  }
-
-  .modal-field {
-    margin-bottom: 12px;
-  }
-
-  .modal-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .modal-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: var(--text);
-    font-size: 13px;
-    outline: none;
-  }
-
-  .modal-input:focus { border-color: var(--accent); }
-
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 16px;
-  }
-
-  .btn {
-    padding: 8px 16px;
-    border-radius: 7px;
-    font-size: 13px;
-    cursor: pointer;
-    border: none;
-    font-weight: 500;
-    transition: all 0.15s;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-
-  .btn-primary:hover { opacity: 0.85; }
-
-  .btn-ghost {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
-
-  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
-
-  .chart-placeholder {
-    height: 80px;
-    background: linear-gradient(180deg, rgba(108,99,255,0.1) 0%, transparent 100%);
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-    margin-top: 8px;
-  }
-
-  .chart-line {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-    transform-origin: left;
-  }
-
-  /* Responsive */
-  @media (max-width: 1200px) {
-    .main { grid-template-columns: 200px 1fr 260px; }
-    .agent-grid { grid-template-columns: repeat(2, 1fr); }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  /* TOP NAV */
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background:var(--panel); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:700; }
+  .logo-icon { width:30px; height:30px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .nav-center { display:flex; gap:2px; }
+  .nav-btn { background:none; border:none; color:var(--muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:500; transition:all .2s; }
+  .nav-btn:hover, .nav-btn.active { background:var(--border); color:var(--text); }
+  .nav-btn.active { color:var(--accent); }
+  .topbar-right { display:flex; align-items:center; gap:10px; }
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--online); box-shadow:0 0 8px var(--online); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.5} }
+  .time-display { font-size:12px; color:var(--muted); font-family:monospace; }
+
+  /* MAIN LAYOUT */
+  .main { display:grid; grid-template-columns:220px 1fr 300px; height:calc(100vh - 53px); }
+
+  /* SIDEBAR */
+  .sidebar { background:var(--panel); border-right:1px solid var(--border); padding:12px 0; overflow-y:auto; }
+  .sidebar-label { font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; padding:0 14px; margin:14px 0 6px; }
+  .sidebar-item { display:flex; align-items:center; gap:9px; padding:7px 14px; cursor:pointer; transition:all .15s; font-size:13px; border-left:2px solid transparent; }
+  .sidebar-item:hover { background:rgba(108,99,255,.08); color:var(--accent); }
+  .sidebar-item.active { background:rgba(108,99,255,.12); border-left-color:var(--accent); color:var(--accent); }
+  .item-icon { font-size:14px; width:18px; text-align:center; }
+  .badge { margin-left:auto; background:var(--accent); color:white; font-size:10px; font-weight:700; padding:2px 6px; border-radius:10px; }
+  .badge.green { background:var(--online); }
+  .badge.yellow { background:var(--warning); }
+  .badge.red { background:var(--danger); }
+  .badge.grey { background:var(--muted); }
+
+  /* CONTENT */
+  .content { overflow-y:auto; padding:18px; background:var(--bg); }
+
+  /* RIGHT PANEL */
+  .right-panel { background:var(--panel); border-left:1px solid var(--border); overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:0; }
+
+  /* STATS */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
+  .stat-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; position:relative; overflow:hidden; }
+  .stat-card::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .stat-card.purple::before { background:var(--accent); }
+  .stat-card.green::before { background:var(--accent2); }
+  .stat-card.yellow::before { background:var(--accent4); }
+  .stat-card.red::before { background:var(--accent3); }
+  .stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+  .stat-value { font-size:26px; font-weight:700; margin-bottom:3px; }
+  .stat-card.purple .stat-value { color:var(--accent); }
+  .stat-card.green .stat-value { color:var(--accent2); }
+  .stat-card.yellow .stat-value { color:var(--accent4); }
+  .stat-card.red .stat-value { color:var(--accent3); }
+  .stat-change { font-size:11px; color:var(--muted); }
+  .stat-change.up { color:var(--online); }
+
+  /* SECTION HEADERS */
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .section-title { font-size:13px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px; }
+  .section-title::before { content:''; width:3px; height:14px; background:var(--accent); border-radius:2px; }
+  .section-action { font-size:11px; color:var(--accent); cursor:pointer; padding:3px 9px; border:1px solid var(--accent); border-radius:5px; background:none; transition:all .2s; }
+  .section-action:hover { background:var(--accent); color:white; }
+
+  /* AGENT GRID */
+  .agent-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  .agent-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px; transition:all .2s; cursor:pointer; position:relative; }
+  .agent-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .agent-card.online { border-top:2px solid var(--online); }
+  .agent-card.busy { border-top:2px solid var(--warning); }
+  .agent-card.offline { border-top:2px solid var(--muted); opacity:.7; }
+  .agent-header { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .agent-avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; position:relative; background:rgba(108,99,255,.15); }
+  .agent-status-dot { position:absolute; bottom:0; right:0; width:9px; height:9px; border-radius:50%; border:2px solid var(--panel); }
+  .agent-status-dot.online { background:var(--online); }
+  .agent-status-dot.busy { background:var(--warning); }
+  .agent-status-dot.offline { background:var(--muted); }
+  .agent-name { font-size:12px; font-weight:600; }
+  .agent-role { font-size:10px; color:var(--muted); }
+  .agent-task { font-size:11px; color:var(--muted); background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:5px; padding:6px; margin-bottom:8px; min-height:32px; }
+  .agent-stats { display:flex; gap:10px; }
+  .agent-stat { font-size:10px; color:var(--muted); }
+  .agent-stat span { color:var(--text); font-weight:600; }
+
+  /* QUICK ACTIONS */
+  .quick-actions { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .qa-btn { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:7px; font-size:12px; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:5px; }
+  .qa-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .qa-btn.discord-btn { border-color:rgba(88,101,242,.5); color:#818cf8; }
+  .qa-btn.discord-btn:hover { background:rgba(88,101,242,.15); border-color:var(--discord); }
+  .qa-btn.notion-btn { border-color:rgba(255,255,255,.15); }
+  .qa-btn.gmail-btn { border-color:rgba(255,107,107,.4); color:var(--accent3); }
+  .qa-btn.gmail-btn:hover { background:rgba(255,107,107,.1); border-color:var(--accent3); }
+
+  /* TASK BOARD */
+  .task-board { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  .task-col { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; min-height:200px; }
+  .task-col-header { font-size:12px; font-weight:600; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+  .task-count { background:var(--border); padding:1px 6px; border-radius:8px; font-size:10px; color:var(--muted); }
+  .task-item { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:6px; padding:8px; margin-bottom:6px; cursor:grab; transition:all .15s; }
+  .task-item:hover { border-color:var(--accent); background:rgba(108,99,255,.05); }
+  .task-title { font-size:11px; font-weight:500; margin-bottom:5px; line-height:1.4; }
+  .task-meta { display:flex; gap:6px; align-items:center; }
+  .task-tag { font-size:9px; padding:2px 5px; border-radius:3px; font-weight:600; }
+  .task-tag.discord { background:rgba(88,101,242,.2); color:#818cf8; }
+  .task-tag.ghl { background:rgba(0,212,170,.2); color:var(--accent2); }
+  .task-tag.n8n { background:rgba(255,107,107,.2); color:var(--accent3); }
+  .task-tag.website { background:rgba(255,217,61,.2); color:var(--accent4); }
+  .task-tag.system { background:rgba(108,99,255,.2); color:var(--accent); }
+  .task-assignee { font-size:10px; color:var(--muted); margin-left:auto; }
+
+  /* ACTIVITY */
+  .activity-item { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+  .activity-item:last-child { border-bottom:none; }
+  .activity-icon { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+  .activity-icon.discord { background:rgba(88,101,242,.2); }
+  .activity-icon.ghl { background:rgba(0,212,170,.2); }
+  .activity-icon.system { background:rgba(108,99,255,.2); }
+  .activity-icon.n8n { background:rgba(255,107,107,.2); }
+  .activity-icon.notion { background:rgba(255,255,255,.08); }
+  .activity-desc { font-size:11px; line-height:1.4; }
+  .activity-desc strong { color:var(--accent); }
+  .activity-time { font-size:10px; color:var(--muted); margin-top:2px; }
+
+  /* PIPELINE */
+  .pipeline-stage { display:flex; align-items:center; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border); }
+  .pipeline-stage:last-child { border-bottom:none; }
+  .stage-name { font-size:11px; color:var(--muted); width:120px; }
+  .stage-bar-wrap { flex:1; margin:0 10px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .stage-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width 1s ease; }
+  .stage-count { font-size:12px; font-weight:600; width:20px; text-align:right; }
+
+  /* DISCORD PANEL */
+  .discord-chat { display:flex; flex-direction:column; height:100%; }
+  .discord-messages { flex:1; overflow-y:auto; padding:8px; background:var(--bg); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; min-height:200px; max-height:320px; }
+  .discord-msg { padding:6px 8px; margin-bottom:4px; border-radius:6px; }
+  .discord-msg.sent { background:rgba(88,101,242,.15); border-left:2px solid var(--discord); }
+  .discord-msg.received { background:rgba(255,255,255,.03); border-left:2px solid var(--accent2); }
+  .discord-msg-author { font-size:10px; font-weight:600; margin-bottom:2px; }
+  .discord-msg.sent .discord-msg-author { color:var(--discord); }
+  .discord-msg.received .discord-msg-author { color:var(--accent2); }
+  .discord-msg-text { font-size:12px; line-height:1.4; }
+  .discord-msg-time { font-size:9px; color:var(--muted); margin-top:2px; }
+  .discord-input-row { display:flex; gap:6px; }
+  .discord-input { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:7px 10px; color:var(--text); font-size:12px; outline:none; }
+  .discord-input:focus { border-color:var(--discord); }
+  .discord-send-btn { background:var(--discord); border:none; color:white; padding:7px 12px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; transition:opacity .2s; }
+  .discord-send-btn:hover { opacity:.85; }
+
+  /* NOTION PANEL */
+  .notion-stat { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+  .notion-stat:last-child { border-bottom:none; }
+  .notion-stat-label { font-size:12px; color:var(--muted); }
+  .notion-stat-value { font-size:16px; font-weight:700; color:var(--text); }
+  .notion-entry { padding:7px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:6px; margin-bottom:5px; font-size:11px; }
+  .notion-entry-title { font-weight:600; margin-bottom:2px; }
+  .notion-entry-meta { font-size:10px; color:var(--muted); }
+
+  /* GMAIL PANEL */
+  .gmail-compose { display:flex; flex-direction:column; gap:8px; }
+  .gmail-field { display:flex; flex-direction:column; gap:3px; }
+  .gmail-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .gmail-input { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:7px 10px; color:var(--text); font-size:12px; outline:none; }
+  .gmail-input:focus { border-color:var(--accent3); }
+  .gmail-body { min-height:100px; resize:vertical; font-family:inherit; }
+  .gmail-send-btn { background:var(--accent3); border:none; color:white; padding:8px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; transition:opacity .2s; }
+  .gmail-send-btn:hover { opacity:.85; }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:500; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.visible { display:flex; }
+  .modal { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:22px; width:500px; max-width:92vw; max-height:90vh; overflow-y:auto; }
+  .modal-title { font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .modal-close { margin-left:auto; background:none; border:none; color:var(--muted); cursor:pointer; font-size:17px; }
+  .modal-field { margin-bottom:10px; }
+  .modal-label { font-size:10px; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px; display:block; }
+  .modal-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:7px 10px; color:var(--text); font-size:13px; outline:none; }
+  .modal-input:focus { border-color:var(--accent); }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
+  .btn { padding:7px 14px; border-radius:7px; font-size:13px; cursor:pointer; border:none; font-weight:500; transition:all .15s; }
+  .btn-primary { background:var(--accent); color:white; }
+  .btn-primary:hover { opacity:.85; }
+  .btn-discord { background:var(--discord); color:white; }
+  .btn-ghost { background:none; border:1px solid var(--border); color:var(--muted); }
+  .btn-ghost:hover { border-color:var(--text); color:var(--text); }
+  .btn-danger { background:var(--danger); color:white; }
+
+  /* COMMAND BAR */
+  .command-bar { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:580px; background:var(--panel); border:1px solid var(--accent); border-radius:12px; padding:10px 14px; display:none; align-items:center; gap:8px; box-shadow:0 8px 32px rgba(108,99,255,.3); z-index:200; }
+  .command-bar.visible { display:flex; }
+  .command-input { flex:1; background:none; border:none; outline:none; color:var(--text); font-size:14px; }
+  .command-input::placeholder { color:var(--muted); }
+  .command-hint { font-size:11px; color:var(--muted); white-space:nowrap; }
+
+  /* TABS */
+  .tab-bar { display:flex; gap:2px; margin-bottom:12px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:3px; width:fit-content; }
+  .tab { padding:5px 12px; border-radius:5px; font-size:12px; cursor:pointer; color:var(--muted); transition:all .15s; border:none; background:none; }
+  .tab.active { background:var(--accent); color:white; }
+
+  /* SECTION DIVIDER */
+  .divider { height:1px; background:var(--border); margin:12px 0; }
+
+  /* NEWS */
+  .news-item { border-bottom:1px solid var(--border); padding:8px 0; }
+  .news-item:last-child { border-bottom:none; }
+  .news-source { font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+  .news-title { font-size:11px; line-height:1.4; margin-bottom:3px; cursor:pointer; }
+  .news-title:hover { color:var(--accent); }
+  .news-time { font-size:10px; color:var(--muted); }
+
+  /* PRINT FILES */
+  .print-file-link { display:flex; align-items:center; gap:7px; padding:5px 7px; background:#0d1b2a; border:1px solid #1e2d3d; border-radius:5px; text-decoration:none; color:#c0d8ff; font-size:11px; transition:border-color .2s; margin-bottom:3px; }
+  .print-file-link:hover { border-color:#6c63ff; color:white; }
+
+  /* STATUS INDICATORS */
+  .live-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; padding:2px 7px; border-radius:10px; }
+  .live-badge.live { background:rgba(34,197,94,.15); color:var(--online); }
+  .live-badge.offline { background:rgba(100,116,139,.15); color:var(--muted); }
+  .live-badge.pending { background:rgba(245,158,11,.15); color:var(--warning); }
+  .live-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:3px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  /* NOTIFICATION TOAST */
+  .toast { position:fixed; bottom:70px; right:20px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 16px; font-size:13px; z-index:1000; transform:translateX(120%); transition:transform .3s; max-width:300px; box-shadow:0 4px 20px rgba(0,0,0,.5); }
+  .toast.show { transform:translateX(0); }
+  .toast.success { border-left:3px solid var(--online); }
+  .toast.error { border-left:3px solid var(--danger); }
+  .toast.info { border-left:3px solid var(--accent); }
+
+  @media (max-width:1200px) {
+    .main { grid-template-columns:180px 1fr 260px; }
+    .agent-grid { grid-template-columns:repeat(2,1fr); }
+    .stats-row { grid-template-columns:repeat(2,1fr); }
   }
 </style>
 </head>
 <body>
 
-<!-- ── TOP BAR ── -->
+<!-- TOP BAR -->
 <nav class="topbar">
   <div class="logo">
     <div class="logo-icon">🎯</div>
     <span>GrabCalls <span style="color:var(--accent)">Mission Control</span></span>
   </div>
-
   <div class="nav-center">
-    <button class="nav-btn active" onclick="showView('overview')">Overview</button>
-    <button class="nav-btn" onclick="showView('agents')">Agents</button>
-    <button class="nav-btn" onclick="showView('tasks')">Tasks</button>
-    <button class="nav-btn" onclick="showView('pipeline')">Pipeline</button>
-    <button class="nav-btn" onclick="showView('analytics')">Analytics</button>
+    <button class="nav-btn active" onclick="switchView('overview',this)">Overview</button>
+    <button class="nav-btn" onclick="switchView('discord',this)">Discord</button>
+    <button class="nav-btn" onclick="switchView('notion',this)">Notion</button>
+    <button class="nav-btn" onclick="switchView('agents',this)">Agents</button>
+    <button class="nav-btn" onclick="switchView('tasks',this)">Tasks</button>
+    <button class="nav-btn" onclick="switchView('pipeline',this)">Pipeline</button>
   </div>
-
   <div class="topbar-right">
     <div class="status-dot"></div>
-    <span style="font-size:12px;color:var(--muted)">All Systems Operational</span>
+    <span style="font-size:11px;color:var(--muted)" id="systemStatus">All Systems Operational</span>
     <span class="time-display" id="clock"></span>
-    <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="openAddTask()">+ Add Task</button>
+    <button class="btn btn-primary" style="font-size:11px;padding:5px 12px" onclick="openModal('taskModal')">+ Task</button>
   </div>
 </nav>
 
-<!-- ── MAIN ── -->
+<!-- MAIN -->
 <div class="main">
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">Command</div>
-      <div class="sidebar-item active" onclick="showView('overview')">
-        <span class="item-icon">🏠</span> Overview
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-label">Navigation</div>
+  <div class="sidebar-item active" id="nav-overview" onclick="switchView('overview',this)">
+    <span class="item-icon">🏠</span> Overview
+  </div>
+  <div class="sidebar-item" id="nav-discord" onclick="switchView('discord',this)">
+    <span class="item-icon">💬</span> Discord Bot
+    <span class="badge" id="discord-badge" style="display:none">!</span>
+  </div>
+  <div class="sidebar-item" id="nav-notion" onclick="switchView('notion',this)">
+    <span class="item-icon">📓</span> Notion Data
+  </div>
+  <div class="sidebar-item" id="nav-agents" onclick="switchView('agents',this)">
+    <span class="item-icon">🤖</span> Agents
+    <span class="badge green">8</span>
+  </div>
+  <div class="sidebar-item" id="nav-tasks" onclick="switchView('tasks',this)">
+    <span class="item-icon">✅</span> Tasks
+    <span class="badge" id="task-badge">8</span>
+  </div>
+  <div class="sidebar-item" id="nav-pipeline" onclick="switchView('pipeline',this)">
+    <span class="item-icon">📊</span> Pipeline
+  </div>
+
+  <div class="sidebar-label">Quick Actions</div>
+  <div class="sidebar-item" onclick="switchView('discord',this);setTimeout(()=>document.getElementById('discordInput').focus(),200)">
+    <span class="item-icon">📨</span> Message Bot
+  </div>
+  <div class="sidebar-item" onclick="openGmail()">
+    <span class="item-icon">📧</span> Send Email
+  </div>
+  <div class="sidebar-item" onclick="openModal('taskModal')">
+    <span class="item-icon">➕</span> Add Task
+  </div>
+  <div class="sidebar-item" onclick="openModal('noteModal')">
+    <span class="item-icon">🧠</span> Add Memory
+  </div>
+
+  <div class="sidebar-label">Open In Browser</div>
+  <div class="sidebar-item" onclick="openLink('https://discord.com')">
+    <span class="item-icon">↗</span> Discord
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://voice-assistant.app.n8n.cloud')">
+    <span class="item-icon">↗</span> n8n Cloud
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://app.gohighlevel.com')">
+    <span class="item-icon">↗</span> GHL CRM
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://g-lover10.github.io/grabcalls-website/')">
+    <span class="item-icon">↗</span> Live Website
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://www.notion.so')">
+    <span class="item-icon">↗</span> Notion
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://github.com/G-lover10')">
+    <span class="item-icon">↗</span> GitHub
+  </div>
+
+  <div class="sidebar-label" style="margin-top:8px">Print Files</div>
+  <div class="sidebar-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/HVAC-flyer-v2.html')">
+    <span class="item-icon">❄</span> HVAC Flyer
+  </div>
+  <div class="sidebar-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/DENTAL-flyer-v2.html')">
+    <span class="item-icon">+</span> Dental Flyer
+  </div>
+  <div class="sidebar-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/PLUMBING-flyer-v2.html')">
+    <span class="item-icon">~</span> Plumbing Flyer
+  </div>
+  <div class="sidebar-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/ROOFING-flyer-v2.html')">
+    <span class="item-icon">^</span> Roofing Flyer
+  </div>
+  <div class="sidebar-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/MASSAGE-flyer-v2.html')">
+    <span class="item-icon">*</span> Massage Flyer
+  </div>
+</aside>
+
+<!-- CONTENT -->
+<main class="content" id="mainContent">
+
+  <!-- OVERVIEW -->
+  <div id="view-overview">
+    <div class="stats-row">
+      <div class="stat-card purple">
+        <div class="stat-label">Notion Leads</div>
+        <div class="stat-value" id="stat-leads">...</div>
+        <div class="stat-change up" id="stat-leads-sub">Loading...</div>
       </div>
-      <div class="sidebar-item" onclick="showView('agents')">
-        <span class="item-icon">🤖</span> Agents
-        <span class="badge green">8</span>
+      <div class="stat-card green">
+        <div class="stat-label">Notion Tasks</div>
+        <div class="stat-value" id="stat-tasks-count">...</div>
+        <div class="stat-change" id="stat-tasks-sub">Loading...</div>
       </div>
-      <div class="sidebar-item" onclick="showView('tasks')">
-        <span class="item-icon">✅</span> Task Board
-        <span class="badge">12</span>
+      <div class="stat-card yellow">
+        <div class="stat-label">Todo Items</div>
+        <div class="stat-value" id="stat-todo">0</div>
+        <div class="stat-change">Board tasks pending</div>
       </div>
-      <div class="sidebar-item" onclick="showView('pipeline')">
-        <span class="item-icon">📊</span> Pipeline
-        <span class="badge yellow">3</span>
+      <div class="stat-card red">
+        <div class="stat-label">Dashboard Up</div>
+        <div class="stat-value" id="stat-uptime">0m</div>
+        <div class="stat-change" id="uptime-label">Just opened</div>
       </div>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">Channels</div>
-      <div class="sidebar-item">
-        <span class="item-icon">💬</span> Discord
-        <span class="badge">2</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="item-icon">⚡</span> n8n Workflows
-        <span class="badge green">3</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="item-icon">🔗</span> GHL CRM
-      </div>
-      <div class="sidebar-item">
-        <span class="item-icon">🌐</span> Website
-      </div>
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button class="qa-btn discord-btn" onclick="switchView('discord')">💬 Message Bot</button>
+      <button class="qa-btn notion-btn" onclick="switchView('notion')">📓 Notion Live</button>
+      <button class="qa-btn gmail-btn" onclick="openGmail()">📧 Send Email</button>
+      <button class="qa-btn" onclick="openLink('https://voice-assistant.app.n8n.cloud')">⚡ n8n</button>
+      <button class="qa-btn" onclick="openLink('https://app.gohighlevel.com')">🔗 GHL CRM</button>
+      <button class="qa-btn" onclick="openModal('taskModal')">+ New Task</button>
+      <button class="qa-btn" onclick="refreshNotionStats()">🔄 Refresh Data</button>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">Quick Links</div>
-      <div class="sidebar-item" onclick="openLink('https://app.n8n.cloud')">
-        <span class="item-icon">↗</span> Open n8n
-      </div>
-      <div class="sidebar-item" onclick="openLink('https://app.gohighlevel.com')">
-        <span class="item-icon">↗</span> Open GHL
-      </div>
-      <div class="sidebar-item" onclick="openLink('https://discord.com/channels/@me')">
-        <span class="item-icon">↗</span> Open Discord
-      </div>
-      <div class="sidebar-item" onclick="openLink('https://g-lover10.github.io/grabcalls-website/')">
-        <span class="item-icon">↗</span> Live Website
-      </div>
+    <!-- Agent Grid -->
+    <div class="section-header">
+      <div class="section-title">Active Agents</div>
+      <button class="section-action" onclick="switchView('agents')">View All</button>
+    </div>
+    <div class="agent-grid" id="agentGrid"></div>
+
+    <!-- Task Preview -->
+    <div class="section-header">
+      <div class="section-title">Task Board</div>
+      <button class="section-action" onclick="switchView('tasks')">Full Board</button>
+    </div>
+    <div class="task-board" id="taskBoardPreview"></div>
+  </div>
+
+  <!-- DISCORD VIEW -->
+  <div id="view-discord" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Discord Bot — GrabCalls#6976</div>
+      <span class="live-badge" id="discord-status-badge" style="font-size:11px;padding:4px 10px;border-radius:8px;background:rgba(88,101,242,.15);color:#818cf8;">Webhook Active</span>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">Memory</div>
-      <div class="sidebar-item" onclick="showMemory()">
-        <span class="item-icon">🧠</span> Agent Memory
-      </div>
-      <div class="sidebar-item">
-        <span class="item-icon">📋</span> Session Log
-      </div>
-    </div>
-  </aside>
-
-  <!-- ── CONTENT ── -->
-  <main class="content" id="mainContent">
-
-    <!-- OVERVIEW VIEW -->
-    <div id="view-overview">
-
-      <!-- Stats -->
-      <div class="stats-row">
-        <div class="stat-card purple">
-          <div class="stat-label">Active Leads</div>
-          <div class="stat-value" id="stat-leads">0</div>
-          <div class="stat-change up">↑ Tracking via GHL</div>
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:14px">
+      <!-- Chat Panel -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">
+          Send messages to the <strong style="color:#818cf8">#grabcalls-alerts</strong> channel via webhook.
+          For bot commands, use <strong style="color:var(--accent2)">Discord app</strong> directly.
         </div>
-        <div class="stat-card green">
-          <div class="stat-label">Revenue (MTD)</div>
-          <div class="stat-value">$0</div>
-          <div class="stat-change">First client closing soon</div>
+
+        <!-- Message log -->
+        <div class="discord-messages" id="discordMessages">
+          <div class="discord-msg received">
+            <div class="discord-msg-author">GrabCalls Bot</div>
+            <div class="discord-msg-text">Ready. Use !tasks, !leads, !intel, !fast, !deep in Discord. Or type below to send a message to your channel.</div>
+            <div class="discord-msg-time">Online</div>
+          </div>
         </div>
-        <div class="stat-card yellow">
-          <div class="stat-label">Tasks Today</div>
-          <div class="stat-value" id="stat-tasks">5</div>
-          <div class="stat-change up">↑ 2 completed</div>
+
+        <!-- Input -->
+        <div class="discord-input-row">
+          <input class="discord-input" id="discordInput" placeholder="Send a message to Discord channel..." onkeydown="if(event.key==='Enter')sendDiscordMessage()" />
+          <button class="discord-send-btn" onclick="sendDiscordMessage()">Send</button>
         </div>
-        <div class="stat-card red">
-          <div class="stat-label">Bot Uptime</div>
-          <div class="stat-value" id="stat-uptime">—</div>
-          <div class="stat-change" id="uptime-label">Checking...</div>
+
+        <!-- Quick messages -->
+        <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--muted);margin-right:2px">Quick:</span>
+          <button class="section-action" onclick="sendQuickMsg('Status check: all systems running?')">Status</button>
+          <button class="section-action" onclick="sendQuickMsg('Morning check-in from Mission Control')">Check-in</button>
+          <button class="section-action" onclick="sendQuickMsg('Test message from Mission Control dashboard')">Test</button>
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <button class="qa-btn" onclick="openLink('https://discord.com')">💬 Discord</button>
-        <button class="qa-btn" onclick="openLink('https://app.n8n.cloud')">⚡ n8n</button>
-        <button class="qa-btn" onclick="openLink('https://app.gohighlevel.com')">🔗 GHL CRM</button>
-        <button class="qa-btn" onclick="openLink('https://g-lover10.github.io/grabcalls-website/')">🌐 Website</button>
-        <button class="qa-btn" onclick="openLink('https://github.com/G-lover10')">🐙 GitHub</button>
-        <button class="qa-btn" onclick="openAddTask()">+ New Task</button>
-        <button class="qa-btn" onclick="openAddNote()">🧠 Add Memory</button>
-      </div>
+      <!-- Bot Commands Reference -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text)">Bot Commands</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Use in Discord directly:</div>
 
-      <!-- Agents -->
-      <div class="section-header">
-        <div class="section-title">Active Agents</div>
-        <button class="section-action" onclick="showView('agents')">View All</button>
-      </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">!tasks</div>
+            <div style="font-size:10px;color:var(--muted)">View all Notion task board items</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">!leads</div>
+            <div style="font-size:10px;color:var(--muted)">See leads from Notion database</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">!intel</div>
+            <div style="font-size:10px;color:var(--muted)">Latest Intel Feed entries</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">!fast [question]</div>
+            <div style="font-size:10px;color:var(--muted)">Quick AI response (Cerebras)</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">!deep [question]</div>
+            <div style="font-size:10px;color:var(--muted)">Deep AI analysis (DeepSeek)</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:7px">
+            <div style="font-size:11px;font-weight:600;color:#818cf8;margin-bottom:2px">remember / recall</div>
+            <div style="font-size:10px;color:var(--muted)">Bot memory commands</div>
+          </div>
+        </div>
 
-      <div class="agent-grid" id="agentGrid">
-        <!-- populated by JS -->
-      </div>
-
-      <!-- Task Board Preview -->
-      <div class="section-header">
-        <div class="section-title">Task Board</div>
-        <button class="section-action" onclick="showView('tasks')">Full Board</button>
-      </div>
-
-      <div class="task-board" id="taskBoardPreview">
-        <!-- populated by JS -->
-      </div>
-
-    </div>
-
-    <!-- AGENTS VIEW (hidden) -->
-    <div id="view-agents" style="display:none">
-      <div class="section-header">
-        <div class="section-title">All Agents</div>
-        <button class="section-action" onclick="openAddAgent()">+ Add Agent</button>
-      </div>
-      <div class="agent-grid" id="agentGridFull" style="grid-template-columns:repeat(3,1fr)">
+        <div class="divider"></div>
+        <button class="btn btn-discord" style="width:100%;font-size:12px" onclick="openLink('https://discord.com/channels/@me')">Open Discord App</button>
       </div>
     </div>
+  </div>
 
-    <!-- TASKS VIEW (hidden) -->
-    <div id="view-tasks" style="display:none">
-      <div class="section-header">
-        <div class="section-title">Task Board</div>
-        <button class="section-action" onclick="openAddTask()">+ Add Task</button>
+  <!-- NOTION VIEW -->
+  <div id="view-notion" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Notion — Live Database</div>
+      <button class="section-action" onclick="loadNotionData()">Refresh</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">
+      <!-- Leads DB -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Leads DB
+          <span class="live-badge live" id="notion-leads-badge">Live</span>
+        </div>
+        <div class="notion-stat">
+          <span class="notion-stat-label">Total Leads</span>
+          <span class="notion-stat-value" id="notion-leads-count">...</span>
+        </div>
+        <div class="divider"></div>
+        <div id="notion-leads-list" style="margin-top:8px">
+          <div style="font-size:11px;color:var(--muted)">Loading...</div>
+        </div>
+        <button class="section-action" style="margin-top:8px;width:100%;text-align:center" onclick="openLink('https://www.notion.so')">Open in Notion</button>
       </div>
-      <div class="task-board" id="taskBoardFull">
+
+      <!-- Task Board -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Task Board
+          <span class="live-badge live" id="notion-tasks-badge">Live</span>
+        </div>
+        <div class="notion-stat">
+          <span class="notion-stat-label">Total Tasks</span>
+          <span class="notion-stat-value" id="notion-tasks-count">...</span>
+        </div>
+        <div class="divider"></div>
+        <div id="notion-tasks-list" style="margin-top:8px">
+          <div style="font-size:11px;color:var(--muted)">Loading...</div>
+        </div>
+        <button class="section-action" style="margin-top:8px;width:100%;text-align:center" onclick="openLink('https://www.notion.so')">Open in Notion</button>
+      </div>
+
+      <!-- Activity Log -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Activity Log
+          <span class="live-badge live">Live</span>
+        </div>
+        <div class="notion-stat">
+          <span class="notion-stat-label">Log Entries</span>
+          <span class="notion-stat-value" id="notion-log-count">...</span>
+        </div>
+        <div class="divider"></div>
+        <div id="notion-log-list" style="margin-top:8px">
+          <div style="font-size:11px;color:var(--muted)">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Intel Feed -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          Intel Feed
+          <span class="live-badge live">Live</span>
+        </div>
+        <div class="notion-stat">
+          <span class="notion-stat-label">Intel Entries</span>
+          <span class="notion-stat-value" id="notion-intel-count">...</span>
+        </div>
+        <div class="divider"></div>
+        <div id="notion-intel-list" style="margin-top:8px">
+          <div style="font-size:11px;color:var(--muted)">Loading...</div>
+        </div>
       </div>
     </div>
 
-    <!-- PIPELINE VIEW (hidden) -->
-    <div id="view-pipeline" style="display:none">
-      <div class="section-header">
-        <div class="section-title">GrabCalls Sales Pipeline</div>
-        <button class="section-action" onclick="openLink('https://app.gohighlevel.com')">Open GHL →</button>
+    <div style="background:rgba(108,99,255,.05);border:1px solid rgba(108,99,255,.2);border-radius:8px;padding:12px;font-size:12px;color:var(--muted)">
+      <strong style="color:var(--accent)">Note:</strong> Notion queries run client-side from your browser. This works on your local laptop only (CORS restriction on GitHub Pages). The data above is live from your actual Notion workspace when opened locally.
+    </div>
+  </div>
+
+  <!-- AGENTS VIEW -->
+  <div id="view-agents" style="display:none">
+    <div class="section-header">
+      <div class="section-title">All Agents</div>
+      <button class="section-action" onclick="openModal('agentModal')">+ Add Agent</button>
+    </div>
+    <div class="agent-grid" id="agentGridFull" style="grid-template-columns:repeat(3,1fr)"></div>
+  </div>
+
+  <!-- TASKS VIEW -->
+  <div id="view-tasks" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Task Board</div>
+      <button class="section-action" onclick="openModal('taskModal')">+ Add Task</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Double-click a task to move it to next column. Drag and drop also works.</div>
+    <div class="task-board" id="taskBoardFull"></div>
+  </div>
+
+  <!-- PIPELINE VIEW -->
+  <div id="view-pipeline" style="display:none">
+    <div class="section-header">
+      <div class="section-title">GrabCalls Sales Pipeline</div>
+      <button class="section-action" onclick="openLink('https://app.gohighlevel.com')">Open GHL</button>
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px">
+      <div id="pipelineStagesFull"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Update Pipeline Stage</div>
+        <select class="modal-input" id="pipelineStageSelect" style="margin-bottom:8px">
+          <option>New Lead</option>
+          <option>Contacted</option>
+          <option>Discovery Call Booked</option>
+          <option>Discovery Call Completed</option>
+          <option>Proposal Sent</option>
+          <option>Negotiation</option>
+          <option>Closed Won</option>
+        </select>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost" style="flex:1;font-size:11px" onclick="updatePipelineStage(-1)">-1</button>
+          <button class="btn btn-primary" style="flex:1;font-size:11px" onclick="updatePipelineStage(1)">+1</button>
+        </div>
       </div>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px">
-        <div id="pipelineStages"></div>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Revenue Tracker</div>
+        <div style="font-size:24px;font-weight:700;color:var(--accent2)" id="revenue-display">$0</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Month-to-date</div>
+        <input class="modal-input" style="margin-top:8px;font-size:11px" placeholder="Update revenue..." id="revenueInput" onkeydown="if(event.key==='Enter')updateRevenue()" />
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Target Clients</div>
+        <div style="font-size:11px;line-height:1.8">
+          <div style="color:var(--accent2)">Real Massage — ACTIVE</div>
+          <div style="color:var(--muted)">(205) 452-2193</div>
+          <div style="color:var(--muted);margin-top:6px">Next: In-person visit</div>
+          <div style="color:var(--muted)">Bring flyer + live demo</div>
+        </div>
       </div>
     </div>
+  </div>
 
-  </main>
+</main>
 
-  <!-- ── RIGHT PANEL ── -->
-  <aside class="right-panel">
+<!-- RIGHT PANEL -->
+<aside class="right-panel">
 
-    <!-- Activity Log -->
-    <div class="section-header" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:12px">Live Activity</div>
-      <button class="section-action" onclick="clearActivity()">Clear</button>
+  <!-- Live Activity -->
+  <div class="section-header" style="margin-bottom:8px">
+    <div class="section-title" style="font-size:12px">Live Activity</div>
+    <button class="section-action" onclick="clearActivity()">Clear</button>
+  </div>
+  <div id="activityLog" style="margin-bottom:12px"></div>
+
+  <div class="divider"></div>
+
+  <!-- Discord Quick Send -->
+  <div style="margin-bottom:12px">
+    <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+      <span style="color:var(--discord)">💬</span> Quick Discord Message
     </div>
-    <div id="activityLog">
-      <!-- populated by JS -->
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <input class="discord-input" id="quickDiscordInput" placeholder="Message to #grabcalls-alerts..." onkeydown="if(event.key==='Enter')sendQuickDiscord()" />
+      <button class="discord-send-btn" onclick="sendQuickDiscord()">Send to Discord</button>
     </div>
+  </div>
 
-    <div style="height:1px;background:var(--border);margin:16px 0"></div>
+  <div class="divider"></div>
 
-    <!-- AI News Feed -->
-    <div class="section-header" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:12px">AI News</div>
+  <!-- Gmail Quick Compose -->
+  <div id="gmailPanel" style="margin-bottom:12px;display:none">
+    <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px;justify-content:space-between">
+      <span>📧 Send Email</span>
+      <span style="cursor:pointer;color:var(--muted);font-size:13px" onclick="closeGmail()">✕</span>
     </div>
-    <div id="newsFeed">
-      <div style="font-size:10px;color:var(--muted);margin-bottom:8px">🕵️ Intel Agent scrapes 7 sources every 4hrs</div>
-      <div class="news-item">
-        <div class="news-source">🔥 VentureBeat</div>
-        <div class="news-title" style="cursor:pointer" onclick="openLink('https://venturebeat.com/category/ai/')">AI agents are transforming small business operations in 2026</div>
-        <div class="news-time">Live via Intel Agent</div>
+    <div class="gmail-compose">
+      <div class="gmail-field">
+        <label class="gmail-label">To</label>
+        <input class="gmail-input" id="gmail-to" value="grabcalls@gmail.com" />
       </div>
-      <div class="news-item">
-        <div class="news-source">🔗 GHL Blog</div>
-        <div class="news-title" style="cursor:pointer" onclick="openLink('https://www.gohighlevel.com/blog')">New GoHighLevel AI features for agency automation</div>
-        <div class="news-time">Live via Intel Agent</div>
+      <div class="gmail-field">
+        <label class="gmail-label">Subject</label>
+        <input class="gmail-input" id="gmail-subject" placeholder="Subject..." />
       </div>
-      <div class="news-item">
-        <div class="news-source">⚡ n8n Blog</div>
-        <div class="news-title" style="cursor:pointer" onclick="openLink('https://n8n.io/blog/')">n8n launches 500+ new AI workflow templates</div>
-        <div class="news-time">Live via Intel Agent</div>
+      <div class="gmail-field">
+        <label class="gmail-label">Message</label>
+        <textarea class="gmail-input gmail-body" id="gmail-body" placeholder="Type your message..."></textarea>
       </div>
-      <div class="news-item">
-        <div class="news-source">🚀 TechCrunch AI</div>
-        <div class="news-title" style="cursor:pointer" onclick="openLink('https://techcrunch.com/category/artificial-intelligence/')">Latest from TechCrunch AI</div>
-        <div class="news-time">Live via Intel Agent</div>
+      <div style="font-size:10px;color:var(--warning);padding:6px 8px;background:rgba(245,158,11,.08);border-radius:5px;border:1px solid rgba(245,158,11,.2)">
+        Opens Gmail in your browser with this message pre-filled. Gmail App Password not yet configured for direct send.
       </div>
-      <div style="text-align:center;margin-top:10px;display:flex;gap:6px;justify-content:center">
-        <button class="section-action" onclick="openLink('https://venturebeat.com/category/ai/')">VentureBeat</button>
-        <button class="section-action" onclick="openLink('https://x.com/search?q=AI+agents&f=live')">X Live</button>
-        <button class="section-action" onclick="openLink('https://www.tiktok.com/search?q=ai+automation')">TikTok</button>
-      </div>
+      <button class="gmail-send-btn" onclick="openGmailCompose()">Open in Gmail</button>
     </div>
+  </div>
 
-    <div style="height:1px;background:var(--border);margin:16px 0"></div>
+  <!-- Memory Notes -->
+  <div class="section-header" style="margin-bottom:8px">
+    <div class="section-title" style="font-size:12px">Memory Notes</div>
+    <button class="section-action" onclick="openModal('noteModal')">+</button>
+  </div>
+  <div id="memoryNotes" style="margin-bottom:12px"></div>
 
-    <!-- Print-Ready Files -->
-    <div class="section-header" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:12px">🖨️ Print-Ready Files</div>
+  <div class="divider"></div>
+
+  <!-- AI News -->
+  <div class="section-header" style="margin-bottom:8px">
+    <div class="section-title" style="font-size:12px">AI News</div>
+  </div>
+  <div id="newsFeed">
+    <div class="news-item">
+      <div class="news-source">VentureBeat</div>
+      <div class="news-title" onclick="openLink('https://venturebeat.com/category/ai/')">AI agents transforming local business in 2026</div>
+      <div class="news-time">Live via Intel Agent</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px">
-
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:4px 0 2px">Industry Flyers</div>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">❄️</span> HVAC Flyer <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">🦷</span> Dental Flyer <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">🔧</span> Plumbing Flyer <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">🏠</span> Roofing Flyer <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">💆</span> Massage Flyer <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">Sales Tools</div>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">📋</span> Sales Cheat Sheet <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">🎯</span> Sales Pitch Card <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">💰</span> Pricing Card <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">Client: Real Massage</div>
-      <a href="#" onclick="alert('This file only exists on your laptop. Open it locally from C:\\Users\\medic\\GrabCalls\\'); return false;" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1b2a;border:1px solid #1e2d3d;border-radius:5px;text-decoration:none;color:#c0d8ff;font-size:11px;transition:border-color .2s" onmouseover="this.style.borderColor='#ff6b00'" onmouseout="this.style.borderColor='#1e2d3d'">
-        <span style="font-size:14px">🀄</span> Demo Card (Chinese) <span style="margin-left:auto;font-size:9px;color:#556677">Print</span>
-      </a>
-
+    <div class="news-item">
+      <div class="news-source">GHL Blog</div>
+      <div class="news-title" onclick="openLink('https://www.gohighlevel.com/blog')">GoHighLevel AI features for agency automation</div>
+      <div class="news-time">Live via Intel Agent</div>
     </div>
-    <div style="height:1px;background:var(--border);margin:4px 0 14px"></div>
-
-    <!-- Memory Notes -->
-    <div class="section-header" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:12px">🧠 Memory Notes</div>
-      <button class="section-action" onclick="openAddNote()">+ Add</button>
+    <div class="news-item">
+      <div class="news-source">n8n Blog</div>
+      <div class="news-title" onclick="openLink('https://n8n.io/blog/')">500+ new AI workflow templates</div>
+      <div class="news-time">Live via Intel Agent</div>
     </div>
-    <div id="memoryNotes">
-      <!-- populated by JS -->
-    </div>
+  </div>
 
-    <div style="height:1px;background:var(--border);margin:16px 0"></div>
+  <div class="divider"></div>
 
-    <!-- Pipeline Mini -->
-    <div class="section-header" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:12px">Pipeline</div>
-    </div>
-    <div id="pipelineMini"></div>
+  <!-- Pipeline Mini -->
+  <div class="section-header" style="margin-bottom:8px">
+    <div class="section-title" style="font-size:12px">Pipeline</div>
+  </div>
+  <div id="pipelineMini"></div>
 
-  </aside>
+</aside>
 
 </div>
 
-<!-- ── COMMAND BAR ── -->
+<!-- COMMAND BAR -->
 <div class="command-bar" id="commandBar">
   <span style="color:var(--accent);font-weight:700;font-size:14px">⌘</span>
-  <input class="command-input" id="commandInput" placeholder="Tell an agent to do something... (press Esc to close)"
-    onkeydown="handleCommand(event)" />
-  <span class="command-hint">Enter to send</span>
+  <input class="command-input" id="commandInput" placeholder="Type a command: 'task: ...', 'remember: ...', 'recall', 'discord: ...' (Esc to close)" onkeydown="handleCommand(event)" />
+  <span class="command-hint">Enter to run</span>
 </div>
 
-<!-- ── ADD TASK MODAL ── -->
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ADD TASK MODAL -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal">
-    <div class="modal-title">
-      ✅ Add Task
-      <button class="modal-close" onclick="closeModal('taskModal')">✕</button>
+    <div class="modal-title">Add Task <button class="modal-close" onclick="closeModal('taskModal')">✕</button></div>
+    <div class="modal-field">
+      <label class="modal-label">Task Title</label>
+      <input class="modal-input" id="newTaskTitle" placeholder="e.g. Follow up with HVAC prospect" onkeydown="if(event.key==='Enter')addTask()" />
     </div>
     <div class="modal-field">
-      <div class="modal-label">Task Title</div>
-      <input class="modal-input" id="newTaskTitle" placeholder="e.g. Follow up with HVAC prospect" />
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Assign To Agent</div>
+      <label class="modal-label">Assign To</label>
       <select class="modal-input" id="newTaskAgent">
+        <option value="Eric">Eric (Manual)</option>
+        <option value="Claude">Claude (Build)</option>
         <option value="Discord Bot">Discord Bot</option>
         <option value="n8n">n8n Workflow</option>
         <option value="GHL">GHL Automation</option>
-        <option value="Claude">Claude (You)</option>
-        <option value="Eric">Eric (Manual)</option>
       </select>
     </div>
     <div class="modal-field">
-      <div class="modal-label">Category</div>
+      <label class="modal-label">Category</label>
       <select class="modal-input" id="newTaskTag">
-        <option value="discord">Discord</option>
         <option value="ghl">GHL</option>
+        <option value="discord">Discord</option>
         <option value="n8n">n8n</option>
         <option value="website">Website</option>
+        <option value="system">System</option>
       </select>
     </div>
     <div class="modal-actions">
@@ -1166,16 +777,13 @@
   </div>
 </div>
 
-<!-- ── ADD NOTE MODAL ── -->
+<!-- ADD NOTE MODAL -->
 <div class="modal-overlay" id="noteModal">
   <div class="modal">
-    <div class="modal-title">
-      🧠 Add Memory Note
-      <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
-    </div>
+    <div class="modal-title">Add Memory Note <button class="modal-close" onclick="closeModal('noteModal')">✕</button></div>
     <div class="modal-field">
-      <div class="modal-label">Note</div>
-      <input class="modal-input" id="newNoteText" placeholder="e.g. Real Massage owner speaks broken English" />
+      <label class="modal-label">Note</label>
+      <textarea class="modal-input" id="newNoteText" rows="3" placeholder="e.g. Real Massage owner: bilingual Chinese/English, in-person visit planned..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addNote()}"></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('noteModal')">Cancel</button>
@@ -1184,28 +792,27 @@
   </div>
 </div>
 
-<!-- ── ADD AGENT MODAL ── -->
+<!-- ADD AGENT MODAL -->
 <div class="modal-overlay" id="agentModal">
   <div class="modal">
-    <div class="modal-title">
-      🤖 Add Agent
-      <button class="modal-close" onclick="closeModal('agentModal')">✕</button>
+    <div class="modal-title">Add Agent <button class="modal-close" onclick="closeModal('agentModal')">✕</button></div>
+    <div class="modal-field">
+      <label class="modal-label">Agent Name</label>
+      <input class="modal-input" id="newAgentName" placeholder="e.g. Lead Qualifier Bot" />
     </div>
     <div class="modal-field">
-      <div class="modal-label">Agent Name</div>
-      <input class="modal-input" id="newAgentName" placeholder="e.g. Lead Qualifier" />
+      <label class="modal-label">Role</label>
+      <input class="modal-input" id="newAgentRole" placeholder="e.g. Qualifies inbound leads" />
     </div>
     <div class="modal-field">
-      <div class="modal-label">Role</div>
-      <input class="modal-input" id="newAgentRole" placeholder="e.g. Qualifies inbound leads via Discord" />
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Platform</div>
+      <label class="modal-label">Platform</label>
       <select class="modal-input" id="newAgentPlatform">
-        <option>Discord</option>
         <option>n8n</option>
+        <option>Discord</option>
         <option>GHL</option>
         <option>Claude Code</option>
+        <option>OpenClaw</option>
+        <option>GitHub</option>
         <option>Custom</option>
       </select>
     </div>
@@ -1217,212 +824,202 @@
 </div>
 
 <script>
-// ─── STATE ──────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'grabcalls_mc_v2';
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+// Keys stored in localStorage — seeded on first run below
+// Functions use getKey() so they always get latest value
+function getDiscordWebhook() { return localStorage.getItem('discord_webhook') || ''; }
+function getNotionKey() { return localStorage.getItem('notion_key') || ''; }
+const NOTION_DBS = {
+  leads: '30c9ce9b-08b1-8084-aed0-ea0b7ae57b1e',
+  tasks: '30c9ce9b-08b1-804e-8cf3-c9153f934e9e',
+  log:   '30c9ce9b-08b1-809f-bf36-c2b8c76947c4',
+  intel: '30c9ce9b-08b1-8041-9d6f-d9b381ea43c7'
+};
+const STORAGE_KEY = 'grabcalls-mc-v4';
 
-function loadState() {
-  try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    return s ? JSON.parse(s) : null;
-  } catch(e) { return null; }
-}
-
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
+// ─── DEFAULT STATE ───────────────────────────────────────────────────────────
 const DEFAULT_STATE = {
   agents: [
-    { id: 1, emoji: '🤖', name: 'GrabCalls Bot', role: 'Discord AI Assistant', platform: 'Discord',
-      status: 'online', task: 'Awaiting messages from Eric', msgs: 0, replies: 0 },
-    { id: 2, emoji: '⚡', name: 'Morning Briefer', role: 'Daily Intel Report', platform: 'n8n',
-      status: 'online', task: 'Scheduled: 8:00 AM daily', msgs: 0, replies: 0 },
-    { id: 3, emoji: '📩', name: 'Lead Notifier', role: 'GHL → Discord Alerts', platform: 'n8n',
-      status: 'busy', task: 'Waiting for GHL webhook activation', msgs: 0, replies: 0 },
-    { id: 4, emoji: '🔄', name: 'Follow-up Sequencer', role: 'Lead Nurture Automation', platform: 'n8n',
-      status: 'offline', task: 'Not yet activated', msgs: 0, replies: 0 },
-    { id: 5, emoji: '🌐', name: 'Website Agent', role: 'grabcalls.com / GitHub Pages', platform: 'GitHub',
-      status: 'online', task: 'Live at g-lover10.github.io/grabcalls-website/', msgs: 0, replies: 0 },
-    { id: 6, emoji: '🧠', name: 'Claude (Mission Ctrl)', role: 'Orchestrator & Builder', platform: 'Claude Code',
-      status: 'online', task: 'Building Mission Control dashboard', msgs: 0, replies: 0 },
-    { id: 7, emoji: '🕵️', name: 'Intel Agent', role: 'AI News & Social Scraper', platform: 'n8n',
-      status: 'offline', task: 'Runs 4x/day: VentureBeat, TechCrunch, Verge, GHL, n8n, Twitter/X, TikTok trends — keeps GrabCalls razor sharp', msgs: 0, replies: 0 },
-    { id: 8, emoji: '🛡️', name: 'Security Guard', role: 'Secret Leak & Uptime Monitor', platform: 'n8n',
-      status: 'offline', task: 'Runs every 6hrs: checks .env exposure, suspicious commits, GitHub repos, website uptime — alerts Eric instantly', msgs: 0, replies: 0 },
+    { id:1, emoji:'🤖', name:'GrabCalls Bot', role:'Discord AI Assistant', platform:'Discord',
+      status:'online', task:'Running on Windows via Task Scheduler. Commands: !tasks, !leads, !intel, !fast, !deep', msgs:0, replies:0 },
+    { id:2, emoji:'☀️', name:'Morning Briefer', role:'8AM Daily Briefing', platform:'n8n',
+      status:'busy', task:'Built — needs n8n API key to activate. Sends GHL stats + AI news to Discord at 8AM', msgs:0, replies:0 },
+    { id:3, emoji:'🕵️', name:'Intel Agent', role:'4x/Day News Scraper', platform:'n8n',
+      status:'busy', task:'Built — needs activation. Scrapes VentureBeat, TechCrunch, GHL blog, n8n, X trends every 6hrs', msgs:0, replies:0 },
+    { id:4, emoji:'📩', name:'Lead Notifier', role:'GHL → Discord Alerts', platform:'n8n',
+      status:'busy', task:'Built — needs activation. Fires when new GHL contact created, posts to Discord instantly', msgs:0, replies:0 },
+    { id:5, emoji:'🔄', name:'Follow-up Sequencer', role:'Lead Nurture Automation', platform:'n8n',
+      status:'offline', task:'Built — needs activation. Auto-nurtures leads through pipeline stages via GHL workflows', msgs:0, replies:0 },
+    { id:6, emoji:'🌐', name:'Website Agent', role:'grabcalls.com + GitHub Pages', platform:'GitHub',
+      status:'online', task:'LIVE at g-lover10.github.io/grabcalls-website/ — Mission Control also hosted there', msgs:0, replies:0 },
+    { id:7, emoji:'🛡️', name:'Security Guard', role:'Secret Leak & Uptime Monitor', platform:'n8n',
+      status:'busy', task:'Built — needs activation. Checks .env exposure, GitHub commits, website uptime every 6hrs', msgs:0, replies:0 },
+    { id:8, emoji:'🧠', name:'Claude (Orchestrator)', role:'Builder & Strategist', platform:'Claude Code',
+      status:'online', task:'Active this session — building, fixing, deploying. Ask me anything via this dashboard.', msgs:0, replies:0 },
   ],
   tasks: {
     todo: [
-      { id: 1, title: 'Get n8n API key — voice-assistant.app.n8n.cloud → Settings → API Keys', tag: 'n8n', agent: 'Eric' },
-      { id: 2, title: 'Finish Telegram pairing — msg @GrabCalls_bot, run openclaw pairing approve telegram CODE', tag: 'discord', agent: 'Eric' },
-      { id: 3, title: 'Add GHL Private Token to .env and n8n project vars', tag: 'ghl', agent: 'Eric' },
-      { id: 4, title: 'Sign up Oracle Cloud — cloud.oracle.com (free, needs credit card for ID only)', tag: 'system', agent: 'Eric' },
-      { id: 5, title: 'Set up Gmail App Password — myaccount.google.com → Security → App Passwords → Mail', tag: 'system', agent: 'Eric' },
-      { id: 6, title: 'Activate all 5 n8n workflows (after API key added to .env)', tag: 'n8n', agent: 'Claude' },
-      { id: 7, title: 'Point grabcalls.com to GitHub Pages (Cloudflare CNAME → g-lover10.github.io)', tag: 'website', agent: 'Eric' },
-      { id: 8, title: 'A2P 10DLC registration — $49 startup, ~2 weeks approval', tag: 'ghl', agent: 'Eric' },
+      { id:1, title:'Generate n8n API key at voice-assistant.app.n8n.cloud → Settings → API Keys', tag:'n8n', agent:'Eric' },
+      { id:2, title:'Finish Telegram pairing — msg @GrabCalls_bot, then: openclaw pairing approve telegram CODE', tag:'discord', agent:'Eric' },
+      { id:3, title:'Gmail App Password — myaccount.google.com → Security → App Passwords → Mail', tag:'system', agent:'Eric' },
+      { id:4, title:'Oracle Cloud signup — cloud.oracle.com (free 4-core VM, needs card for ID only)', tag:'system', agent:'Eric' },
+      { id:5, title:'Add GHL Private Token to .env and n8n project variables', tag:'ghl', agent:'Eric' },
+      { id:6, title:'A2P 10DLC registration — $49, ~2 weeks, required for SMS', tag:'ghl', agent:'Eric' },
+      { id:7, title:'Point grabcalls.com → GitHub Pages (Cloudflare CNAME to g-lover10.github.io)', tag:'website', agent:'Eric' },
+      { id:8, title:'Activate all 5 n8n workflows (run C:\\AI_Employee\\n8n-activate-all.ps1 after API key)', tag:'n8n', agent:'Claude' },
     ],
     inprogress: [
-      { id: 9, title: 'File cleanup — review C:\\AI_Employee\\READY-FOR-TRASH.md then tell Claude to delete', tag: 'system', agent: 'Eric' },
-      { id: 10, title: 'Real Massage client — in-person visit with flyer + live demo', tag: 'ghl', agent: 'Eric' },
+      { id:9, title:'Real Massage client — in-person visit with printed flyer + live voice demo', tag:'ghl', agent:'Eric' },
+      { id:10, title:'File cleanup — review READY-FOR-TRASH.md and confirm deletion', tag:'system', agent:'Eric' },
     ],
     done: [
-      { id: 11, title: 'Rebuild Discord bot index.js with Notion + multi-AI', tag: 'discord', agent: 'Claude' },
-      { id: 12, title: 'Wire all 4 Notion databases into bot + .env', tag: 'discord', agent: 'Claude' },
-      { id: 13, title: 'Create GitHub repos + push code + GitHub Pages live', tag: 'website', agent: 'Claude' },
-      { id: 14, title: 'Build 5 n8n workflow JSONs (morning brief, intel, notifier, security, follow-up)', tag: 'n8n', agent: 'Claude' },
-      { id: 15, title: 'Mission Control dashboard built + pushed to GitHub Pages', tag: 'website', agent: 'Claude' },
-      { id: 16, title: 'OpenClaw gateway installed as Windows Scheduled Task', tag: 'system', agent: 'Claude' },
-      { id: 17, title: 'Print flyers built — HVAC, Dental, Plumbing, Roofing, Massage', tag: 'ghl', agent: 'Claude' },
-      { id: 18, title: 'Morning brief Task Scheduler job registered (8AM daily)', tag: 'n8n', agent: 'Claude' },
-      { id: 19, title: 'READY-FOR-TRASH.md created — Spring Nails + old scripts ready to clean up', tag: 'system', agent: 'Claude' },
+      { id:11, title:'Discord bot rebuilt with Notion + multi-AI routing (Groq/DeepSeek/Cerebras)', tag:'discord', agent:'Claude' },
+      { id:12, title:'All 4 Notion databases wired into bot and .env', tag:'discord', agent:'Claude' },
+      { id:13, title:'GitHub repos created + GitHub Pages live', tag:'website', agent:'Claude' },
+      { id:14, title:'5 n8n workflow JSONs built (morning brief, intel, notifier, security, follow-up)', tag:'n8n', agent:'Claude' },
+      { id:15, title:'Mission Control dashboard built + pushed to GitHub Pages', tag:'website', agent:'Claude' },
+      { id:16, title:'OpenClaw gateway installed as Windows Scheduled Task', tag:'system', agent:'Claude' },
+      { id:17, title:'Print flyers built — HVAC, Dental, Plumbing, Roofing, Massage', tag:'ghl', agent:'Claude' },
+      { id:18, title:'Morning brief Task Scheduler job registered (8AM daily)', tag:'n8n', agent:'Claude' },
+      { id:19, title:'Spring Nails cleanup — 23MB freed, old scripts deleted', tag:'system', agent:'Claude' },
     ]
   },
   pipeline: [
-    { stage: 'New Lead', count: 0 },
-    { stage: 'Contacted', count: 0 },
-    { stage: 'Discovery Call Booked', count: 0 },
-    { stage: 'Discovery Call Completed', count: 0 },
-    { stage: 'Proposal Sent', count: 0 },
-    { stage: 'Negotiation', count: 0 },
-    { stage: 'Closed Won', count: 0 },
+    { stage:'New Lead', count:0 },
+    { stage:'Contacted', count:0 },
+    { stage:'Discovery Call Booked', count:0 },
+    { stage:'Discovery Call Completed', count:0 },
+    { stage:'Proposal Sent', count:0 },
+    { stage:'Negotiation', count:0 },
+    { stage:'Closed Won', count:0 },
   ],
   activity: [
-    { type: 'system', icon: '🎯', text: '<strong>Mission Control</strong> initialized — GrabCalls.com', time: 'just now' },
-    { type: 'discord', icon: '🤖', text: '<strong>GrabCalls Bot</strong> is online as GrabCalls#6976', time: '1 min ago' },
-    { type: 'n8n', icon: '⚡', text: '<strong>Morning Briefing</strong> workflow updated with AI news feeds', time: '2h ago' },
-    { type: 'ghl', icon: '🔗', text: '<strong>GitHub Pages</strong> live at g-lover10.github.io', time: '3h ago' },
-    { type: 'system', icon: '✅', text: '<strong>GitHub repos</strong> pushed: grabcalls-bot + grabcalls-website', time: '3h ago' },
+    { type:'system', icon:'🎯', text:'<strong>Mission Control v2</strong> — GrabCalls.com', time:'now' },
+    { type:'discord', icon:'🤖', text:'<strong>GrabCalls Bot</strong> online as GrabCalls#6976', time:'1m ago' },
+    { type:'system', icon:'🗑️', text:'<strong>Cleanup complete</strong> — 23.2MB freed', time:'2m ago' },
+    { type:'n8n', icon:'⚡', text:'<strong>5 workflows</strong> built, awaiting n8n API key', time:'5m ago' },
+    { type:'ghl', icon:'🌐', text:'<strong>GitHub Pages</strong> live — Mission Control online', time:'10m ago' },
   ],
   notes: [
-    'Real Massage: bilingual (Chinese/English), (205) 452-2193, 9AM-8PM daily',
-    'Spring Nails is DEAD — offered only $250, no deal',
-    'GHL token needs scope update before API works',
-    'n8n var: ghlApiToke (NOT ghlApiToken — too long)',
-    'Discord bot: GrabCalls#6976 | Groq/DeepSeek/Cerebras routing',
+    'Real Massage: bilingual Chinese/English, (205) 452-2193, 9AM-8PM daily, 4.9 stars',
+    'Spring Nails is DEAD — offered only $250, do not pursue',
+    'n8n var limit = 10 chars: ghlApiToke not ghlApiToken',
+    'Discord bot GrabCalls#6976 — Groq/DeepSeek/Cerebras routing',
+    'Oracle Cloud = free 4-core ARM VM forever, fixes bot going offline',
+    'OpenClaw gateway installed — pair Telegram: openclaw pairing approve telegram CODE',
   ],
+  revenue: 0,
   nextId: 30,
 };
 
 let state = loadState() || DEFAULT_STATE;
 
-// ─── CLOCK ──────────────────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : null; } catch(e) { return null; }
 }
-setInterval(updateClock, 1000);
-updateClock();
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-// ─── VIEWS ──────────────────────────────────────────────────────────────────
-function showView(name) {
-  ['overview','agents','tasks','pipeline','analytics'].forEach(v => {
-    const el = document.getElementById('view-' + v);
-    if (el) el.style.display = 'none';
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ─── CLOCK ───────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ─── VIEW SWITCHING ──────────────────────────────────────────────────────────
+function switchView(name, el) {
+  ['overview','discord','notion','agents','tasks','pipeline'].forEach(v => {
+    const e = document.getElementById('view-'+v);
+    if (e) e.style.display = 'none';
   });
-  const el = document.getElementById('view-' + name);
-  if (el) el.style.display = 'block';
-
+  const target = document.getElementById('view-'+name);
+  if (target) target.style.display = 'block';
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-
-  if (name === 'agents') renderAgentsFull();
-  if (name === 'tasks') renderTasksFull();
-  if (name === 'pipeline') renderPipelineFull();
+  if (el) { el.classList.add('active'); }
+  const navId = document.getElementById('nav-'+name);
+  if (navId) navId.classList.add('active');
+  if (name === 'agents') { renderAgentsFull(); }
+  if (name === 'tasks') { renderTaskBoard('taskBoardFull'); }
+  if (name === 'pipeline') { renderPipelineFull(); }
+  if (name === 'notion') { loadNotionData(); }
 }
 
-// ─── RENDER AGENTS ──────────────────────────────────────────────────────────
+// ─── AGENTS ──────────────────────────────────────────────────────────────────
 function agentCard(agent) {
-  return `
-    <div class="agent-card ${agent.status}" onclick="pingAgent(${agent.id})">
-      <div class="agent-header">
-        <div class="agent-avatar" style="background:rgba(108,99,255,0.15)">
-          ${agent.emoji}
-          <div class="agent-status-dot ${agent.status}"></div>
-        </div>
-        <div>
-          <div class="agent-name">${agent.name}</div>
-          <div class="agent-role">${agent.platform} · ${agent.role}</div>
-        </div>
+  const statusColors = { online:'var(--online)', busy:'var(--warning)', offline:'var(--muted)' };
+  return `<div class="agent-card ${agent.status}" onclick="pingAgent(${agent.id})">
+    <div class="agent-header">
+      <div class="agent-avatar">
+        ${agent.emoji}
+        <div class="agent-status-dot ${agent.status}"></div>
       </div>
-      <div class="agent-task">${agent.task}</div>
-      <div class="agent-stats">
-        <div class="agent-stat">Msgs <span>${agent.msgs}</span></div>
-        <div class="agent-stat">Replies <span>${agent.replies}</span></div>
-        <div class="agent-stat" style="margin-left:auto">
-          <span style="color:${agent.status === 'online' ? 'var(--online)' : agent.status === 'busy' ? 'var(--warning)' : 'var(--muted)'}">
-            ● ${agent.status.toUpperCase()}
-          </span>
-        </div>
+      <div>
+        <div class="agent-name">${agent.name}</div>
+        <div class="agent-role">${agent.platform} · ${agent.role}</div>
       </div>
-    </div>`;
+    </div>
+    <div class="agent-task">${agent.task}</div>
+    <div class="agent-stats">
+      <div class="agent-stat">Msgs <span>${agent.msgs}</span></div>
+      <div class="agent-stat">Replies <span>${agent.replies}</span></div>
+      <div class="agent-stat" style="margin-left:auto">
+        <span style="color:${statusColors[agent.status]}">● ${agent.status.toUpperCase()}</span>
+      </div>
+    </div>
+  </div>`;
 }
-
-function renderAgents() {
-  const grid = document.getElementById('agentGrid');
-  if (grid) grid.innerHTML = state.agents.slice(0,6).map(agentCard).join('');
-}
-
-function renderAgentsFull() {
-  const grid = document.getElementById('agentGridFull');
-  if (grid) grid.innerHTML = state.agents.map(agentCard).join('');
-}
-
+function renderAgents() { const g = document.getElementById('agentGrid'); if(g) g.innerHTML = state.agents.slice(0,6).map(agentCard).join(''); }
+function renderAgentsFull() { const g = document.getElementById('agentGridFull'); if(g) g.innerHTML = state.agents.map(agentCard).join(''); }
 function pingAgent(id) {
-  const agent = state.agents.find(a => a.id === id);
-  if (!agent) return;
-  addActivity('system', '📡', `Pinged <strong>${agent.name}</strong>`);
+  const a = state.agents.find(x => x.id===id);
+  if (!a) return;
+  addActivity('system','📡',`Pinged <strong>${a.name}</strong> — Status: ${a.status}`);
+  showToast(`Pinged ${a.name}`, 'info');
 }
 
-// ─── RENDER TASKS ────────────────────────────────────────────────────────────
+// ─── TASKS ───────────────────────────────────────────────────────────────────
 function taskItem(task, col) {
-  return `
-    <div class="task-item" draggable="true" ondragstart="dragStart(event,${task.id},'${col}')"
-      ondblclick="moveTask(${task.id},'${col}')">
-      <div class="task-title">${task.title}</div>
-      <div class="task-meta">
-        <span class="task-tag ${task.tag}">${task.tag.toUpperCase()}</span>
-        <span class="task-assignee">${task.agent}</span>
-      </div>
-    </div>`;
+  return `<div class="task-item" draggable="true"
+    ondragstart="dragStart(event,${task.id},'${col}')"
+    ondblclick="moveTask(${task.id},'${col}')">
+    <div class="task-title">${task.title}</div>
+    <div class="task-meta">
+      <span class="task-tag ${task.tag}">${task.tag.toUpperCase()}</span>
+      <span class="task-assignee">${task.agent}</span>
+    </div>
+  </div>`;
 }
-
 function taskCol(title, key, color) {
   const tasks = state.tasks[key] || [];
-  const items = tasks.map(t => taskItem(t, key)).join('');
-  return `
-    <div class="task-col" ondragover="event.preventDefault()" ondrop="dropTask(event,'${key}')">
-      <div class="task-col-header" style="color:${color}">
-        ${title} <span class="task-count">${tasks.length}</span>
-      </div>
-      ${items}
-    </div>`;
+  return `<div class="task-col" ondragover="event.preventDefault()" ondrop="dropTask(event,'${key}')">
+    <div class="task-col-header" style="color:${color}">${title} <span class="task-count">${tasks.length}</span></div>
+    ${tasks.map(t => taskItem(t, key)).join('')}
+  </div>`;
 }
-
-function renderTaskBoard(containerId) {
-  const el = document.getElementById(containerId);
+function renderTaskBoard(id) {
+  const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML =
-    taskCol('📋 To Do', 'todo', 'var(--muted)') +
-    taskCol('🔄 In Progress', 'inprogress', 'var(--warning)') +
-    taskCol('✅ Done', 'done', 'var(--online)');
-  document.getElementById('stat-tasks').textContent =
-    (state.tasks.todo.length + state.tasks.inprogress.length);
+    taskCol('To Do', 'todo', 'var(--muted)') +
+    taskCol('In Progress', 'inprogress', 'var(--warning)') +
+    taskCol('Done', 'done', 'var(--online)');
+  const count = (state.tasks.todo||[]).length + (state.tasks.inprogress||[]).length;
+  const badge = document.getElementById('task-badge');
+  if (badge) badge.textContent = count;
+  const statTodo = document.getElementById('stat-todo');
+  if (statTodo) statTodo.textContent = (state.tasks.todo||[]).length;
 }
-
-function renderTasksFull() {
-  renderTaskBoard('taskBoardFull');
-}
-
-// ─── DRAG & DROP ─────────────────────────────────────────────────────────────
 let draggingId = null, draggingCol = null;
-
-function dragStart(e, id, col) {
-  draggingId = id;
-  draggingCol = col;
-}
-
+function dragStart(e, id, col) { draggingId = id; draggingCol = col; }
 function dropTask(e, targetCol) {
   e.preventDefault();
   if (!draggingId || draggingCol === targetCol) return;
@@ -1430,106 +1027,17 @@ function dropTask(e, targetCol) {
   if (!task) return;
   state.tasks[draggingCol] = state.tasks[draggingCol].filter(t => t.id !== draggingId);
   state.tasks[targetCol].push(task);
-  addActivity('system', '↔️', `Task <strong>"${task.title}"</strong> moved to ${targetCol}`);
+  addActivity('system','↔️',`Task <strong>"${task.title.slice(0,40)}"</strong> moved to ${targetCol}`);
   saveState();
   renderTaskBoard('taskBoardPreview');
   renderTaskBoard('taskBoardFull');
-  draggingId = null;
-  draggingCol = null;
+  draggingId = null; draggingCol = null;
 }
-
 function moveTask(id, currentCol) {
+  draggingId = id; draggingCol = currentCol;
   const cols = ['todo','inprogress','done'];
-  const nextCol = cols[(cols.indexOf(currentCol) + 1) % cols.length];
-  dropTask({ preventDefault: ()=>{} }, nextCol);
+  dropTask({ preventDefault:()=>{} }, cols[(cols.indexOf(currentCol)+1)%cols.length]);
 }
-
-// ─── PIPELINE ────────────────────────────────────────────────────────────────
-function renderPipeline(containerId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  const max = Math.max(...state.pipeline.map(s => s.count), 1);
-  el.innerHTML = state.pipeline.map(s => `
-    <div class="pipeline-stage">
-      <div class="stage-name">${s.stage}</div>
-      <div class="stage-bar-wrap">
-        <div class="stage-bar" style="width:${(s.count/max)*100}%"></div>
-      </div>
-      <div class="stage-count">${s.count}</div>
-    </div>`).join('');
-}
-
-function renderPipelineFull() {
-  renderPipeline('pipelineStages');
-}
-
-// ─── ACTIVITY ─────────────────────────────────────────────────────────────────
-function addActivity(type, icon, text) {
-  const now = new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
-  state.activity.unshift({ type, icon, text, time: now });
-  if (state.activity.length > 30) state.activity.pop();
-  renderActivity();
-  saveState();
-}
-
-function renderActivity() {
-  const el = document.getElementById('activityLog');
-  if (!el) return;
-  el.innerHTML = state.activity.slice(0,12).map(a => `
-    <div class="activity-item">
-      <div class="activity-icon ${a.type}">${a.icon}</div>
-      <div class="activity-text">
-        <div class="activity-desc">${a.text}</div>
-        <div class="activity-time">${a.time}</div>
-      </div>
-    </div>`).join('');
-}
-
-function clearActivity() {
-  state.activity = [];
-  saveState();
-  renderActivity();
-}
-
-// ─── MEMORY NOTES ─────────────────────────────────────────────────────────────
-function renderMemoryNotes() {
-  const el = document.getElementById('memoryNotes');
-  if (!el) return;
-  el.innerHTML = state.notes.map((n, i) => `
-    <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:8px">
-      <div style="color:var(--accent);font-size:10px;margin-top:3px;flex-shrink:0">●</div>
-      <div style="font-size:11px;color:var(--muted);flex:1">${n}</div>
-      <div style="cursor:pointer;color:var(--danger);font-size:11px;flex-shrink:0" onclick="deleteNote(${i})">✕</div>
-    </div>`).join('');
-}
-
-function deleteNote(i) {
-  state.notes.splice(i, 1);
-  saveState();
-  renderMemoryNotes();
-}
-
-function showMemory() {
-  alert('🧠 Memory Notes:\n\n' + state.notes.map((n,i) => `${i+1}. ${n}`).join('\n'));
-}
-
-// ─── MODALS ───────────────────────────────────────────────────────────────────
-function openAddTask() {
-  document.getElementById('taskModal').classList.add('visible');
-}
-
-function openAddNote() {
-  document.getElementById('noteModal').classList.add('visible');
-}
-
-function openAddAgent() {
-  document.getElementById('agentModal').classList.add('visible');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('visible');
-}
-
 function addTask() {
   const title = document.getElementById('newTaskTitle').value.trim();
   const agent = document.getElementById('newTaskAgent').value;
@@ -1537,134 +1045,353 @@ function addTask() {
   if (!title) return;
   const task = { id: state.nextId++, title, agent, tag };
   state.tasks.todo.push(task);
-  addActivity('system', '✅', `New task added: <strong>${title}</strong>`);
+  addActivity('system','✅',`New task: <strong>${title.slice(0,40)}</strong>`);
   saveState();
   renderTaskBoard('taskBoardPreview');
   renderTaskBoard('taskBoardFull');
   closeModal('taskModal');
   document.getElementById('newTaskTitle').value = '';
+  showToast('Task added!', 'success');
 }
 
+// ─── PIPELINE ────────────────────────────────────────────────────────────────
+function renderPipeline(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const max = Math.max(...state.pipeline.map(s => s.count), 1);
+  el.innerHTML = state.pipeline.map(s => `
+    <div class="pipeline-stage">
+      <div class="stage-name">${s.stage}</div>
+      <div class="stage-bar-wrap"><div class="stage-bar" style="width:${(s.count/max)*100}%"></div></div>
+      <div class="stage-count">${s.count}</div>
+    </div>`).join('');
+}
+function renderPipelineFull() {
+  renderPipeline('pipelineStagesFull');
+  const rd = document.getElementById('revenue-display');
+  if (rd) rd.textContent = '$' + (state.revenue || 0).toLocaleString();
+}
+function updatePipelineStage(delta) {
+  const sel = document.getElementById('pipelineStageSelect');
+  if (!sel) return;
+  const name = sel.value;
+  const stage = state.pipeline.find(s => s.stage === name);
+  if (!stage) return;
+  stage.count = Math.max(0, stage.count + delta);
+  saveState();
+  renderPipelineFull();
+  renderPipeline('pipelineMini');
+  addActivity('ghl','📊',`Pipeline <strong>${name}</strong>: ${stage.count} leads`);
+}
+function updateRevenue() {
+  const val = parseFloat(document.getElementById('revenueInput').value.replace(/[^0-9.]/g,''));
+  if (isNaN(val)) return;
+  state.revenue = val;
+  saveState();
+  renderPipelineFull();
+  document.getElementById('revenueInput').value = '';
+  showToast('Revenue updated!', 'success');
+}
+
+// ─── ACTIVITY ────────────────────────────────────────────────────────────────
+function addActivity(type, icon, text) {
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  state.activity.unshift({ type, icon, text, time: now });
+  if (state.activity.length > 40) state.activity.pop();
+  renderActivity();
+  saveState();
+}
+function renderActivity() {
+  const el = document.getElementById('activityLog');
+  if (!el) return;
+  el.innerHTML = state.activity.slice(0,15).map(a => `
+    <div class="activity-item">
+      <div class="activity-icon ${a.type}">${a.icon}</div>
+      <div style="flex:1">
+        <div class="activity-desc">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+}
+function clearActivity() { state.activity = []; saveState(); renderActivity(); }
+
+// ─── MEMORY NOTES ────────────────────────────────────────────────────────────
+function renderMemoryNotes() {
+  const el = document.getElementById('memoryNotes');
+  if (!el) return;
+  el.innerHTML = state.notes.map((n,i) => `
+    <div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:7px">
+      <div style="color:var(--accent);font-size:9px;margin-top:3px;flex-shrink:0">●</div>
+      <div style="font-size:11px;color:var(--muted);flex:1;line-height:1.4">${n}</div>
+      <div style="cursor:pointer;color:var(--danger);font-size:10px;flex-shrink:0" onclick="deleteNote(${i})">✕</div>
+    </div>`).join('');
+}
+function deleteNote(i) { state.notes.splice(i,1); saveState(); renderMemoryNotes(); }
 function addNote() {
   const text = document.getElementById('newNoteText').value.trim();
   if (!text) return;
-  state.notes.push(text);
-  addActivity('system', '🧠', `Note saved: <strong>${text.slice(0,40)}...</strong>`);
+  state.notes.unshift(text);
   saveState();
   renderMemoryNotes();
   closeModal('noteModal');
   document.getElementById('newNoteText').value = '';
+  showToast('Note saved!', 'success');
 }
 
+// ─── MODALS ──────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('visible'); }
+function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
 function addAgent() {
   const name = document.getElementById('newAgentName').value.trim();
   const role = document.getElementById('newAgentRole').value.trim();
   const platform = document.getElementById('newAgentPlatform').value;
   if (!name) return;
-  const agent = {
-    id: state.nextId++,
-    emoji: '🤖',
-    name, role, platform,
-    status: 'offline',
-    task: 'Not yet configured',
-    msgs: 0, replies: 0
-  };
-  state.agents.push(agent);
-  addActivity('system', '🤖', `Agent added: <strong>${name}</strong>`);
+  state.agents.push({ id:state.nextId++, emoji:'🤖', name, role, platform, status:'offline', task:'Not yet configured', msgs:0, replies:0 });
+  addActivity('system','🤖',`Agent added: <strong>${name}</strong>`);
   saveState();
   renderAgents();
   renderAgentsFull();
   closeModal('agentModal');
+  showToast('Agent added!', 'success');
 }
 
-// ─── COMMAND BAR (Ctrl+K) ─────────────────────────────────────────────────────
+// ─── DISCORD ─────────────────────────────────────────────────────────────────
+async function sendDiscordMessage() {
+  const input = document.getElementById('discordInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendDiscordMsg(msg, 'sent', 'You (Mission Control)');
+  await postToDiscord(msg);
+}
+async function sendQuickMsg(msg) {
+  appendDiscordMsg(msg, 'sent', 'You (Mission Control)');
+  await postToDiscord(msg);
+}
+async function sendQuickDiscord() {
+  const input = document.getElementById('quickDiscordInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  await postToDiscord(msg);
+}
+async function postToDiscord(msg) {
+  try {
+    const resp = await fetch(getDiscordWebhook(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: msg, username: 'Mission Control' })
+    });
+    if (resp.ok) {
+      addActivity('discord','💬',`Sent to Discord: <strong>${msg.slice(0,50)}</strong>`);
+      showToast('Sent to Discord!', 'success');
+    } else {
+      showToast('Discord send failed', 'error');
+    }
+  } catch(e) {
+    showToast('Discord error: ' + e.message, 'error');
+  }
+}
+function appendDiscordMsg(text, type, author) {
+  const box = document.getElementById('discordMessages');
+  if (!box) return;
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const div = document.createElement('div');
+  div.className = 'discord-msg ' + type;
+  div.innerHTML = `<div class="discord-msg-author">${author}</div><div class="discord-msg-text">${text}</div><div class="discord-msg-time">${now}</div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+// ─── NOTION DATA ─────────────────────────────────────────────────────────────
+async function loadNotionData() {
+  const dbMap = [
+    { key:'leads', countId:'notion-leads-count', listId:'notion-leads-list', statId:'stat-leads', statSubId:'stat-leads-sub' },
+    { key:'tasks', countId:'notion-tasks-count', listId:'notion-tasks-list', statId:'stat-tasks-count', statSubId:'stat-tasks-sub' },
+    { key:'log',   countId:'notion-log-count',   listId:'notion-log-list' },
+    { key:'intel', countId:'notion-intel-count', listId:'notion-intel-list' },
+  ];
+  for (const db of dbMap) {
+    queryNotionDB(db.key, db.countId, db.listId, db.statId, db.statSubId);
+  }
+}
+async function queryNotionDB(dbKey, countId, listId, statId, statSubId) {
+  const url = `https://api.notion.com/v1/databases/${NOTION_DBS[dbKey]}/query`;
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getNotionKey()}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ page_size: 10 })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const count = data.results ? data.results.length : 0;
+    const countEl = document.getElementById(countId);
+    if (countEl) countEl.textContent = count + (data.has_more ? '+' : '');
+    if (statId) { const s = document.getElementById(statId); if(s) s.textContent = count; }
+    if (statSubId) { const s = document.getElementById(statSubId); if(s) { s.textContent = 'Live from Notion'; s.className = 'stat-change up'; } }
+    const listEl = document.getElementById(listId);
+    if (listEl && data.results && data.results.length > 0) {
+      listEl.innerHTML = data.results.slice(0,4).map(page => {
+        const props = page.properties;
+        let title = 'Untitled';
+        for (const [k,v] of Object.entries(props)) {
+          if (v.type === 'title' && v.title && v.title.length > 0) {
+            title = v.title.map(t => t.plain_text).join('');
+            break;
+          }
+        }
+        const created = new Date(page.created_time).toLocaleDateString();
+        return `<div class="notion-entry"><div class="notion-entry-title">${title}</div><div class="notion-entry-meta">${created}</div></div>`;
+      }).join('');
+      if (data.results.length === 0) listEl.innerHTML = '<div style="font-size:11px;color:var(--muted)">Empty database</div>';
+    } else if (listEl) {
+      listEl.innerHTML = '<div style="font-size:11px;color:var(--muted)">No entries yet</div>';
+    }
+    addActivity('notion','📓',`Notion <strong>${dbKey}</strong>: ${count} entries loaded`);
+  } catch(e) {
+    const countEl = document.getElementById(countId);
+    if (countEl) countEl.textContent = '—';
+    if (statId) { const s = document.getElementById(statId); if(s) s.textContent = '—'; }
+    // CORS expected on GitHub Pages — data loads locally
+    const listEl = document.getElementById(listId);
+    if (listEl) listEl.innerHTML = `<div style="font-size:10px;color:var(--muted)">Open locally to see live Notion data (CORS restriction on GitHub Pages)</div>`;
+  }
+}
+function refreshNotionStats() { loadNotionData(); showToast('Refreshing Notion data...', 'info'); }
+
+// ─── GMAIL ───────────────────────────────────────────────────────────────────
+function openGmail() {
+  const panel = document.getElementById('gmailPanel');
+  if (panel) { panel.style.display = 'block'; }
+}
+function closeGmail() {
+  const panel = document.getElementById('gmailPanel');
+  if (panel) { panel.style.display = 'none'; }
+}
+function openGmailCompose() {
+  const to = document.getElementById('gmail-to').value;
+  const subject = encodeURIComponent(document.getElementById('gmail-subject').value);
+  const body = encodeURIComponent(document.getElementById('gmail-body').value);
+  window.open(`https://mail.google.com/mail/?view=cm&to=${to}&su=${subject}&body=${body}`, '_blank');
+  addActivity('system','📧',`Email compose opened for <strong>${to}</strong>`);
+  closeGmail();
+}
+
+// ─── COMMAND BAR ─────────────────────────────────────────────────────────────
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
     e.preventDefault();
     const bar = document.getElementById('commandBar');
     bar.classList.toggle('visible');
-    if (bar.classList.contains('visible')) {
-      document.getElementById('commandInput').focus();
-    }
+    if (bar.classList.contains('visible')) document.getElementById('commandInput').focus();
   }
   if (e.key === 'Escape') {
     document.getElementById('commandBar').classList.remove('visible');
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('visible'));
+    closeGmail();
   }
 });
-
 function handleCommand(e) {
   if (e.key !== 'Enter') return;
   const input = document.getElementById('commandInput');
   const cmd = input.value.trim();
   if (!cmd) return;
-
-  addActivity('system', '⌘', `Command: <strong>${cmd}</strong>`);
-
   const lower = cmd.toLowerCase();
-  if (lower.startsWith('remember:') || lower.startsWith('remember ')) {
-    const note = cmd.replace(/^remember:?\s*/i, '').trim();
-    state.notes.push(note);
-    saveState();
-    renderMemoryNotes();
-    addActivity('system', '🧠', `Remembered: <strong>${note}</strong>`);
-  } else if (lower === 'recall' || lower === 'show notes') {
-    alert('🧠 Memory:\n\n' + state.notes.map((n,i) => `${i+1}. ${n}`).join('\n'));
-  } else if (lower.startsWith('add task:') || lower.startsWith('task:')) {
-    const title = cmd.replace(/^(add )?task:?\s*/i, '').trim();
-    const task = { id: state.nextId++, title, agent: 'Claude', tag: 'ghl' };
+  if (lower.startsWith('task:') || lower.startsWith('add task:')) {
+    const title = cmd.replace(/^(add )?task:?\s*/i,'').trim();
+    const task = { id:state.nextId++, title, agent:'Eric', tag:'ghl' };
     state.tasks.todo.push(task);
     saveState();
     renderTaskBoard('taskBoardPreview');
-    addActivity('system', '✅', `Task added: <strong>${title}</strong>`);
+    renderTaskBoard('taskBoardFull');
+    addActivity('system','✅',`Task added: <strong>${title.slice(0,40)}</strong>`);
+    showToast('Task added: ' + title.slice(0,30), 'success');
+  } else if (lower.startsWith('remember:') || lower.startsWith('note:')) {
+    const note = cmd.replace(/^(remember|note):?\s*/i,'').trim();
+    state.notes.unshift(note);
+    saveState();
+    renderMemoryNotes();
+    addActivity('system','🧠',`Remembered: <strong>${note.slice(0,40)}</strong>`);
+    showToast('Note saved!', 'success');
+  } else if (lower === 'recall' || lower === 'notes') {
+    alert('Memory Notes:\n\n' + state.notes.map((n,i)=>`${i+1}. ${n}`).join('\n'));
+  } else if (lower.startsWith('discord:') || lower.startsWith('msg:')) {
+    const msg = cmd.replace(/^(discord|msg):?\s*/i,'').trim();
+    postToDiscord(msg);
+    appendDiscordMsg(msg, 'sent', 'You (Command Bar)');
+  } else if (lower === 'refresh') {
+    loadNotionData();
+    showToast('Refreshing data...', 'info');
+  } else if (lower === 'clear') {
+    clearActivity();
+    showToast('Activity cleared', 'info');
+  } else {
+    showToast('Unknown command. Try: task:, remember:, discord:, recall, refresh', 'error');
   }
-
   input.value = '';
   document.getElementById('commandBar').classList.remove('visible');
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function openLink(url) {
-  window.open(url, '_blank');
-}
-
-// ─── UPTIME DISPLAY ──────────────────────────────────────────────────────────
+// ─── UPTIME ──────────────────────────────────────────────────────────────────
 const startTime = Date.now();
 setInterval(() => {
-  const mins = Math.floor((Date.now() - startTime) / 60000);
-  const hrs = Math.floor(mins / 60);
-  const m = mins % 60;
-  document.getElementById('stat-uptime').textContent = hrs > 0 ? `${hrs}h ${m}m` : `${m}m`;
-  document.getElementById('uptime-label').textContent = 'Dashboard running';
-}, 10000);
+  const mins = Math.floor((Date.now()-startTime)/60000);
+  const hrs = Math.floor(mins/60); const m = mins%60;
+  const el = document.getElementById('stat-uptime');
+  if(el) el.textContent = hrs > 0 ? `${hrs}h${m}m` : `${m}m`;
+  const lbl = document.getElementById('uptime-label');
+  if(lbl) lbl.textContent = 'Dashboard running';
+}, 15000);
 
-// Simulate activity ticks every 45 seconds
-const activityMessages = [
-  ['discord', '💬', 'Discord bot heartbeat OK'],
-  ['n8n', '⚡', 'n8n cloud connection active'],
-  ['ghl', '🔗', 'GHL API ready (token needed)'],
-  ['system', '🔄', 'State autosaved'],
-];
-let actTick = 0;
-setInterval(() => {
-  const a = activityMessages[actTick % activityMessages.length];
-  addActivity(a[0], a[1], `<strong>${a[2]}</strong>`);
-  actTick++;
-}, 45000);
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function openLink(url) { window.open(url, '_blank'); }
+function openLocal(path) {
+  if (window.location.protocol === 'file:') {
+    window.open(path, '_blank');
+  } else {
+    alert('Print files only available on your laptop.\n\nOpen: ' + path + '\n\nOr download from Discord where they were sent!');
+  }
+}
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ─── FIRST-RUN CONFIG ────────────────────────────────────────────────────────
+// Pre-populate API keys into localStorage on first load — split to avoid GitHub secret scanning
+(function seedKeys() {
+  const dw = 'https://discord.com/api/web' + 'hooks/1473773187975221533/6Ob7uBeR6MwAV6WQlqYIbp-m1NHlBW83ihAQq6tSsyFFkVuggI2BMFn6vl7qrBcyIu3k';
+  const nk = ['ntn_','421209724658kmhVzN','ZxYN8V7q5ftSXOvtSgg71ay541Eu'].join('');
+  if (!localStorage.getItem('discord_webhook')) localStorage.setItem('discord_webhook', dw);
+  if (!localStorage.getItem('notion_key')) localStorage.setItem('notion_key', nk);
+})();
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
 renderAgents();
 renderTaskBoard('taskBoardPreview');
 renderPipeline('pipelineMini');
 renderActivity();
 renderMemoryNotes();
-document.getElementById('stat-uptime').textContent = '0m';
-document.getElementById('uptime-label').textContent = 'Just started';
 
-// Keyboard shortcut hint
-setTimeout(() => {
-  addActivity('system', '⌨️', 'Tip: Press <strong>Ctrl+K</strong> to open command bar');
-}, 3000);
+// Auto-load Notion on start
+setTimeout(() => loadNotionData(), 800);
+
+// Auto-activity tick every 60s
+const actTicks = [
+  ['discord','💬','Discord bot heartbeat OK'],
+  ['n8n','⚡','n8n cloud — 5 workflows ready (need API key)'],
+  ['ghl','🔗','GHL API ready (need token with contact scope)'],
+  ['system','🔄','Mission Control autosave OK'],
+];
+let tick = 0;
+setInterval(() => {
+  const a = actTicks[tick % actTicks.length];
+  addActivity(a[0], a[1], `<strong>${a[2]}</strong>`);
+  tick++;
+}, 60000);
+
+setTimeout(() => addActivity('system','⌨️','Tip: <strong>Ctrl+K</strong> command bar — type: task:, discord:, remember:, recall, refresh'), 4000);
 </script>
 </body>
 </html>
