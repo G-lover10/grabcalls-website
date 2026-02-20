@@ -401,6 +401,56 @@
       <button class="qa-btn" onclick="refreshNotionStats()">🔄 Refresh Data</button>
     </div>
 
+    <!-- Client + Next Steps Row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <!-- Real Massage Client Card -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          <span>🎯</span> Active Client — Real Massage
+          <span style="margin-left:auto;font-size:10px;background:rgba(0,212,170,.1);color:var(--accent2);padding:2px 8px;border-radius:8px">HOT LEAD</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Phone</span><a href="tel:2054522193" style="color:var(--accent);text-decoration:none">(205) 452-2193</a></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Address</span><span>6215 US-11, Springville AL</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Hours</span><span>Mon–Sun 9AM–8PM</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Rating</span><span style="color:var(--accent4)">⭐ 4.9 stars, 40+ reviews</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Pitch</span><span style="color:var(--text)">Voice agent $197 | Scheduling $297</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:60px">Note</span><span style="color:var(--warning)">Chinese owners — bilingual materials ready</span></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="section-action" onclick="openLink('https://www.canva.com/d/XhFm6eXuhNdbBjq')" style="flex:1;text-align:center">Edit Canva Flyer</button>
+          <button class="section-action" onclick="openLocal('C:/Users/medic/GrabCalls/website/landing-pages/real-massage-v2.html')" style="flex:1;text-align:center">Website Preview</button>
+        </div>
+      </div>
+
+      <!-- Next Steps Checklist -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">⚡ What Eric Needs To Do</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-size:13px;margin-top:1px">1</span>
+            <div><div style="color:var(--text);font-weight:600">Telegram pairing</div><div style="color:var(--muted)">Msg @GrabCalls_bot → get code → openclaw pairing approve telegram CODE</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-size:13px;margin-top:1px">2</span>
+            <div><div style="color:var(--text);font-weight:600">n8n API key</div><div style="color:var(--muted)">voice-assistant.app.n8n.cloud → bottom-left avatar → Settings → API Keys</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
+            <span style="color:var(--warning);font-size:13px;margin-top:1px">3</span>
+            <div><div style="color:var(--text);font-weight:600">Visit Real Massage</div><div style="color:var(--muted)">Print flyer → in-person demo → close at $197 voice agent</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
+            <span style="color:var(--warning);font-size:13px;margin-top:1px">4</span>
+            <div><div style="color:var(--text);font-weight:600">Oracle Cloud signup</div><div style="color:var(--muted)">cloud.oracle.com — free 4-core VM, bot stays online 24/7</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(108,99,255,.06);border-radius:6px;border:1px solid rgba(108,99,255,.15)">
+            <span style="color:var(--accent);font-size:13px;margin-top:1px">5</span>
+            <div><div style="color:var(--text);font-weight:600">GHL token + A2P 10DLC</div><div style="color:var(--muted)">$49, ~2 weeks — needed before any SMS automations</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Agent Grid -->
     <div class="section-header">
       <div class="section-title">Active Agents</div>
