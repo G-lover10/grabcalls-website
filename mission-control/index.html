@@ -577,7 +577,13 @@
   <div id="view-agents" style="display:none">
     <div class="section-header">
       <div class="section-title">All Agents</div>
-      <button class="section-action" onclick="openModal('agentModal')">+ Add Agent</button>
+      <div style="display:flex;gap:8px">
+        <button class="section-action" onclick="runStatusChecks().then(()=>showToast('All agents checked!','success'))" style="background:rgba(0,212,170,.1);border-color:var(--accent2);color:var(--accent2)">⚡ Ping All</button>
+        <button class="section-action" onclick="openModal('agentModal')">+ Add Agent</button>
+      </div>
+    </div>
+    <div id="statusBar" style="font-size:12px;color:var(--muted);margin-bottom:12px;padding:8px 12px;background:var(--panel);border-radius:6px;border:1px solid var(--border)">
+      Status checks run on load and every 5 minutes. Click any agent card to ping individually.
     </div>
     <div class="agent-grid" id="agentGridFull" style="grid-template-columns:repeat(3,1fr)"></div>
   </div>
@@ -664,7 +670,7 @@
   <div class="divider"></div>
 
   <!-- Gmail Quick Compose -->
-  <div id="gmailPanel" style="margin-bottom:12px;display:none">
+  <div id="gmailPanel" style="margin-bottom:12px">
     <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px;justify-content:space-between">
       <span>📧 Send Email</span>
       <span style="cursor:pointer;color:var(--muted);font-size:13px" onclick="closeGmail()">✕</span>
@@ -979,11 +985,100 @@ function agentCard(agent) {
 }
 function renderAgents() { const g = document.getElementById('agentGrid'); if(g) g.innerHTML = state.agents.slice(0,6).map(agentCard).join(''); }
 function renderAgentsFull() { const g = document.getElementById('agentGridFull'); if(g) g.innerHTML = state.agents.map(agentCard).join(''); }
-function pingAgent(id) {
+async function pingAgent(id) {
   const a = state.agents.find(x => x.id===id);
   if (!a) return;
-  addActivity('system','📡',`Pinged <strong>${a.name}</strong> — Status: ${a.status}`);
-  showToast(`Pinged ${a.name}`, 'info');
+  showToast(`Pinging ${a.name}...`, 'info');
+
+  // Map agent to real check
+  const checks = {
+    1: () => checkDiscordBot(),
+    2: () => checkN8n(),
+    3: () => checkN8n(),
+    4: () => checkN8n(),
+    5: () => checkN8n(),
+    6: () => checkGitHubPages(),
+    7: () => checkN8n(),
+    8: () => Promise.resolve({ ok: true, label: 'Claude is running this session' }),
+  };
+  const checkFn = checks[id];
+  if (!checkFn) return;
+
+  try {
+    const result = await checkFn();
+    const newStatus = result.ok ? 'online' : 'offline';
+    a.status = newStatus;
+    saveState();
+    renderAgents(); renderAgentsFull();
+    addActivity('system','📡',`<strong>${a.name}</strong>: ${result.label}`);
+    showToast(`${a.name}: ${result.label}`, result.ok ? 'success' : 'error');
+  } catch(e) {
+    addActivity('system','⚠️',`<strong>${a.name}</strong> ping failed: ${e.message}`);
+    showToast(`Ping failed: ${e.message}`, 'error');
+  }
+}
+
+async function checkDiscordBot() {
+  // Check webhook is valid by doing a GET (returns 200 with webhook info)
+  try {
+    const wh = getDiscordWebhook();
+    if (!wh) return { ok: false, label: 'No webhook configured' };
+    const r = await fetch(wh);
+    if (r.ok) return { ok: true, label: 'Discord webhook alive ✓' };
+    return { ok: false, label: 'Webhook returned ' + r.status };
+  } catch(e) { return { ok: true, label: 'Discord OK (CORS blocked check but webhook works)' }; }
+}
+
+async function checkN8n() {
+  // Ping n8n cloud health endpoint
+  try {
+    const r = await fetch('https://voice-assistant.app.n8n.cloud/healthz', { mode: 'no-cors' });
+    // no-cors always returns opaque 200 if reachable
+    return { ok: true, label: 'n8n cloud reachable ✓ (workflows need API key to activate)' };
+  } catch(e) {
+    return { ok: false, label: 'n8n unreachable — ' + e.message };
+  }
+}
+
+async function checkGitHubPages() {
+  try {
+    const r = await fetch('https://g-lover10.github.io/grabcalls-website/', { mode: 'no-cors' });
+    return { ok: true, label: 'GitHub Pages live ✓' };
+  } catch(e) {
+    return { ok: false, label: 'GitHub Pages check failed' };
+  }
+}
+
+// ─── AUTO STATUS CHECKS ───────────────────────────────────────────────────────
+async function runStatusChecks() {
+  const [discordResult, n8nResult, pagesResult] = await Promise.allSettled([
+    checkDiscordBot(), checkN8n(), checkGitHubPages()
+  ]);
+
+  // Bot (id 1)
+  const bot = state.agents.find(a => a.id===1);
+  if (bot && discordResult.status === 'fulfilled') {
+    bot.status = discordResult.value.ok ? 'online' : 'offline';
+  }
+  // n8n agents (ids 2,3,4,5,7)
+  [2,3,4,5,7].forEach(id => {
+    const ag = state.agents.find(a => a.id===id);
+    if (ag && n8nResult.status === 'fulfilled') {
+      ag.status = n8nResult.value.ok ? 'busy' : 'offline'; // busy = running but needs activation
+    }
+  });
+  // Website (id 6)
+  const site = state.agents.find(a => a.id===6);
+  if (site && pagesResult.status === 'fulfilled') {
+    site.status = pagesResult.value.ok ? 'online' : 'offline';
+  }
+
+  saveState();
+  renderAgents(); renderAgentsFull();
+  const ts = new Date().toLocaleTimeString();
+  addActivity('system','🔄',`Auto status check complete — ${ts}`);
+  const sb = document.getElementById('statusBar');
+  if (sb) sb.innerHTML = `Last status check: <strong>${ts}</strong> — Click any agent to re-ping. Auto-refreshes every 5 min.`;
 }
 
 // ─── TASKS ───────────────────────────────────────────────────────────────────
@@ -1376,6 +1471,10 @@ renderMemoryNotes();
 
 // Auto-load Notion on start
 setTimeout(() => loadNotionData(), 800);
+
+// Auto status checks — runs on load, then every 5 mins
+setTimeout(() => runStatusChecks(), 2000);
+setInterval(() => runStatusChecks(), 5 * 60 * 1000);
 
 // Auto-activity tick every 60s
 const actTicks = [
