@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Try Our AI Voice Agent — Live Demo | GrabCalls</title>
+<meta name="description" content="Call our live AI voice agent demo and hear exactly what your customers will experience. Takes 60 seconds.">
+<meta property="og:title" content="Hear Our AI Answer Your Phone — Live Demo">
+<meta property="og:description" content="Call our live AI voice agent and hear what your customers will experience. 60 seconds. No signup needed.">
+<meta property="og:type" content="website">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #4CAF50;
+  --primary-dark: #388E3C;
+  --accent: #FF6B35;
+  --dark: #1a1a2e;
+  --darker: #16213e;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--dark);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* LOGO */
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 40px;
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--primary); }
+
+/* CARD */
+.card {
+  background: var(--darker);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+}
+
+/* PULSE ANIMATION */
+.pulse-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 32px;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(76,175,80,0.15);
+  animation: pulse 2s ease-out infinite;
+}
+.pulse-ring::after {
+  animation-delay: 0.6s;
+}
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.phone-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), #2e7d32);
+  border-radius: 50%;
+  font-size: 44px;
+  z-index: 1;
+  box-shadow: 0 8px 32px rgba(76,175,80,0.4);
+}
+
+/* TEXT */
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.headline {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 14px;
+  letter-spacing: -0.5px;
+}
+.subtext {
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+.subtext strong { color: #fff; }
+
+/* CALL BUTTON */
+.call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--primary), #2e7d32);
+  color: #fff;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+  padding: 20px 36px;
+  border-radius: 100px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(76,175,80,0.35);
+  transition: all 0.2s;
+  letter-spacing: -0.3px;
+  margin-bottom: 14px;
+}
+.call-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(76,175,80,0.5);
+}
+.call-btn:active { transform: translateY(0); }
+.call-btn .btn-icon { font-size: 22px; }
+
+/* WEB CALL BUTTON */
+.webcall-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 100px;
+  width: 100%;
+  transition: all 0.2s;
+  margin-bottom: 32px;
+}
+.webcall-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+/* DIVIDER */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,0.25);
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+}
+.feature-dot {
+  width: 20px;
+  height: 20px;
+  background: rgba(76,175,80,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+/* FOOTER LINK */
+.footer-link {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+}
+.footer-link a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+}
+.footer-link a:hover { color: var(--primary); }
+
+/* BADGE */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(76,175,80,0.15);
+  border: 1px solid rgba(76,175,80,0.3);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .card { padding: 36px 24px; }
+  .headline { font-size: 24px; }
+  .call-btn { font-size: 18px; padding: 18px 28px; }
+}
+</style>
+</head>
+<body>
+
+<div class="logo">Grab<span>Calls</span>.com</div>
+
+<div class="card">
+
+  <!-- Pulse phone icon -->
+  <div class="pulse-ring">
+    <div class="phone-icon">📞</div>
+  </div>
+
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    Live AI Agent
+  </div>
+
+  <div class="eyebrow">Free Demo</div>
+  <h1 class="headline">Hear Our AI Answer<br>Your Phone</h1>
+  <p class="subtext">
+    Call the number below and experience exactly what your customers will hear —
+    <strong>a friendly AI that never misses a call, 24/7.</strong>
+  </p>
+
+  <!-- Primary: Phone call -->
+  <a href="tel:+12056059842" class="call-btn">
+    <span class="btn-icon">📲</span>
+    Call (205) 605-9842
+  </a>
+
+  <div class="or-divider">or call from your browser</div>
+
+  <!-- Secondary: Web call -->
+  <a href="https://dialpad.com/call/+12056059842" class="webcall-btn" onclick="handleWebCall(event)">
+    🌐 &nbsp;Start Web Call
+  </a>
+
+  <!-- What to expect -->
+  <div class="features">
+    <div class="feature">
+      <div class="feature-dot">✓</div>
+      AI answers instantly — no hold music, no voicemail
+    </div>
+    <div class="feature">
+      <div class="feature-dot">✓</div>
+      Answers questions, books appointments, captures info
+    </div>
+    <div class="feature">
+      <div class="feature-dot">✓</div>
+      Works 24/7 — nights, weekends, holidays
+    </div>
+    <div class="feature">
+      <div class="feature-dot">✓</div>
+      This exact agent can be set up for your business
+    </div>
+  </div>
+
+  <div class="footer-link">
+    Want this for your business? &nbsp;<a href="https://g-lover10.github.io/grabcalls-website/">See how it works →</a>
+  </div>
+
+</div>
+
+<script>
+function handleWebCall(e) {
+  // Try to use browser's built-in calling if available
+  // Fall back to tel: link
+  e.preventDefault();
+  if (navigator.userAgent.match(/Android|iPhone|iPad/i)) {
+    window.location.href = 'tel:+12056059842';
+  } else {
+    // On desktop show a tooltip with the number
+    const btn = e.currentTarget;
+    btn.textContent = '📞  Call (205) 605-9842 from your phone';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'rgba(76,175,80,0.4)';
+    btn.style.background = 'rgba(76,175,80,0.1)';
+    setTimeout(() => {
+      btn.innerHTML = '🌐 &nbsp;Start Web Call';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.style.background = '';
+    }, 3000);
+  }
+}
+</script>
+
+</body>
+</html>
