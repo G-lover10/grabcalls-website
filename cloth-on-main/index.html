@@ -181,20 +181,16 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, #2c3e50 0%, #3d5a47 40%, #4a6741 100%);
+            background: url('https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1600&q=80') center/cover no-repeat;
             z-index: 1;
         }
 
-        /* Decorative overlay pattern */
         .hero-bg::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(201,168,76,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(125,155,118,0.2) 0%, transparent 50%),
-                radial-gradient(circle at 60% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            background: rgba(0,0,0,0.0);
             z-index: 1;
         }
 
@@ -203,7 +199,7 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.15);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.5) 100%);
             z-index: 2;
         }
 
@@ -471,6 +467,15 @@
             text-align: center;
             padding: 0 20px;
         }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+
+        .carousel-item:hover img { transform: scale(1.12); }
 
         .carousel-overlay {
             position: absolute;
@@ -1313,118 +1318,126 @@
         </div>
 
         <div class="carousel-track">
+            <!-- Clothing rack - colorful tops like the pink/green/white rack you showed -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">🏠<p>Home Decor Collection</p></div>
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Women's Clothing at Cloth On Main">
+                <div class="carousel-overlay">
+                    <div class="carousel-overlay-title">Women's Clothing</div>
+                    <div class="carousel-overlay-text">Curated styles for every occasion</div>
+                </div>
+            </div>
+            <!-- Home decor shelf - like your blessed home sign, pampas grass, clock -->
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Home Decor at Cloth On Main">
                 <div class="carousel-overlay">
                     <div class="carousel-overlay-title">Home Decor</div>
                     <div class="carousel-overlay-text">Unique pieces for every room</div>
                 </div>
             </div>
+            <!-- Jewelry display - like your $3 earring/bracelet wall -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">👗<p>Women's Clothing</p></div>
+                <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80" alt="Jewelry at Cloth On Main - All $3.00 Each">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Women's Fashion</div>
-                    <div class="carousel-overlay-text">Curated styles for every occasion</div>
+                    <div class="carousel-overlay-title">Jewelry — All $3.00 Each</div>
+                    <div class="carousel-overlay-text">Earrings, bracelets, necklaces</div>
                 </div>
             </div>
+            <!-- Sweatshirts / acid wash like your cargo sweatshirt photo -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">💎<p>Jewelry & Accessories</p></div>
+                <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80" alt="Sweatshirts and Tops">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Jewelry</div>
-                    <div class="carousel-overlay-text">Handpicked pieces you will love</div>
+                    <div class="carousel-overlay-title">Tops &amp; Sweatshirts</div>
+                    <div class="carousel-overlay-text">New styles coming in regularly</div>
                 </div>
             </div>
+            <!-- Candles / gift items like your South. candle display -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">✝️<p>Faith & Inspirational Gifts</p></div>
+                <img src="https://images.unsplash.com/photo-1602874801006-7ad5f5e6edd1?w=600&q=80" alt="Gifts and Candles at Cloth On Main">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Faith Gifts</div>
-                    <div class="carousel-overlay-text">Meaningful gifts for those you love</div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="carousel-placeholder">🎁<p>Gift Collections</p></div>
-                <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Gift Sets</div>
+                    <div class="carousel-overlay-title">Gifts &amp; Candles</div>
                     <div class="carousel-overlay-text">Perfect for any occasion</div>
                 </div>
             </div>
+            <!-- Tote bags like your Hello Weekend jute bag -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">🏡<p>Textiles & Linens</p></div>
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80" alt="Bags and Totes at Cloth On Main">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Textiles</div>
-                    <div class="carousel-overlay-text">Cozy and beautiful</div>
+                    <div class="carousel-overlay-title">Bags &amp; Totes</div>
+                    <div class="carousel-overlay-text">Functional boutique style</div>
                 </div>
             </div>
+            <!-- Faith / inspirational wall decor -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">🌿<p>Seasonal Decor</p></div>
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&q=80" alt="Faith and Inspirational Gifts">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Seasonal Finds</div>
-                    <div class="carousel-overlay-text">Fresh arrivals all year round</div>
+                    <div class="carousel-overlay-title">Faith &amp; Inspiration</div>
+                    <div class="carousel-overlay-text">Meaningful gifts grounded in faith</div>
                 </div>
             </div>
+            <!-- Local Springville pride - tumblers, game day items -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">👜<p>Bags & Totes</p></div>
+                <img src="https://images.unsplash.com/photo-1577937927133-66ef06acdf18?w=600&q=80" alt="Local Springville Pride Gifts">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Accessories</div>
-                    <div class="carousel-overlay-text">Complete any look</div>
+                    <div class="carousel-overlay-title">Springville Pride</div>
+                    <div class="carousel-overlay-text">35146 — represent your hometown</div>
                 </div>
             </div>
 
-            <!-- Duplicate for seamless loop -->
+            <!-- === DUPLICATE FOR SEAMLESS LOOP === -->
             <div class="carousel-item">
-                <div class="carousel-placeholder">🏠<p>Home Decor Collection</p></div>
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Women's Clothing at Cloth On Main">
+                <div class="carousel-overlay">
+                    <div class="carousel-overlay-title">Women's Clothing</div>
+                    <div class="carousel-overlay-text">Curated styles for every occasion</div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Home Decor at Cloth On Main">
                 <div class="carousel-overlay">
                     <div class="carousel-overlay-title">Home Decor</div>
                     <div class="carousel-overlay-text">Unique pieces for every room</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">👗<p>Women's Clothing</p></div>
+                <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80" alt="Jewelry at Cloth On Main">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Women's Fashion</div>
-                    <div class="carousel-overlay-text">Curated styles for every occasion</div>
+                    <div class="carousel-overlay-title">Jewelry — All $3.00 Each</div>
+                    <div class="carousel-overlay-text">Earrings, bracelets, necklaces</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">💎<p>Jewelry & Accessories</p></div>
+                <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80" alt="Sweatshirts and Tops">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Jewelry</div>
-                    <div class="carousel-overlay-text">Handpicked pieces you will love</div>
+                    <div class="carousel-overlay-title">Tops &amp; Sweatshirts</div>
+                    <div class="carousel-overlay-text">New styles coming in regularly</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">✝️<p>Faith & Inspirational Gifts</p></div>
+                <img src="https://images.unsplash.com/photo-1602874801006-7ad5f5e6edd1?w=600&q=80" alt="Gifts and Candles at Cloth On Main">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Faith Gifts</div>
-                    <div class="carousel-overlay-text">Meaningful gifts for those you love</div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="carousel-placeholder">🎁<p>Gift Collections</p></div>
-                <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Gift Sets</div>
+                    <div class="carousel-overlay-title">Gifts &amp; Candles</div>
                     <div class="carousel-overlay-text">Perfect for any occasion</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">🏡<p>Textiles & Linens</p></div>
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80" alt="Bags and Totes at Cloth On Main">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Textiles</div>
-                    <div class="carousel-overlay-text">Cozy and beautiful</div>
+                    <div class="carousel-overlay-title">Bags &amp; Totes</div>
+                    <div class="carousel-overlay-text">Functional boutique style</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">🌿<p>Seasonal Decor</p></div>
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&q=80" alt="Faith and Inspirational Gifts">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Seasonal Finds</div>
-                    <div class="carousel-overlay-text">Fresh arrivals all year round</div>
+                    <div class="carousel-overlay-title">Faith &amp; Inspiration</div>
+                    <div class="carousel-overlay-text">Meaningful gifts grounded in faith</div>
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="carousel-placeholder">👜<p>Bags & Totes</p></div>
+                <img src="https://images.unsplash.com/photo-1577937927133-66ef06acdf18?w=600&q=80" alt="Local Springville Pride Gifts">
                 <div class="carousel-overlay">
-                    <div class="carousel-overlay-title">Accessories</div>
-                    <div class="carousel-overlay-text">Complete any look</div>
+                    <div class="carousel-overlay-title">Springville Pride</div>
+                    <div class="carousel-overlay-text">35146 — represent your hometown</div>
                 </div>
             </div>
         </div>
