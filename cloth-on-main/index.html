@@ -552,9 +552,6 @@
         }
 
         .collection-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
             margin-bottom: 35px;
             padding-bottom: 25px;
             border-bottom: 2px solid rgba(125,155,118,0.25);
@@ -565,14 +562,22 @@
             filter: drop-shadow(0 4px 8px rgba(125,155,118,0.3));
         }
 
-        .collection-icon-photo {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
+        .collection-banner {
+            margin: -55px -45px 30px -45px;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 28px 28px 0 0;
+        }
+
+        .collection-banner img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border: 3px solid var(--sage);
-            box-shadow: 0 4px 15px rgba(125,155,118,0.3);
-            flex-shrink: 0;
+            transition: transform 0.6s ease;
+        }
+
+        .collection-card:hover .collection-banner img {
+            transform: scale(1.06);
         }
 
         .collection-card h3 {
@@ -1539,8 +1544,10 @@
 
             <!-- Home Decor -->
             <div class="collection-card fade-in">
+                <div class="collection-banner">
+                    <img src="photos/618589577_18306187924248567_1953416261365548003_n.jpg" alt="Home Decor">
+                </div>
                 <div class="collection-header">
-                    <img class="collection-icon-photo" src="photos/618589577_18306187924248567_1953416261365548003_n.jpg" alt="Home Decor">
                     <h3>Home Decor</h3>
                 </div>
                 <ul class="item-list">
@@ -1584,8 +1591,10 @@
 
             <!-- Women's Clothing -->
             <div class="collection-card fade-in">
+                <div class="collection-banner">
+                    <img src="photos/610752007_18305059021248567_6923158630580845798_n.jpg" alt="Women's Clothing">
+                </div>
                 <div class="collection-header">
-                    <img class="collection-icon-photo" src="photos/610752007_18305059021248567_6923158630580845798_n.jpg" alt="Women's Clothing">
                     <h3>Women's Clothing</h3>
                 </div>
                 <ul class="item-list">
@@ -1629,8 +1638,10 @@
 
             <!-- Jewelry & Accessories -->
             <div class="collection-card fade-in">
+                <div class="collection-banner">
+                    <img src="photos/628881069_18309372280248567_1818760910202109877_n.jpg" alt="Jewelry & Accessories">
+                </div>
                 <div class="collection-header">
-                    <img class="collection-icon-photo" src="photos/628881069_18309372280248567_1818760910202109877_n.jpg" alt="Jewelry & Accessories">
                     <h3>Jewelry & Accessories</h3>
                 </div>
                 <ul class="item-list">
@@ -1674,8 +1685,10 @@
 
             <!-- Gifts & Faith -->
             <div class="collection-card fade-in">
+                <div class="collection-banner">
+                    <img src="photos/616547544_18305734231248567_3720015457065353792_n.jpg" alt="Gifts & Faith Items">
+                </div>
                 <div class="collection-header">
-                    <img class="collection-icon-photo" src="photos/616547544_18305734231248567_3720015457065353792_n.jpg" alt="Gifts & Faith Items">
                     <h3>Gifts & Faith Items</h3>
                 </div>
                 <ul class="item-list">
