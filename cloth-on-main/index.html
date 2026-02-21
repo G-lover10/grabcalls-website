@@ -898,6 +898,88 @@
             box-shadow: 0 12px 35px rgba(131,58,180,0.5);
         }
 
+        /* ===== SPRINGVILLE PRIDE SECTION ===== */
+        .springville-section {
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .springville-photos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 520px;
+        }
+
+        .springville-photo {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .springville-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+            filter: brightness(0.75);
+        }
+
+        .springville-photo:hover img {
+            transform: scale(1.07);
+            filter: brightness(0.65);
+        }
+
+        .springville-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            z-index: 2;
+        }
+
+        .springville-tag {
+            display: inline-block;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .springville-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 2px 4px 12px rgba(0,0,0,0.5);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .springville-sub {
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            text-shadow: 1px 2px 6px rgba(0,0,0,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .springville-photos {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .springville-photo {
+                height: 300px;
+            }
+        }
+
         /* ===== REVIEW SECTION ===== */
         .review-section {
             padding: 80px 20px;
@@ -1779,6 +1861,30 @@
                 <a href="https://maps.google.com/?q=6423+US+Highway+11+Springville+AL+35146" target="_blank" class="btn btn-light btn-large">
                     📍 Get Directions
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SPRINGVILLE PRIDE SECTION ===== -->
+    <section class="springville-section">
+        <div class="springville-photos">
+            <!-- Game Day / Springville pennant / 35146 items -->
+            <div class="springville-photo">
+                <img src="photos/625962672_18308422546248567_2366055891328992142_n.jpg" alt="Springville 35146 Local Pride Gifts">
+                <div class="springville-overlay">
+                    <div class="springville-tag">Springville Proud</div>
+                    <div class="springville-title">35146<br>Game Day Ready</div>
+                    <div class="springville-sub">Local pride gifts, tees &amp; tumblers</div>
+                </div>
+            </div>
+            <!-- Second Springville photo -->
+            <div class="springville-photo">
+                <img src="photos/636128241_18310022992248567_5882612586184762910_n.jpg" alt="Cloth On Main Springville AL">
+                <div class="springville-overlay">
+                    <div class="springville-tag">Right Here in Springville</div>
+                    <div class="springville-title">Shop Local.<br>Love Local.</div>
+                    <div class="springville-sub">6423 US Highway 11 &bull; Springville, AL</div>
+                </div>
             </div>
         </div>
     </section>
