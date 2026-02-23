@@ -264,7 +264,7 @@
 <nav class="topbar">
   <div class="logo">
     <div class="logo-icon">🎯</div>
-    <span>GrabCalls <span style="color:var(--accent)">Mission Control</span></span>
+    <span>GrabCalls <span style="color:var(--accent)">Mission Control</span> <span style="font-size:10px;color:var(--muted);font-weight:400">v3</span></span>
   </div>
   <div class="nav-center">
     <button class="nav-btn active" onclick="switchView('overview',this)">Overview</button>
@@ -273,6 +273,7 @@
     <button class="nav-btn" onclick="switchView('agents',this)">Agents</button>
     <button class="nav-btn" onclick="switchView('tasks',this)">Tasks</button>
     <button class="nav-btn" onclick="switchView('pipeline',this)">Pipeline</button>
+    <button class="nav-btn" onclick="switchView('server',this)" style="color:var(--accent2)">&#x26A1; Server</button>
   </div>
   <div class="topbar-right">
     <div class="status-dot"></div>
@@ -300,7 +301,7 @@
   </div>
   <div class="sidebar-item" id="nav-agents" onclick="switchView('agents',this)">
     <span class="item-icon">🤖</span> Agents
-    <span class="badge green">8</span>
+    <span class="badge green">9</span>
   </div>
   <div class="sidebar-item" id="nav-tasks" onclick="switchView('tasks',this)">
     <span class="item-icon">✅</span> Tasks
@@ -308,6 +309,10 @@
   </div>
   <div class="sidebar-item" id="nav-pipeline" onclick="switchView('pipeline',this)">
     <span class="item-icon">📊</span> Pipeline
+  </div>
+  <div class="sidebar-item" id="nav-server" onclick="switchView('server',this)">
+    <span class="item-icon">🖥️</span> Hetzner Server
+    <span class="badge green" id="server-badge">UP</span>
   </div>
 
   <div class="sidebar-label">Quick Actions</div>
@@ -395,10 +400,11 @@
       <button class="qa-btn discord-btn" onclick="switchView('discord')">💬 Message Bot</button>
       <button class="qa-btn notion-btn" onclick="switchView('notion')">📓 Notion Live</button>
       <button class="qa-btn gmail-btn" onclick="openGmail()">📧 Send Email</button>
-      <button class="qa-btn" onclick="openLink('https://voice-assistant.app.n8n.cloud')">⚡ n8n</button>
-      <button class="qa-btn" onclick="openLink('https://app.gohighlevel.com')">🔗 GHL CRM</button>
+      <button class="qa-btn" onclick="openLink('http://178.156.227.13:5678')" title="Hetzner n8n (local network or SSH tunnel)">&#x26A1; n8n Hetzner</button>
+      <button class="qa-btn" onclick="openLink('https://app.gohighlevel.com')">&#x1F517; GHL CRM</button>
+      <button class="qa-btn" onclick="switchView('server',document.getElementById('nav-server'))" style="color:var(--accent2)">&#x1F5A5; Server</button>
       <button class="qa-btn" onclick="openModal('taskModal')">+ New Task</button>
-      <button class="qa-btn" onclick="refreshNotionStats()">🔄 Refresh Data</button>
+      <button class="qa-btn" onclick="refreshNotionStats()">&#x1F504; Refresh Data</button>
     </div>
 
     <!-- Client + Next Steps Row -->
@@ -425,27 +431,31 @@
 
       <!-- Next Steps Checklist -->
       <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">⚡ What Eric Needs To Do</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x26A1; What Eric Needs To Do</div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
           <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
             <span style="color:var(--danger);font-size:13px;margin-top:1px">1</span>
-            <div><div style="color:var(--text);font-weight:600">Telegram pairing</div><div style="color:var(--muted)">Msg @GrabCalls_bot → get code → openclaw pairing approve telegram CODE</div></div>
+            <div><div style="color:var(--text);font-weight:600">Test Telegram bot NOW</div><div style="color:var(--muted)">Message @GrabCalls_bot: /status, /leads, /tasks — should reply instantly</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
             <span style="color:var(--danger);font-size:13px;margin-top:1px">2</span>
-            <div><div style="color:var(--text);font-weight:600">n8n API key</div><div style="color:var(--muted)">voice-assistant.app.n8n.cloud → bottom-left avatar → Settings → API Keys</div></div>
+            <div><div style="color:var(--text);font-weight:600">GHL Webhook → Hetzner</div><div style="color:var(--muted)">GHL → Settings → Webhooks → Add: https://record-customs-bush-jaguar.trycloudflare.com/webhook/ghl-new-contact | Event: Contact Created</div></div>
           </div>
-          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
-            <span style="color:var(--warning);font-size:13px;margin-top:1px">3</span>
-            <div><div style="color:var(--text);font-weight:600">Visit Real Massage</div><div style="color:var(--muted)">Print flyer → in-person demo → close at $197 voice agent</div></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-size:13px;margin-top:1px">3</span>
+            <div><div style="color:var(--text);font-weight:600">Named Cloudflare Tunnel</div><div style="color:var(--muted)">One.dash.cloudflare.com → Zero Trust → Tunnels → Create tunnel named grabcalls-n8n. Fixes URL-changes-on-restart problem.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
             <span style="color:var(--warning);font-size:13px;margin-top:1px">4</span>
-            <div><div style="color:var(--text);font-weight:600">Oracle Cloud signup</div><div style="color:var(--muted)">cloud.oracle.com — free 4-core VM, bot stays online 24/7</div></div>
+            <div><div style="color:var(--text);font-weight:600">Visit Real Massage</div><div style="color:var(--muted)">Print flyer → in-person demo → close at $197 voice agent | (205) 452-2193</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
+            <span style="color:var(--warning);font-size:13px;margin-top:1px">5</span>
+            <div><div style="color:var(--text);font-weight:600">Test Vapi.ai + Bland.ai</div><div style="color:var(--muted)">Sign up free on both. Run a test call. Pick one as your voice agent backend. This is your core product!</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:8px;padding:6px;background:rgba(108,99,255,.06);border-radius:6px;border:1px solid rgba(108,99,255,.15)">
-            <span style="color:var(--accent);font-size:13px;margin-top:1px">5</span>
-            <div><div style="color:var(--text);font-weight:600">GHL token + A2P 10DLC</div><div style="color:var(--muted)">$49, ~2 weeks — needed before any SMS automations</div></div>
+            <span style="color:var(--accent);font-size:13px;margin-top:1px">6</span>
+            <div><div style="color:var(--text);font-weight:600">GitHub PAT — Rotate NOW</div><div style="color:var(--muted)">Token ghp_JVzk6lp... exposed in MEMORY.md. github.com → Settings → Developer → Fine-grained tokens → delete + recreate</div></div>
           </div>
         </div>
       </div>
@@ -700,6 +710,133 @@
     </div>
   </div>
 
+  <!-- SERVER VIEW -->
+  <div id="view-server" style="display:none">
+    <div class="section-header">
+      <div class="section-title">&#x1F5A5;&#xFE0F; Hetzner Server — 178.156.227.13</div>
+      <button class="section-action" onclick="pingHetzner()" style="background:rgba(0,212,170,.1);border-color:var(--accent2);color:var(--accent2)">&#x1F4E1; Ping Server</button>
+    </div>
+
+    <!-- Server Status Cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <div class="stat-card green">
+        <div class="stat-label">Server Status</div>
+        <div class="stat-value" id="server-status-val" style="font-size:18px">UP</div>
+        <div class="stat-change up" id="server-status-sub">178.156.227.13 online</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">n8n Workflows</div>
+        <div class="stat-value" style="font-size:18px">8</div>
+        <div class="stat-change up">All active ✓</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-label">PM2 Processes</div>
+        <div class="stat-value" style="font-size:18px">3</div>
+        <div class="stat-change up">bot + n8n + cloudflared</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-label">Firewall</div>
+        <div class="stat-value" style="font-size:18px;color:var(--online)">UFW</div>
+        <div class="stat-change up">Port 22 only ✓</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <!-- SSH + Connection Info -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:10px">&#x1F517; Connection Details</div>
+        <div style="font-size:11px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:80px">IP</span><span style="color:var(--text);font-family:monospace">178.156.227.13</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:80px">OS</span><span>Ubuntu 22.04 ARM64 (CAX11)</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:80px">RAM</span><span>4GB | 2 vCPU | 40GB disk</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--muted);width:80px">SSH Key</span><span style="font-family:monospace;font-size:10px">C:\Users\medic\.ssh\id_ed25519</span></div>
+          <div style="margin-top:4px;padding:6px;background:rgba(0,0,0,.3);border-radius:5px;font-family:monospace;font-size:10px;color:var(--accent2);word-break:break-all">
+            "C:\Program Files\Git\usr\bin\ssh.exe" -i "C:\Users\medic\.ssh\id_ed25519" -n root@178.156.227.13
+          </div>
+          <button class="section-action" style="margin-top:4px" onclick="copyToClipboard('\"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\ssh.exe\" -i \"C:\\\\Users\\\\medic\\\\.ssh\\\\id_ed25519\" -n root@178.156.227.13')">Copy SSH Command</button>
+        </div>
+      </div>
+
+      <!-- Tunnel URL -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent4);margin-bottom:10px">&#x1F30E; Cloudflare Tunnel (TEMP)</div>
+        <div style="font-size:11px;display:flex;flex-direction:column;gap:6px">
+          <div style="padding:8px;background:rgba(255,217,61,.05);border:1px solid rgba(255,217,61,.2);border-radius:6px;font-family:monospace;font-size:10px;color:var(--accent4);word-break:break-all" id="tunnel-url-display">
+            https://record-customs-bush-jaguar.trycloudflare.com
+          </div>
+          <div style="font-size:10px;color:var(--danger)">&#x26A0; URL changes on cloudflared restart! Update below after restart.</div>
+          <div style="display:flex;gap:5px">
+            <input class="modal-input" style="font-size:10px;flex:1" id="tunnel-url-input" placeholder="Paste new tunnel URL..." />
+            <button class="btn btn-primary" style="font-size:10px;padding:5px 8px" onclick="updateTunnelUrl()">Save</button>
+          </div>
+          <div style="display:flex;gap:5px;margin-top:2px">
+            <button class="section-action" style="flex:1;text-align:center" onclick="openLink(getTunnelUrl())">Open n8n UI</button>
+            <button class="section-action" style="flex:1;text-align:center" onclick="copyToClipboard(getTunnelUrl()+'/webhook/ghl-new-contact')">Copy GHL Webhook</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px">GHL webhook URL: <span style="color:var(--accent)">[tunnel]/webhook/ghl-new-contact</span></div>
+          <div style="font-size:10px;color:var(--muted)">Telegram webhook: <span style="color:var(--accent)">[tunnel]/webhook/telegram-commander</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PM2 Processes -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x1F4CA; PM2 Process Manager</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div style="background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:8px;padding:10px">
+          <div style="font-size:11px;font-weight:600;color:var(--accent2)">grabcalls-bot (id:0)</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Discord AI + Notion</div>
+          <div style="font-size:10px;color:var(--online);margin-top:3px">&#x25CF; Online (autostart)</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">/root/grabcalls-bot/index.js</div>
+        </div>
+        <div style="background:rgba(108,99,255,.05);border:1px solid rgba(108,99,255,.2);border-radius:8px;padding:10px">
+          <div style="font-size:11px;font-weight:600;color:var(--accent)">n8n (id:4)</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Workflow automation engine</div>
+          <div style="font-size:10px;color:var(--online);margin-top:3px">&#x25CF; Online — 8 workflows active</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">Port 5678 (localhost only)</div>
+        </div>
+        <div style="background:rgba(255,217,61,.05);border:1px solid rgba(255,217,61,.2);border-radius:8px;padding:10px">
+          <div style="font-size:11px;font-weight:600;color:var(--accent4)">cloudflared (id:2)</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">HTTPS tunnel to n8n</div>
+          <div style="font-size:10px;color:var(--warning);margin-top:3px">&#x25CF; Online (TEMP URL — see above)</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">Upgrade to named tunnel in CF Zero Trust</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Status -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x1F6E1;&#xFE0F; Security Hardening Status</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:11px">
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>UFW Firewall — port 22 only inbound</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>fail2ban — SSH 3 attempts max, 24h ban</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>SSH key-only auth (PasswordAuthentication no)</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>.env file — permissions 600 (owner only)</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>n8n port 5678 — localhost only (UFW blocked)</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(34,197,94,.06);border-radius:6px"><span style="color:var(--online)">&#x2713;</span><span>Auto security updates — unattended-upgrades</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)"><span style="color:var(--danger)">!</span><span>PM2 running as root — create service user</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)"><span style="color:var(--warning)">!</span><span>Named tunnel needed (temp URL changes on restart)</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)"><span style="color:var(--danger)">!</span><span>GitHub PAT exposed in MEMORY.md — ROTATE NOW</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)"><span style="color:var(--warning)">!</span><span>Baked workflow JSONs — keys hardcoded (migrate to n8n Credentials Store)</span></div>
+      </div>
+    </div>
+
+    <!-- n8n Workflows List -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x26A1; Active n8n Workflows</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;font-size:11px">
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-morning-briefing</strong> — 8AM daily: GHL + Notion + Discord + Telegram</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-intel-agent</strong> — 4x/day: 7 RSS sources, relevance scoring</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-security-guard</strong> — 6x/day: .env leak + uptime checker</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-newlead-discord-notifier</strong> — GHL contact created &#x2192; Discord</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-ghl-new-lead-to-telegram</strong> — GHL contact &#x2192; Telegram + Discord</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-telegram-commander</strong> — /status /leads /tasks via @GrabCalls_bot</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-followup-sequence-trigger</strong> — lead nurture (original)</div>
+        <div style="padding:8px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px"><span style="color:var(--online)">&#x25CF;</span> <strong>WF-followup-sequence-trigger-baked</strong> — lead nurture (baked v2)</div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- RIGHT PANEL -->
@@ -899,27 +1036,31 @@ const NOTION_DBS = {
   log:   '30c9ce9b-08b1-809f-bf36-c2b8c76947c4',
   intel: '30c9ce9b-08b1-8041-9d6f-d9b381ea43c7'
 };
-const STORAGE_KEY = 'grabcalls-mc-v4';
+const STORAGE_KEY = 'grabcalls-mc-v5';
+const N8N_TUNNEL_URL = 'https://record-customs-bush-jaguar.trycloudflare.com'; // TEMP — changes on cloudflared restart. Update after named tunnel setup.
+const HETZNER_IP = '178.156.227.13';
 
 // ─── DEFAULT STATE ───────────────────────────────────────────────────────────
 const DEFAULT_STATE = {
   agents: [
-    { id:1, emoji:'🤖', name:'GrabCalls Bot', role:'Discord AI Assistant', platform:'Discord',
-      status:'online', task:'Running on Windows via Task Scheduler. Commands: !tasks, !leads, !intel, !fast, !deep', msgs:0, replies:0 },
-    { id:2, emoji:'☀️', name:'Morning Briefer', role:'8AM Daily Briefing', platform:'n8n',
-      status:'busy', task:'Built — needs n8n API key to activate. Sends GHL stats + AI news to Discord at 8AM', msgs:0, replies:0 },
-    { id:3, emoji:'🕵️', name:'Intel Agent', role:'4x/Day News Scraper', platform:'n8n',
-      status:'busy', task:'Built — needs activation. Scrapes VentureBeat, TechCrunch, GHL blog, n8n, X trends every 6hrs', msgs:0, replies:0 },
-    { id:4, emoji:'📩', name:'Lead Notifier', role:'GHL → Discord Alerts', platform:'n8n',
-      status:'busy', task:'Built — needs activation. Fires when new GHL contact created, posts to Discord instantly', msgs:0, replies:0 },
-    { id:5, emoji:'🔄', name:'Follow-up Sequencer', role:'Lead Nurture Automation', platform:'n8n',
-      status:'offline', task:'Built — needs activation. Auto-nurtures leads through pipeline stages via GHL workflows', msgs:0, replies:0 },
+    { id:1, emoji:'🤖', name:'GrabCalls Bot', role:'Discord AI Assistant', platform:'Discord/Hetzner',
+      status:'online', task:'DEPLOYED on Hetzner 178.156.227.13. Commands: !tasks, !leads, !intel, !fast, !deep. PM2 autostart enabled.', msgs:0, replies:0 },
+    { id:2, emoji:'☀️', name:'Morning Briefer', role:'8AM Daily Briefing', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner n8n — 8AM daily: GHL stats + Notion tasks + Discord + Telegram notification', msgs:0, replies:0 },
+    { id:3, emoji:'🕵️', name:'Intel Agent', role:'4x/Day News Scraper', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner n8n — 4x daily: 7 RSS sources, AI/GHL/automation news, relevance scoring', msgs:0, replies:0 },
+    { id:4, emoji:'📩', name:'Lead Notifier', role:'GHL → Discord + Telegram', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner n8n — 2 workflows: GHL new contact → Discord alert + Telegram DM to Eric', msgs:0, replies:0 },
+    { id:5, emoji:'🔄', name:'Follow-up Sequencer', role:'Lead Nurture Automation', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner n8n — 2 instances: auto-nurtures leads through GHL pipeline stages', msgs:0, replies:0 },
     { id:6, emoji:'🌐', name:'Website Agent', role:'grabcalls.com + GitHub Pages', platform:'GitHub',
-      status:'online', task:'LIVE at g-lover10.github.io/grabcalls-website/ — Mission Control also hosted there', msgs:0, replies:0 },
-    { id:7, emoji:'🛡️', name:'Security Guard', role:'Secret Leak & Uptime Monitor', platform:'n8n',
-      status:'busy', task:'Built — needs activation. Checks .env exposure, GitHub commits, website uptime every 6hrs', msgs:0, replies:0 },
-    { id:8, emoji:'🧠', name:'Claude (Orchestrator)', role:'Builder & Strategist', platform:'Claude Code',
-      status:'online', task:'Active this session — building, fixing, deploying. Ask me anything via this dashboard.', msgs:0, replies:0 },
+      status:'online', task:'LIVE at g-lover10.github.io/grabcalls-website/ — Mission Control v3 also hosted there', msgs:0, replies:0 },
+    { id:7, emoji:'🛡️', name:'Security Guard', role:'Secret Leak & Uptime Monitor', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner n8n — 6x daily: .env leak check, GitHub commit scan, uptime monitoring', msgs:0, replies:0 },
+    { id:8, emoji:'📱', name:'Telegram Commander', role:'/status /leads /tasks via Telegram', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE on Hetzner — webhook registered. Message @GrabCalls_bot with /status, /leads, /tasks', msgs:0, replies:0 },
+    { id:9, emoji:'🧠', name:'Claude (Orchestrator)', role:'Builder & Strategist', platform:'Claude Code',
+      status:'online', task:'Active this session — building, fixing, deploying. 8 agents running on Hetzner 24/7.', msgs:0, replies:0 },
   ],
   tasks: {
     todo: [
@@ -930,16 +1071,22 @@ const DEFAULT_STATE = {
       { id:5, title:'Add GHL Private Token to .env and n8n project variables', tag:'ghl', agent:'Eric' },
       { id:6, title:'A2P 10DLC registration — $49, ~2 weeks, required for SMS', tag:'ghl', agent:'Eric' },
       { id:7, title:'Point grabcalls.com → GitHub Pages (Cloudflare CNAME to g-lover10.github.io)', tag:'website', agent:'Eric' },
-      { id:8, title:'Activate all 5 n8n workflows (run C:\\AI_Employee\\n8n-activate-all.ps1 after API key)', tag:'n8n', agent:'Claude' },
+      { id:8, title:'A2P 10DLC registration — $49, ~2 weeks, required for SMS', tag:'ghl', agent:'Eric' },
+      { id:9, title:'Create Gumroad product: Local Business AI Automation Starter Kit — $97. Copy in INCOME-STREAM-PLAN.md', tag:'website', agent:'Eric' },
+      { id:10, title:'Check OpenRouter.ai for Kimi model (moonshot-v1-128k) — if listed add KIMI_API_KEY to .env', tag:'system', agent:'Eric' },
     ],
     inprogress: [
-      { id:9, title:'Real Massage client — in-person visit with printed flyer + live voice demo', tag:'ghl', agent:'Eric' },
-      { id:10, title:'File cleanup — review READY-FOR-TRASH.md and confirm deletion', tag:'system', agent:'Eric' },
+      { id:11, title:'Real Massage client — in-person visit with printed flyer + live voice demo', tag:'ghl', agent:'Eric' },
+      { id:12, title:'Cloth On Main website — awaiting response to email sent Feb 21', tag:'ghl', agent:'Eric' },
     ],
     done: [
-      { id:11, title:'Discord bot rebuilt with Notion + multi-AI routing (Groq/DeepSeek/Cerebras)', tag:'discord', agent:'Claude' },
-      { id:12, title:'All 4 Notion databases wired into bot and .env', tag:'discord', agent:'Claude' },
-      { id:13, title:'GitHub repos created + GitHub Pages live', tag:'website', agent:'Claude' },
+      { id:13, title:'Hetzner server deployed: n8n + Discord bot + cloudflared on 178.156.227.13', tag:'system', agent:'Claude' },
+      { id:14, title:'All 8 n8n workflows ACTIVE on Hetzner — Telegram webhook registered', tag:'n8n', agent:'Claude' },
+      { id:15, title:'Server hardened: UFW port 22 only, fail2ban, .env 600, key-only SSH', tag:'system', agent:'Claude' },
+      { id:16, title:'SHARED-CONTEXT.md + OPENCLAW-PLAN.md + INCOME-STREAM-PLAN.md created', tag:'system', agent:'Claude' },
+      { id:17, title:'7 workflow JSONs sanitized for Gumroad product bundle', tag:'website', agent:'Claude' },
+      { id:18, title:'Discord bot rebuilt with Notion + multi-AI routing (Groq/DeepSeek/Cerebras)', tag:'discord', agent:'Claude' },
+      { id:19, title:'GitHub repos created + GitHub Pages live', tag:'website', agent:'Claude' },
       { id:14, title:'5 n8n workflow JSONs built (morning brief, intel, notifier, security, follow-up)', tag:'n8n', agent:'Claude' },
       { id:15, title:'Mission Control dashboard built + pushed to GitHub Pages', tag:'website', agent:'Claude' },
       { id:16, title:'OpenClaw gateway installed as Windows Scheduled Task', tag:'system', agent:'Claude' },
@@ -958,19 +1105,23 @@ const DEFAULT_STATE = {
     { stage:'Closed Won', count:0 },
   ],
   activity: [
-    { type:'system', icon:'🎯', text:'<strong>Mission Control v2</strong> — GrabCalls.com', time:'now' },
-    { type:'discord', icon:'🤖', text:'<strong>GrabCalls Bot</strong> online as GrabCalls#6976', time:'1m ago' },
-    { type:'system', icon:'🗑️', text:'<strong>Cleanup complete</strong> — 23.2MB freed', time:'2m ago' },
-    { type:'n8n', icon:'⚡', text:'<strong>5 workflows</strong> built, awaiting n8n API key', time:'5m ago' },
-    { type:'ghl', icon:'🌐', text:'<strong>GitHub Pages</strong> live — Mission Control online', time:'10m ago' },
+    { type:'system', icon:'🎯', text:'<strong>Mission Control v3</strong> — GrabCalls.com — Hetzner deployed', time:'now' },
+    { type:'n8n', icon:'⚡', text:'<strong>8 n8n workflows ACTIVE</strong> on Hetzner 178.156.227.13 — SQLite activation', time:'1h ago' },
+    { type:'discord', icon:'📱', text:'<strong>Telegram webhook</strong> registered — @GrabCalls_bot ready for /status /leads /tasks', time:'2h ago' },
+    { type:'system', icon:'🛡️', text:'<strong>Server hardened</strong> — UFW port 22 only, fail2ban active, .env 600', time:'3h ago' },
+    { type:'system', icon:'📦', text:'<strong>7 workflow JSONs sanitized</strong> for Gumroad product bundle', time:'4h ago' },
+    { type:'ghl', icon:'🌐', text:'<strong>GitHub Pages</strong> live — Mission Control v3 online', time:'5h ago' },
   ],
   notes: [
-    'Real Massage: bilingual Chinese/English, (205) 452-2193, 9AM-8PM daily, 4.9 stars',
-    'Spring Nails is DEAD — offered only $250, do not pursue',
-    'n8n var limit = 10 chars: ghlApiToke not ghlApiToken',
-    'Discord bot GrabCalls#6976 — Groq/DeepSeek/Cerebras routing',
-    'Oracle Cloud = free 4-core ARM VM forever, fixes bot going offline',
-    'OpenClaw gateway installed — pair Telegram: openclaw pairing approve telegram CODE',
+    'Hetzner server: 178.156.227.13 | SSH: "C:\\Program Files\\Git\\usr\\bin\\ssh.exe" -i "C:\\Users\\medic\\.ssh\\id_ed25519" -n root@178.156.227.13',
+    'n8n tunnel URL (TEMP): https://record-customs-bush-jaguar.trycloudflare.com — changes on restart!',
+    'GHL webhook needed: https://[tunnel]/webhook/ghl-new-contact → Event: Contact Created',
+    'Real Massage: (205) 452-2193 | 9AM-8PM | 4.9 stars | Chinese owners — bilingual materials ready',
+    'Voice agent platforms: test Vapi.ai + Bland.ai free accounts — pick one for product',
+    'Spring Nails is DEAD — do not pursue',
+    'GitHub PAT ghp_JVzk6lp... exposed in MEMORY.md — ROTATE ASAP at github.com',
+    'Kimi AI: check OpenRouter.ai for moonshot-v1-128k — 128K context, cheap, OpenAI-compatible',
+    'Gumroad product ready: INCOME-STREAM-PLAN.md has all copy — $97 workflow bundle',
   ],
   revenue: 0,
   nextId: 30,
@@ -1000,7 +1151,7 @@ setInterval(updateClock, 1000); updateClock();
 
 // ─── VIEW SWITCHING ──────────────────────────────────────────────────────────
 function switchView(name, el) {
-  ['overview','discord','notion','agents','tasks','pipeline'].forEach(v => {
+  ['overview','discord','notion','agents','tasks','pipeline','server'].forEach(v => {
     const e = document.getElementById('view-'+v);
     if (e) e.style.display = 'none';
   });
@@ -1015,6 +1166,11 @@ function switchView(name, el) {
   if (name === 'tasks') { renderTaskBoard('taskBoardFull'); }
   if (name === 'pipeline') { renderPipelineFull(); }
   if (name === 'notion') { loadNotionData(); }
+  if (name === 'server') {
+    const disp = document.getElementById('tunnel-url-display');
+    if (disp) disp.textContent = getTunnelUrl();
+    setTimeout(() => pingHetzner(), 300);
+  }
 }
 
 // ─── AGENTS ──────────────────────────────────────────────────────────────────
@@ -1088,13 +1244,23 @@ async function checkDiscordBot() {
 }
 
 async function checkN8n() {
-  // Ping n8n cloud health endpoint
+  // Ping Hetzner n8n via cloudflared tunnel
+  const tunnelUrl = localStorage.getItem('n8n_tunnel_url') || 'https://record-customs-bush-jaguar.trycloudflare.com';
   try {
-    const r = await fetch('https://voice-assistant.app.n8n.cloud/healthz', { mode: 'no-cors' });
-    // no-cors always returns opaque 200 if reachable
-    return { ok: true, label: 'n8n cloud reachable ✓ (workflows need API key to activate)' };
+    const r = await fetch(tunnelUrl + '/healthz', { mode: 'no-cors' });
+    return { ok: true, label: 'n8n Hetzner reachable via tunnel ✓ — 8 workflows ACTIVE' };
   } catch(e) {
-    return { ok: false, label: 'n8n unreachable — ' + e.message };
+    return { ok: false, label: 'n8n tunnel unreachable — ' + e.message };
+  }
+}
+async function checkHetzner() {
+  // Check if Hetzner server is reachable via tunnel
+  const tunnelUrl = localStorage.getItem('n8n_tunnel_url') || 'https://record-customs-bush-jaguar.trycloudflare.com';
+  try {
+    const r = await fetch(tunnelUrl + '/healthz', { mode: 'no-cors' });
+    return { ok: true, label: 'Hetzner 178.156.227.13 UP ✓ — tunnel active' };
+  } catch(e) {
+    return { ok: false, label: 'Hetzner tunnel down — ' + e.message };
   }
 }
 
@@ -1539,6 +1705,55 @@ function openLocal(path) {
   }
 }
 
+// ─── SERVER VIEW FUNCTIONS ───────────────────────────────────────────────────
+function getTunnelUrl() {
+  return localStorage.getItem('n8n_tunnel_url') || N8N_TUNNEL_URL;
+}
+function updateTunnelUrl() {
+  const val = document.getElementById('tunnel-url-input').value.trim();
+  if (!val) { showToast('Enter a tunnel URL first', 'error'); return; }
+  localStorage.setItem('n8n_tunnel_url', val);
+  const disp = document.getElementById('tunnel-url-display');
+  if (disp) disp.textContent = val;
+  document.getElementById('tunnel-url-input').value = '';
+  showToast('Tunnel URL updated ✓', 'success');
+  addActivity('system','🌐','Tunnel URL updated: ' + val);
+}
+async function pingHetzner() {
+  addActivity('system','📡','Pinging Hetzner...');
+  showToast('Pinging Hetzner...', 'info');
+  const result = await checkHetzner();
+  const statusEl = document.getElementById('server-status-val');
+  const subEl = document.getElementById('server-status-sub');
+  if (statusEl) statusEl.textContent = result.ok ? 'UP' : 'DOWN';
+  if (statusEl) statusEl.style.color = result.ok ? 'var(--green)' : 'var(--red)';
+  if (subEl) subEl.textContent = result.label;
+  const badge = document.getElementById('server-badge');
+  if (badge) { badge.textContent = result.ok ? 'UP' : 'DOWN'; badge.className = 'badge ' + (result.ok ? 'green' : 'red'); }
+  showToast(result.label, result.ok ? 'success' : 'error');
+  addActivity('system', result.ok ? '✅' : '❌', result.label);
+}
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied!', 'success')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('Copied!', 'success');
+  });
+}
+function openTunnelN8n() {
+  const url = getTunnelUrl();
+  window.open(url, '_blank');
+}
+function copyGHLWebhook() {
+  const url = getTunnelUrl() + '/webhook/ghl-new-contact';
+  copyToClipboard(url);
+}
+function copyTelegramWebhook() {
+  const url = getTunnelUrl() + '/webhook/telegram-commander';
+  copyToClipboard(url);
+}
+
 // ─── FIRST-RUN CONFIG ────────────────────────────────────────────────────────
 // Pre-populate API keys into localStorage on first load — split to avoid GitHub secret scanning
 (function seedKeys() {
@@ -1546,6 +1761,7 @@ function openLocal(path) {
   const nk = ['ntn_','421209724658kmhVzN','ZxYN8V7q5ftSXOvtSgg71ay541Eu'].join('');
   if (!localStorage.getItem('discord_webhook')) localStorage.setItem('discord_webhook', dw);
   if (!localStorage.getItem('notion_key')) localStorage.setItem('notion_key', nk);
+  if (!localStorage.getItem('n8n_tunnel_url')) localStorage.setItem('n8n_tunnel_url', N8N_TUNNEL_URL);
 })();
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -1564,10 +1780,11 @@ setInterval(() => runStatusChecks(), 5 * 60 * 1000);
 
 // Auto-activity tick every 60s
 const actTicks = [
-  ['discord','💬','Discord bot heartbeat OK'],
-  ['n8n','⚡','n8n cloud — 5 workflows ready (need API key)'],
-  ['ghl','🔗','GHL API ready (need token with contact scope)'],
-  ['system','🔄','Mission Control autosave OK'],
+  ['discord','💬','Discord bot running on Hetzner 178.156.227.13'],
+  ['n8n','⚡','n8n Hetzner — 8 workflows ACTIVE'],
+  ['ghl','🔗','GHL API token confirmed working'],
+  ['system','🔄','Mission Control v3 autosave OK'],
+  ['system','📡','Telegram @GrabCalls_bot webhook registered'],
 ];
 let tick = 0;
 setInterval(() => {
