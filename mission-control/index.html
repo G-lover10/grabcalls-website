@@ -274,6 +274,7 @@
     <button class="nav-btn" onclick="switchView('tasks',this)">Tasks</button>
     <button class="nav-btn" onclick="switchView('pipeline',this)">Pipeline</button>
     <button class="nav-btn" onclick="switchView('server',this)" style="color:var(--accent2)">&#x26A1; Server</button>
+    <button class="nav-btn" id="nav-gumroad-top" onclick="switchView('gumroad',this)" style="color:#ff90e8">&#x1F4B0; Gumroad</button>
   </div>
   <div class="topbar-right">
     <div class="status-dot"></div>
@@ -314,6 +315,10 @@
     <span class="item-icon">🖥️</span> Hetzner Server
     <span class="badge green" id="server-badge">UP</span>
   </div>
+  <div class="sidebar-item" id="nav-gumroad" onclick="switchView('gumroad',this)">
+    <span class="item-icon">💰</span> Gumroad
+    <span class="badge yellow">$97</span>
+  </div>
 
   <div class="sidebar-label">Quick Actions</div>
   <div class="sidebar-item" onclick="switchView('discord',this);setTimeout(()=>document.getElementById('discordInput').focus(),200)">
@@ -347,6 +352,9 @@
   </div>
   <div class="sidebar-item" onclick="openLink('https://github.com/G-lover10')">
     <span class="item-icon">↗</span> GitHub
+  </div>
+  <div class="sidebar-item" onclick="openLink('https://app.gumroad.com/products')">
+    <span class="item-icon">↗</span> Gumroad Dashboard
   </div>
 
   <div class="sidebar-label" style="margin-top:8px">Print Files</div>
@@ -837,6 +845,129 @@
     </div>
   </div>
 
+  <!-- GUMROAD VIEW -->
+  <div id="view-gumroad" style="display:none">
+    <div class="section-header">
+      <div class="section-title">&#x1F4B0; Gumroad — Income Stream</div>
+      <button class="section-action" onclick="openLink('https://app.gumroad.com/products')" style="background:rgba(255,144,232,.1);border-color:#ff90e8;color:#ff90e8">&#x1F680; Open Gumroad</button>
+    </div>
+
+    <!-- Status Cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <div class="stat-card yellow">
+        <div class="stat-label">Product Price</div>
+        <div class="stat-value">$97</div>
+        <div class="stat-change up">Bump to $147 after 10 sales</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">Files Ready</div>
+        <div class="stat-value" style="font-size:20px">7+</div>
+        <div class="stat-change up">Workflows + bot + guide</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Sales Page</div>
+        <div class="stat-value" style="font-size:18px">LIVE</div>
+        <div class="stat-change up">GitHub Pages &#x2713;</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-label">Listing Status</div>
+        <div class="stat-value" style="font-size:16px;color:var(--warning)">DRAFT</div>
+        <div class="stat-change" style="color:var(--warning)">Needs publishing</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+
+      <!-- Publish Checklist -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:#ff90e8;margin-bottom:10px">&#x1F680; Publish Checklist — Eric Does This</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-weight:700;font-size:13px">1</span>
+            <div><div style="color:var(--text);font-weight:600">Go to app.gumroad.com &#x2192; Products &#x2192; New Product</div><div style="color:var(--muted);margin-top:2px">Log in with your Gumroad account (or create one free)</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-weight:700;font-size:13px">2</span>
+            <div><div style="color:var(--text);font-weight:600">Title + Description</div><div style="color:var(--muted);margin-top:2px">Copy from <code style="color:var(--accent)">C:\Users\medic\GrabCalls\products\gumroad-listing.md</code></div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(239,68,68,.06);border-radius:6px;border:1px solid rgba(239,68,68,.15)">
+            <span style="color:var(--danger);font-weight:700;font-size:13px">3</span>
+            <div><div style="color:var(--text);font-weight:600">Set price: $97</div><div style="color:var(--muted);margin-top:2px">Bump to $147 after first 10 sales. Enables "pay what you want" min $97.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
+            <span style="color:var(--warning);font-weight:700;font-size:13px">4</span>
+            <div><div style="color:var(--text);font-weight:600">Upload files (ZIP the folder first)</div><div style="color:var(--muted);margin-top:2px"><code style="color:var(--accent4)">products\workflow-bundle\</code> &#x2192; ZIP it &#x2192; upload<br>Also upload <code style="color:var(--accent4)">products\setup-guide.md</code> as PDF</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(245,158,11,.06);border-radius:6px;border:1px solid rgba(245,158,11,.15)">
+            <span style="color:var(--warning);font-weight:700;font-size:13px">5</span>
+            <div><div style="color:var(--text);font-weight:600">Add cover image + tags</div><div style="color:var(--muted);margin-top:2px">Tags in gumroad-listing.md: n8n, automation, AI, GHL, discord bot</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:7px;background:rgba(108,99,255,.06);border-radius:6px;border:1px solid rgba(108,99,255,.15)">
+            <span style="color:var(--accent);font-weight:700;font-size:13px">6</span>
+            <div><div style="color:var(--text);font-weight:600">Publish &#x2192; Copy URL &#x2192; Post to Twitter/Reddit</div><div style="color:var(--muted);margin-top:2px">Promo posts ready in gumroad-listing.md. URL: grabcalls.gumroad.com/l/ai-automation-kit</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Contents -->
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x1F4E6; What's In The Bundle</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+          <div style="padding:7px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px">
+            <div style="color:var(--accent2);font-weight:600">&#x2713; 7 n8n Workflow JSONs</div>
+            <div style="color:var(--muted);margin-top:2px">Morning Briefing, Intel Agent, Lead Notifier, Telegram Commander, Security Guard, Follow-Up Sequencer, GHL Lead Notifier</div>
+          </div>
+          <div style="padding:7px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px">
+            <div style="color:var(--accent2);font-weight:600">&#x2713; Discord AI Bot (Node.js)</div>
+            <div style="color:var(--muted);margin-top:2px">Multi-model routing (Groq/DeepSeek/Cerebras) + Notion + voice + memory</div>
+          </div>
+          <div style="padding:7px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px">
+            <div style="color:var(--accent2);font-weight:600">&#x2713; GHL CRM Integration Templates</div>
+            <div style="color:var(--muted);margin-top:2px">Pipeline stages, webhook setup guide, contact tag system</div>
+          </div>
+          <div style="padding:7px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px">
+            <div style="color:var(--accent2);font-weight:600">&#x2713; Notion CRM Template</div>
+            <div style="color:var(--muted);margin-top:2px">Leads DB, Task Board, Intel Feed, Activity Log — duplicate-ready</div>
+          </div>
+          <div style="padding:7px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:6px">
+            <div style="color:var(--accent2);font-weight:600">&#x2713; 40-Page Setup Guide PDF</div>
+            <div style="color:var(--muted);margin-top:2px">"How I Built This" — architecture walkthrough, deploy guide, variable setup</div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;padding:8px;background:rgba(255,217,61,.05);border:1px solid rgba(255,217,61,.2);border-radius:6px;font-size:10px">
+          <div style="color:var(--accent4);font-weight:600;margin-bottom:4px">&#x1F4C2; Local Files</div>
+          <div style="color:var(--muted);font-family:monospace">C:\Users\medic\GrabCalls\products\</div>
+          <div style="color:var(--muted);font-family:monospace;margin-top:2px">&#x251C; workflow-bundle\ (7 template JSONs)</div>
+          <div style="color:var(--muted);font-family:monospace">&#x251C; gumroad-listing.md (copy/paste ready)</div>
+          <div style="color:var(--muted);font-family:monospace">&#x2514; setup-guide.md (505-line PDF source)</div>
+        </div>
+
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="section-action" style="flex:1;text-align:center" onclick="openLink('https://app.gumroad.com/products')">Open Gumroad</button>
+          <button class="section-action" style="flex:1;text-align:center" onclick="openLink('https://g-lover10.github.io/grabcalls-website/landing-pages/products.html')">Sales Page</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promo Copy Preview -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">&#x1F4E2; Ready-To-Post Promo (Twitter/Reddit)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px">
+        <div style="padding:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px">
+          <div style="color:var(--muted);font-size:10px;margin-bottom:6px;font-weight:600">TWITTER POST</div>
+          <div style="color:var(--text);line-height:1.7">I spent 2 weeks building an AI automation system that runs my local biz agency 24/7.<br><br>9 agents. Discord command center. Telegram mobile access. Full CRM pipeline.<br><br>Packaging everything so you can copy it this weekend &#x2192; $97 on Gumroad<br><br>#n8n #automation #AI #localBusiness</div>
+          <button class="section-action" style="margin-top:8px" onclick="copyToClipboard('I spent 2 weeks building an AI automation system that runs my local biz agency 24/7.\n\n9 agents. Discord command center. Telegram mobile access. Full CRM pipeline.\n\nPackaging everything so you can copy it this weekend → $97 on Gumroad\n\n#n8n #automation #AI #localBusiness')">Copy</button>
+        </div>
+        <div style="padding:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px">
+          <div style="color:var(--muted);font-size:10px;margin-bottom:6px;font-weight:600">REDDIT (r/n8n / r/Entrepreneur)</div>
+          <div style="color:var(--text);line-height:1.7">Built a complete AI automation stack for my local business agency. Sharing the whole thing.<br><br>• 7 production n8n workflows (morning brief, lead alerts, Telegram bot, security guard, more)<br>• Discord AI bot with multi-model routing<br>• GHL CRM integration + 40-page setup guide<br><br>$97 → grabcalls.gumroad.com/l/ai-automation-kit</div>
+          <button class="section-action" style="margin-top:8px" onclick="copyToClipboard('Built a complete AI automation stack for my local business agency. Sharing the whole thing.\n\n• 7 production n8n workflows (morning brief, lead alerts, Telegram bot, security guard, more)\n• Discord AI bot with multi-model routing\n• GHL CRM integration + 40-page setup guide\n\n$97 → grabcalls.gumroad.com/l/ai-automation-kit')">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- RIGHT PANEL -->
@@ -1151,7 +1282,7 @@ setInterval(updateClock, 1000); updateClock();
 
 // ─── VIEW SWITCHING ──────────────────────────────────────────────────────────
 function switchView(name, el) {
-  ['overview','discord','notion','agents','tasks','pipeline','server'].forEach(v => {
+  ['overview','discord','notion','agents','tasks','pipeline','server','gumroad'].forEach(v => {
     const e = document.getElementById('view-'+v);
     if (e) e.style.display = 'none';
   });
