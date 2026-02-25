@@ -302,7 +302,7 @@
   </div>
   <div class="sidebar-item" id="nav-agents" onclick="switchView('agents',this)">
     <span class="item-icon">🤖</span> Agents
-    <span class="badge green">9</span>
+    <span class="badge green">13</span>
   </div>
   <div class="sidebar-item" id="nav-tasks" onclick="switchView('tasks',this)">
     <span class="item-icon">✅</span> Tasks
@@ -1191,7 +1191,15 @@ const DEFAULT_STATE = {
     { id:8, emoji:'📱', name:'Telegram Commander', role:'/status /leads /tasks via Telegram', platform:'n8n/Hetzner',
       status:'online', task:'ACTIVE on Hetzner — webhook registered. Message @GrabCalls_bot with /status, /leads, /tasks', msgs:0, replies:0 },
     { id:9, emoji:'🧠', name:'Claude (Orchestrator)', role:'Builder & Strategist', platform:'Claude Code',
-      status:'online', task:'Active this session — building, fixing, deploying. 8 agents running on Hetzner 24/7.', msgs:0, replies:0 },
+      status:'online', task:'Active this session — building, fixing, deploying. 12 agents running on Hetzner 24/7.', msgs:0, replies:0 },
+    { id:10, emoji:'🔥', name:'Viral Product Hunter', role:'Reddit → Clone Opportunities', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE (ID: 7CNf6x0jFCdjHx11) — Every 6h scans 5 subreddits, AI identifies top 5 cloneable businesses → Discord report', msgs:0, replies:0 },
+    { id:11, emoji:'🎯', name:'Agent Orchestrator', role:'CEO Supervisor — Every 4hrs', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE (ID: i2i6CVjz63LnkCwb) — Pulls GHL metrics, AI produces CEO action plan + dispatches tasks → Discord', msgs:0, replies:0 },
+    { id:12, emoji:'🧬', name:'Sales Evolution Engine', role:'Evolutionary Sales Agents', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE (ID: eZTtTAR784aylspo) — Weekly: 3 agents compete, worst gets replaced by evolved mutation of best', msgs:0, replies:0 },
+    { id:13, emoji:'🛠️', name:'Agent Builder', role:'Autonomous Asset Generator', platform:'n8n/Hetzner',
+      status:'online', task:'ACTIVE (ID: T43aRaSTgRkjXqM1) — Webhook at /agent-builder: generates chatbot personality, emails, proposals, website copy per business', msgs:0, replies:0 },
   ],
   tasks: {
     todo: [
@@ -1205,6 +1213,11 @@ const DEFAULT_STATE = {
       { id:8, title:'A2P 10DLC registration — $49, ~2 weeks, required for SMS', tag:'ghl', agent:'Eric' },
       { id:9, title:'Create Gumroad product: Local Business AI Automation Starter Kit — $97. Copy in INCOME-STREAM-PLAN.md', tag:'website', agent:'Eric' },
       { id:10, title:'Check OpenRouter.ai for Kimi model (moonshot-v1-128k) — if listed add KIMI_API_KEY to .env', tag:'system', agent:'Eric' },
+      { id:21, title:'Sign up Brevo (brevo.com) — free SMTP, 300 emails/day. Get API key → update n8n SMTP credential', tag:'n8n', agent:'Eric' },
+      { id:22, title:'Test Agent Builder: POST https://[tunnel]/webhook/agent-builder with { businessName, industry, city }', tag:'n8n', agent:'Eric' },
+      { id:23, title:'Set GHL webhook → Settings → Integrations → Webhooks → URL: [tunnel]/webhook/ghl-new-contact', tag:'ghl', agent:'Eric' },
+      { id:24, title:'Rotate GitHub PAT — token ghp_JVzk6lp... exposed. github.com → Settings → Developer settings → Tokens', tag:'system', agent:'Eric' },
+      { id:25, title:'Named Cloudflare Tunnel — Zero Trust → Create tunnel → grabcalls-n8n (fixes URL-on-restart problem)', tag:'system', agent:'Eric' },
     ],
     inprogress: [
       { id:11, title:'Real Massage client — in-person visit with printed flyer + live voice demo', tag:'ghl', agent:'Eric' },
@@ -1212,7 +1225,8 @@ const DEFAULT_STATE = {
     ],
     done: [
       { id:13, title:'Hetzner server deployed: n8n + Discord bot + cloudflared on 178.156.227.13', tag:'system', agent:'Claude' },
-      { id:14, title:'All 8 n8n workflows ACTIVE on Hetzner — Telegram webhook registered', tag:'n8n', agent:'Claude' },
+      { id:14, title:'All 12 n8n workflows ACTIVE on Hetzner — Telegram webhook registered', tag:'n8n', agent:'Claude' },
+      { id:20, title:'4 new AI agents deployed: Viral Hunter, Orchestrator, Sales Evolution, Agent Builder', tag:'n8n', agent:'Claude' },
       { id:15, title:'Server hardened: UFW port 22 only, fail2ban, .env 600, key-only SSH', tag:'system', agent:'Claude' },
       { id:16, title:'SHARED-CONTEXT.md + OPENCLAW-PLAN.md + INCOME-STREAM-PLAN.md created', tag:'system', agent:'Claude' },
       { id:17, title:'7 workflow JSONs sanitized for Gumroad product bundle', tag:'website', agent:'Claude' },
@@ -1236,9 +1250,14 @@ const DEFAULT_STATE = {
     { stage:'Closed Won', count:0 },
   ],
   activity: [
-    { type:'system', icon:'🎯', text:'<strong>Mission Control v3</strong> — GrabCalls.com — Hetzner deployed', time:'now' },
-    { type:'n8n', icon:'⚡', text:'<strong>8 n8n workflows ACTIVE</strong> on Hetzner 178.156.227.13 — SQLite activation', time:'1h ago' },
-    { type:'discord', icon:'📱', text:'<strong>Telegram webhook</strong> registered — @GrabCalls_bot ready for /status /leads /tasks', time:'2h ago' },
+    { type:'system', icon:'🧬', text:'<strong>EVOLUTIONARY SYSTEM LIVE</strong> — 13 agents active, 4 new deployed Feb 25 2026', time:'now' },
+    { type:'n8n', icon:'🔥', text:'<strong>Viral Product Hunter ACTIVE</strong> (ID: 7CNf6x0jFCdjHx11) — scans Reddit every 6h for cloneable businesses', time:'30m ago' },
+    { type:'n8n', icon:'🎯', text:'<strong>Agent Orchestrator ACTIVE</strong> (ID: i2i6CVjz63LnkCwb) — CEO action plan every 4h → Discord', time:'30m ago' },
+    { type:'n8n', icon:'🧬', text:'<strong>Sales Evolution Engine ACTIVE</strong> (ID: eZTtTAR784aylspo) — weekly agent competition + mutation', time:'30m ago' },
+    { type:'n8n', icon:'🛠️', text:'<strong>Agent Builder ACTIVE</strong> (ID: T43aRaSTgRkjXqM1) — POST /agent-builder → full asset package', time:'30m ago' },
+    { type:'system', icon:'🎯', text:'<strong>Mission Control v3</strong> — GrabCalls.com — Hetzner deployed', time:'2h ago' },
+    { type:'n8n', icon:'⚡', text:'<strong>12 n8n workflows ACTIVE</strong> on Hetzner 178.156.227.13 — SQLite activation', time:'3h ago' },
+    { type:'discord', icon:'📱', text:'<strong>Telegram webhook</strong> registered — @GrabCalls_bot ready for /status /leads /tasks', time:'4h ago' },
     { type:'system', icon:'🛡️', text:'<strong>Server hardened</strong> — UFW port 22 only, fail2ban active, .env 600', time:'3h ago' },
     { type:'system', icon:'📦', text:'<strong>7 workflow JSONs sanitized</strong> for Gumroad product bundle', time:'4h ago' },
     { type:'ghl', icon:'🌐', text:'<strong>GitHub Pages</strong> live — Mission Control v3 online', time:'5h ago' },
@@ -1379,7 +1398,7 @@ async function checkN8n() {
   const tunnelUrl = localStorage.getItem('n8n_tunnel_url') || 'https://record-customs-bush-jaguar.trycloudflare.com';
   try {
     const r = await fetch(tunnelUrl + '/healthz', { mode: 'no-cors' });
-    return { ok: true, label: 'n8n Hetzner reachable via tunnel ✓ — 8 workflows ACTIVE' };
+    return { ok: true, label: 'n8n Hetzner reachable via tunnel ✓ — 12 workflows ACTIVE' };
   } catch(e) {
     return { ok: false, label: 'n8n tunnel unreachable — ' + e.message };
   }
@@ -1912,7 +1931,9 @@ setInterval(() => runStatusChecks(), 5 * 60 * 1000);
 // Auto-activity tick every 60s
 const actTicks = [
   ['discord','💬','Discord bot running on Hetzner 178.156.227.13'],
-  ['n8n','⚡','n8n Hetzner — 8 workflows ACTIVE'],
+  ['n8n','⚡','n8n Hetzner — 12 workflows ACTIVE | 13 agents running'],
+  ['n8n','🧬','Sales Evolution Engine — weekly agent competition running'],
+  ['n8n','🔥','Viral Product Hunter — scanning Reddit every 6h'],
   ['ghl','🔗','GHL API token confirmed working'],
   ['system','🔄','Mission Control v3 autosave OK'],
   ['system','📡','Telegram @GrabCalls_bot webhook registered'],
