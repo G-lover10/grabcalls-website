@@ -482,8 +482,176 @@
   </p>
 </footer>
 
+<!-- CHATBOT DEMO WIDGET -->
+<style>
+  .gc-chat-btn{position:fixed;bottom:24px;right:24px;z-index:9999;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(37,99,235,.4);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;font-size:28px}
+  .gc-chat-btn:hover{transform:scale(1.1);box-shadow:0 6px 32px rgba(37,99,235,.5)}
+  .gc-chat-btn .gc-badge{position:absolute;top:-2px;right:-2px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+  .gc-chat-box{position:fixed;bottom:100px;right:24px;z-index:9999;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 140px);background:#fff;border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb}
+  .gc-chat-box.open{display:flex}
+  .gc-chat-header{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px}
+  .gc-chat-avatar{width:40px;height:40px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .gc-chat-header-info h4{font-size:15px;font-weight:700;margin:0}
+  .gc-chat-header-info p{font-size:12px;margin:0;opacity:.8}
+  .gc-chat-close{margin-left:auto;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;opacity:.7;padding:4px}
+  .gc-chat-close:hover{opacity:1}
+  .gc-chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f9fafb}
+  .gc-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;animation:gcFade .3s ease}
+  @keyframes gcFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .gc-msg.bot{background:#fff;color:#374151;border:1px solid #e5e7eb;align-self:flex-start;border-bottom-left-radius:4px}
+  .gc-msg.user{background:#2563eb;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .gc-msg.typing{background:#fff;border:1px solid #e5e7eb;align-self:flex-start;border-bottom-left-radius:4px}
+  .gc-dots{display:flex;gap:4px}.gc-dots span{width:8px;height:8px;background:#9ca3af;border-radius:50%;animation:gcBounce 1.4s infinite}
+  .gc-dots span:nth-child(2){animation-delay:.2s}.gc-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes gcBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+  .gc-quick-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .gc-quick-btn{background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+  .gc-quick-btn:hover{background:#2563eb;color:#fff}
+  .gc-chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #e5e7eb;background:#fff}
+  .gc-chat-input input{flex:1;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:14px;font-family:Inter,sans-serif;outline:none}
+  .gc-chat-input input:focus{border-color:#2563eb}
+  .gc-chat-input button{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer}
+  .gc-chat-input button:hover{background:#1d4ed8}
+  .gc-powered{text-align:center;font-size:11px;color:#9ca3af;padding:6px;background:#fff}
+  @media(max-width:480px){.gc-chat-box{right:0;bottom:0;width:100%;height:100%;max-height:100%;border-radius:0}}
+</style>
+
+<button class="gc-chat-btn" id="gcChatBtn" aria-label="Chat with us">
+  💬
+  <span class="gc-badge">1</span>
+</button>
+
+<div class="gc-chat-box" id="gcChatBox">
+  <div class="gc-chat-header">
+    <div class="gc-chat-avatar">🤖</div>
+    <div class="gc-chat-header-info">
+      <h4>GrabCalls AI Assistant</h4>
+      <p>Typically replies instantly</p>
+    </div>
+    <button class="gc-chat-close" id="gcChatClose">&times;</button>
+  </div>
+  <div class="gc-chat-body" id="gcChatBody"></div>
+  <div class="gc-chat-input">
+    <input type="text" id="gcChatInput" placeholder="Type a message..." />
+    <button id="gcChatSend">Send</button>
+  </div>
+  <div class="gc-powered">Powered by GrabCalls AI</div>
+</div>
+
 <script>
-  // Form submission — sends to GHL webhook
+(function(){
+  const CHAT_API = 'https://n8n.grabcalls.com/webhook/chatbot-demo';
+  const body = document.getElementById('gcChatBody');
+  const input = document.getElementById('gcChatInput');
+  const btn = document.getElementById('gcChatBtn');
+  const box = document.getElementById('gcChatBox');
+  const badge = btn.querySelector('.gc-badge');
+  let opened = false;
+
+  // Demo knowledge base (works offline, no API needed)
+  const KB = {
+    greeting: "Hi there! I'm the GrabCalls AI assistant. I can answer questions about our AI chatbot and voice agent services for local businesses.\n\nWhat would you like to know?",
+    responses: [
+      {k:['price','cost','how much','pricing','afford'],r:"Great question! Our pricing is simple:\n\n💬 AI Chatbot: $297 setup + $97/mo\n📞 Voice Agent: $497 setup + $197/mo\n⚡ Full Package: $997 setup + $497/mo\n\nAll include setup, training on your business, and ongoing support. Want to see a live demo?"},
+      {k:['demo','try','test','see it','show me'],r:"We'd love to show you! We do free 15-minute demo calls where we show the AI working for YOUR specific business type.\n\nJust fill out the form on this page, or call Eric directly at (205) 914-3390. We can usually get you scheduled within 24 hours."},
+      {k:['how','work','setup','install','long'],r:"Here's how it works:\n\n1️⃣ Free demo call (15 min)\n2️⃣ We train the AI on YOUR business\n3️⃣ Goes live in 48 hours\n4️⃣ We handle everything after that\n\nYou don't need to be tech-savvy. We do all the setup."},
+      {k:['chatbot','chat','widget','website chat'],r:"Our AI chatbot sits on your website and:\n\n✅ Answers customer questions 24/7\n✅ Captures leads (name, phone, email)\n✅ Books appointments automatically\n✅ Trained specifically on YOUR business\n\nIt's like having a receptionist that never sleeps. Want to see it in action?"},
+      {k:['voice','call','phone','answer','inbound'],r:"Our AI voice agent answers your phone calls and:\n\n✅ Sounds like a real person\n✅ Handles FAQs and common questions\n✅ Books appointments automatically\n✅ Transfers urgent calls to you\n✅ Works 24/7 including holidays\n\n62% of callers won't leave a voicemail — our AI makes sure you never miss them."},
+      {k:['dental','dentist','teeth'],r:"We work with several dental practices! Common use cases:\n\n🦷 Answering new patient inquiries\n🦷 Booking appointments and cleanings\n🦷 Insurance questions\n🦷 After-hours emergency routing\n\nA missed dental appointment = $200-$800 in lost revenue. Our AI catches those."},
+      {k:['hvac','heating','air','cooling','ac'],r:"HVAC companies are one of our best fits! Here's why:\n\n❄️ Emergency calls at 2AM? AI answers instantly\n❄️ Seasonal rush? Handle 10x the call volume\n❄️ Common questions handled automatically\n❄️ Urgent calls forwarded to on-call tech\n\nA missed HVAC service call = $500-$5,000. Our AI catches every one."},
+      {k:['plumb','pipe','water','drain'],r:"Plumbers love our service because:\n\n🔧 Emergency calls answered 24/7\n🔧 AI qualifies the job type and urgency\n🔧 Books appointments on your calendar\n🔧 Handles pricing questions for common jobs\n\nNever miss another midnight pipe burst call."},
+      {k:['contact','call','reach','talk','human','person','eric'],r:"You can reach us directly:\n\n📞 (205) 914-3390\n📧 grabcalls@gmail.com\n\nOr fill out the form below for a free demo. We respond within 24 hours!"},
+      {k:['what','who','about','grabcalls','company'],r:"GrabCalls is an AI automation agency based in Springville, Alabama.\n\nWe install AI chatbots and voice agents for local businesses so they never miss a customer again. Our AI handles calls, chats, and appointments 24/7.\n\nFounded by Eric Glover — a local business automation specialist."}
+    ]
+  };
+
+  function addMsg(text,type){
+    const d=document.createElement('div');
+    d.className='gc-msg '+type;
+    d.textContent=text;
+    body.appendChild(d);
+    body.scrollTop=body.scrollHeight;
+  }
+  function addHTML(html,type){
+    const d=document.createElement('div');
+    d.className='gc-msg '+type;
+    d.innerHTML=html;
+    body.appendChild(d);
+    body.scrollTop=body.scrollHeight;
+  }
+  function showTyping(){
+    const d=document.createElement('div');
+    d.className='gc-msg typing';
+    d.id='gcTyping';
+    d.innerHTML='<div class="gc-dots"><span></span><span></span><span></span></div>';
+    body.appendChild(d);
+    body.scrollTop=body.scrollHeight;
+  }
+  function hideTyping(){const t=document.getElementById('gcTyping');if(t)t.remove();}
+
+  function findResponse(msg){
+    const m=msg.toLowerCase();
+    for(const r of KB.responses){
+      if(r.k.some(k=>m.includes(k)))return r.r;
+    }
+    return "That's a great question! I'd love to help you with that. For the most detailed answer, I'd recommend booking a free demo call with Eric.\n\n📞 (205) 914-3390\n📧 grabcalls@gmail.com\n\nOr fill out the contact form below!";
+  }
+
+  async function sendMessage(msg){
+    if(!msg.trim())return;
+    addMsg(msg,'user');
+    input.value='';
+    showTyping();
+
+    // Try live API first, fall back to knowledge base
+    let reply;
+    try{
+      const res=await fetch(CHAT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg}),signal:AbortSignal.timeout(5000)});
+      if(res.ok){const j=await res.json();reply=j.reply||j.response||j.text;}
+    }catch(e){}
+
+    if(!reply) reply=findResponse(msg);
+
+    setTimeout(()=>{
+      hideTyping();
+      addMsg(reply,'bot');
+    },800+Math.random()*600);
+  }
+
+  function showQuickButtons(){
+    const wrap=document.createElement('div');
+    wrap.className='gc-quick-btns';
+    ['How much does it cost?','How does it work?','Voice agent info','Book a demo'].forEach(q=>{
+      const b=document.createElement('button');
+      b.className='gc-quick-btn';
+      b.textContent=q;
+      b.onclick=()=>{wrap.remove();sendMessage(q);};
+      wrap.appendChild(b);
+    });
+    body.appendChild(wrap);
+    body.scrollTop=body.scrollHeight;
+  }
+
+  btn.onclick=()=>{
+    box.classList.toggle('open');
+    badge.style.display='none';
+    if(!opened){
+      opened=true;
+      addMsg(KB.greeting,'bot');
+      setTimeout(showQuickButtons,500);
+    }
+  };
+  document.getElementById('gcChatClose').onclick=()=>box.classList.remove('open');
+  document.getElementById('gcChatSend').onclick=()=>sendMessage(input.value);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage(input.value);});
+
+  // Auto-open after 30s with a teaser
+  setTimeout(()=>{if(!opened)badge.style.animation='gcBounce 1s infinite';},30000);
+})();
+</script>
+
+<script>
+  // Form submission — sends to n8n webhook which creates GHL contact
   document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = this.querySelector('.form-submit');
@@ -502,18 +670,17 @@
     };
 
     try {
-      // GHL webhook endpoint — update this URL after Eric sets up GHL webhook
       const GHL_WEBHOOK = 'https://n8n.grabcalls.com/webhook/ghl-new-contact';
       await fetch(GHL_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      btn.textContent = '✅ Sent! We\'ll be in touch within 24 hours.';
+      btn.textContent = 'Sent! We\'ll be in touch within 24 hours.';
       btn.style.background = '#16a34a';
       this.reset();
     } catch (err) {
-      btn.textContent = 'Submit →';
+      btn.textContent = 'Submit';
       btn.disabled = false;
       alert('Something went wrong. Please call us directly at (205) 914-3390');
     }
