@@ -391,7 +391,7 @@
       <div style="color:var(--muted);margin-bottom:6px" id="session-date"></div>
       <div id="session-items" style="display:flex;flex-direction:column;gap:4px">
         <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> Mission Control upgraded to v5</div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> 14 agents active on Hetzner</div>
+        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> 17 agents active on Hetzner</div>
         <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> Permanent tunnels: n8n.grabcalls.com</div>
         <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--warning)">&#x25CB;</span> Chatbot demo widget built - needs testing</div>
         <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--warning)">&#x25CB;</span> Real Massage outreach in progress</div>
@@ -818,6 +818,9 @@ const DEFAULT_STATE = {
     { id:12, emoji:'\u{1F3AF}', name:'Agent Orchestrator', role:'CEO Action Planner', platform:'n8n/Hetzner', status:'online', task:'Every 4h: generates CEO action plan posted to Discord.', tag:'n8n' },
     { id:13, emoji:'\u{1F52C}', name:'Sales Evolution', role:'Variant Testing', platform:'n8n/Hetzner', status:'online', task:'Weekly: 3 sales variants compete, worst replaced by mutation of best.', tag:'n8n' },
     { id:14, emoji:'\u{1F916}', name:'Agent Builder', role:'Asset Generator', platform:'n8n/Hetzner', status:'online', task:'POST /agent-builder: chatbot personality, emails, proposals, website copy.', tag:'n8n' },
+    { id:15, emoji:'\u{1F3AE}', name:'Discord Commander', role:'Command Router', platform:'n8n/Hetzner', status:'online', task:'10 slash commands via OpenClaw !gc routing. /status /agents /leads etc.', tag:'n8n' },
+    { id:16, emoji:'\u{1F50E}', name:'Discord Prospector', role:'AI Lead Finder', platform:'n8n/Hetzner', status:'online', task:'Groq AI generates 5 targeted prospects per industry/city combo.', tag:'n8n' },
+    { id:17, emoji:'\u{1F4CE}', name:'Paperclip AI', role:'Company Orchestrator', platform:'Hetzner/Claude', status:'online', task:'AI company orchestrator at paperclip.grabcalls.com. Claude subscription powered.', tag:'claude' },
   ],
   tasks: {
     todo: [
@@ -856,7 +859,7 @@ const DEFAULT_STATE = {
     { stage:'Closed Won', count:0 },
   ],
   activity: [
-    { type:'system', icon:'\u{1F680}', text:'<strong>Mission Control v5</strong> deployed \u2014 Morning Brief + Revenue tracking + 14 agents', time:'now' },
+    { type:'system', icon:'\u{1F680}', text:'<strong>Mission Control v5</strong> deployed \u2014 Morning Brief + Revenue tracking + 17 agents', time:'now' },
     { type:'n8n', icon:'\u{1F50D}', text:'<strong>Viral Product Hunter</strong> scanning Reddit every 6h for opportunities', time:'active' },
     { type:'n8n', icon:'\u{1F3AF}', text:'<strong>Agent Orchestrator</strong> CEO action plan posted to Discord', time:'4h cycle' },
     { type:'discord', icon:'\u{1F4AC}', text:'<strong>OpenClaw bot</strong> live \u2014 Claude AI responding on Discord DMs', time:'online' },
