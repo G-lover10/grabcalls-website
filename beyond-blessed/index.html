@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Beyond Blessed Child Care - Premium faith-based childcare in Fultondale, Alabama. Nurturing children ages 0-14 with Alabama Quality STARS rating.">
+    <meta name="keywords" content="premium daycare, childcare center, preschool, infant care, Fultondale Alabama, faith-based childcare, Quality STARS">
+    <meta property="og:title" content="Beyond Blessed Child Care - Where Every Child Is a Blessing">
+    <meta property="og:description" content="Premium faith-based childcare serving Fultondale, AL. Infant to school-age care, Alabama Quality STARS rated.">
+    <meta property="og:type" content="business.business">
+    <meta property="og:image" content="photos/building.jpg">
+    <meta name="theme-color" content="#4A7C8F">
+    <title>Beyond Blessed Child Care - Fultondale, Alabama</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A7C8F;
+            --primary-light: #6BA3B5;
+            --primary-dark: #365D6B;
+            --accent: #D4896A;
+            --accent-light: #E8A88E;
+            --gold: #D4A84B;
+            --cream: #FFF9F2;
+            --section-alt: #F5EDE4;
+            --white: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-body: #555555;
+            --text-light: #888888;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-dark);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-light);
+        }
+
+        /* TOP UTILITY BAR */
+        .utility-bar {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 12px 0;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .utility-bar div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .utility-bar a {
+            color: var(--white);
+        }
+
+        .utility-bar a:hover {
+            text-decoration: underline;
+        }
+
+        /* STICKY NAVIGATION */
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-body);
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background-color: var(--accent);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background-color: #C27555;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 3px;
+            background-color: var(--primary-dark);
+            transition: 0.3s;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            height: 600px;
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('photos/building.jpg') center/cover no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(74,124,143,0.25), rgba(212,137,106,0.15));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-light);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-scripture {
+            font-size: 18px;
+            font-style: italic;
+            color: #E8D5C8;
+            margin-bottom: 40px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #C27555;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212,137,106,0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* WAVE DIVIDER */
+        .wave {
+            display: block;
+            margin: 0;
+            max-width: 100%;
+        }
+
+        /* WELCOME SECTION */
+        .welcome {
+            padding: 80px 20px;
+            background-color: var(--white);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .welcome-text h2 {
+            font-size: 54px;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .welcome-text p {
+            font-size: 16px;
+            color: var(--text-body);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .welcome-image {
+            position: relative;
+            border-left: 8px solid var(--primary);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .welcome-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .welcome-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* CORE VALUES SECTION */
+        .core-values {
+            padding: 80px 20px;
+            background-color: var(--cream);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header h2 {
+            font-size: 54px;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: var(--text-body);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+
+        .value-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 24px;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .value-card:nth-child(1) .value-icon {
+            background-color: var(--primary);
+        }
+
+        .value-card:nth-child(2) .value-icon {
+            background-color: var(--accent);
+        }
+
+        .value-card:nth-child(3) .value-icon {
+            background-color: var(--gold);
+            color: var(--text-dark);
+        }
+
+        .value-card:nth-child(4) .value-icon {
+            background-color: var(--primary-light);
+        }
+
+        .value-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .value-card p {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.7;
+        }
+
+        /* PROGRAMS SECTION */
+        .programs {
+            padding: 80px 20px;
+            background-color: var(--white);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .program-card {
+            background-color: var(--cream);
+            border-left: 6px solid var(--primary);
+            padding: 32px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .program-card:nth-child(2) {
+            border-left-color: var(--accent);
+        }
+
+        .program-card:nth-child(3) {
+            border-left-color: var(--gold);
+        }
+
+        .program-card:nth-child(4) {
+            border-left-color: var(--primary-light);
+        }
+
+        .program-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+        }
+
+        .program-age {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .program-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .program-card p {
+            font-size: 14px;
+            color: var(--text-body);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .program-highlights {
+            background-color: var(--white);
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-body);
+        }
+
+        .program-highlights li {
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .learn-more {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* STATS BANNER */
+        .stats {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat {
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ENROLLMENT SECTION */
+        .enrollment {
+            padding: 80px 20px;
+            background-color: var(--cream);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .enrollment h2 {
+            font-size: 54px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            position: relative;
+        }
+
+        .timeline-item {
+            background-color: var(--white);
+            padding: 32px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .timeline-number {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0 auto 16px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .timeline-item h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-item p {
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        .enrollment-requirements {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            margin-top: 60px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .enrollment-requirements h3 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: var(--primary);
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .requirement-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #E8E8E8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .requirement-item::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .requirement-item:last-child {
+            border-bottom: none;
+        }
+
+        /* TESTIMONIALS SECTION */
+        .testimonials {
+            padding: 80px 20px;
+            background-color: var(--white);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .testimonials h2 {
+            font-size: 54px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .testimonial-card {
+            background-color: var(--section-alt);
+            padding: 32px;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .quote-mark {
+            font-size: 48px;
+            color: var(--gold);
+            margin-bottom: 16px;
+            opacity: 0.6;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .testimonial-text {
+            font-size: 15px;
+            color: var(--text-body);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .review-cta {
+            text-align: center;
+        }
+
+        .review-button {
+            background-color: var(--gold);
+            color: var(--text-dark);
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .review-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212,168,75,0.3);
+        }
+
+        /* FAQ SECTION */
+        .faq {
+            padding: 80px 20px;
+            background-color: var(--cream);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq h2 {
+            font-size: 54px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .accordion {
+            border-bottom: 1px solid #D0CCC4;
+        }
+
+        .accordion-item {
+            border-top: 1px solid #D0CCC4;
+            padding: 20px 0;
+        }
+
+        .accordion-header {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+            transition: color 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            color: var(--primary-light);
+        }
+
+        .accordion-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-toggle {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 16px 0;
+            font-size: 15px;
+            color: var(--text-body);
+            line-height: 1.8;
+        }
+
+        .accordion-item.active .accordion-content {
+            display: block;
+        }
+
+        /* CONTACT SECTION */
+        .contact {
+            padding: 80px 20px;
+            background-color: var(--white);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .contact h2 {
+            font-size: 54px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .contact-block h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .contact-block p {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.8;
+        }
+
+        .contact-block a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px 16px;
+            border: 1px solid #D0CCC4;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74,124,143,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74,124,143,0.3);
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-block h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .footer-block p {
+            font-size: 13px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .footer-block a {
+            color: var(--accent-light);
+            font-size: 13px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* CHATBOT STYLES */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(212,137,106,0.3);
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 24px rgba(212,137,106,0.4);
+        }
+
+        .chat-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        .chat-label {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .chat-panel {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 380px;
+            max-height: 520px;
+            background-color: var(--white);
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chat-panel.open {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .chat-title {
+            flex: 1;
+        }
+
+        .chat-title h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--white);
+            margin: 0;
+        }
+
+        .chat-status {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #FAFAF7;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 8px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .bot .message-bubble {
+            background-color: #E8E8E8;
+            color: var(--text-dark);
+        }
+
+        .user .message-bubble {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .quick-reply {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .quick-reply:hover {
+            background-color: var(--primary-light);
+            transform: translateX(4px);
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            background-color: var(--white);
+            border-top: 1px solid #E8E8E8;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #D0CCC4;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .chat-send:hover {
+            background-color: var(--primary-light);
+        }
+
+        .chat-footer {
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-light);
+            padding: 8px 16px;
+        }
+
+        /* REVIEW MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .modal-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            color: var(--text-body);
+            font-size: 14px;
+        }
+
+        .stars-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .star {
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            opacity: 0.4;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        .star.active {
+            opacity: 1;
+        }
+
+        .feedback-form {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feedback-form.show {
+            display: flex;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-light);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .welcome-container {
+                grid-template-columns: 1fr;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                padding-bottom: 20px;
+            }
+
+            .stat:last-child {
+                border-bottom: none;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h2,
+            .welcome-text h2,
+            .programs h2,
+            .enrollment h2,
+            .testimonials h2,
+            .faq h2,
+            .contact h2 {
+                font-size: 36px;
+            }
+
+            .chat-panel {
+                width: calc(100% - 40px);
+                max-height: 60vh;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                height: 400px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .hero-badges {
+                gap: 16px;
+            }
+
+            .badge {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .utility-bar {
+                flex-direction: column;
+                gap: 12px;
+                font-size: 12px;
+            }
+
+            .utility-bar div {
+                justify-content: center;
+            }
+        }
+
+        /* SCROLL ANIMATIONS */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .fade-in.visible {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- UTILITY BAR -->
+    <div class="utility-bar">
+        <div>☎ <a href="tel:+12058498696">(205) 849-8696</a></div>
+        <div>🕐 Mon-Fri 6:00 AM - 5:30 PM</div>
+        <div>📍 504 Broad St, Fultondale, AL 35068</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Beyond Blessed</div>
+            <ul class="nav-links">
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#enrollment">Enrollment</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="nav-cta" onclick="document.getElementById('tourModal').style.display='flex'">Schedule a Tour</button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-label">Fultondale's Trusted Child Care Center</span>
+            <h1>Where Every Child Is a Blessing</h1>
+            <p class="hero-scripture">"Train up a child in the way he should go — Proverbs 22:6"</p>
+
+            <div class="hero-badges">
+                <div class="badge">
+                    <div class="badge-icon">⭐</div>
+                    Quality STARS Rated
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">✓</div>
+                    Licensed & Insured
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">👥</div>
+                    15+ Caring Staff
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="openChat()">Schedule a Tour</button>
+                <a href="tel:+12058498696" class="btn btn-secondary">Call (205) 849-8696</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- WAVE DIVIDER -->
+    <svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 Q300,0 600,30 T1200,30 L1200,60 L0,60 Z" fill="#FFF9F2"/>
+    </svg>
+
+    <!-- WELCOME SECTION -->
+    <section class="welcome">
+        <div class="welcome-container">
+            <div class="welcome-text">
+                <h2>About Beyond Blessed</h2>
+                <p>Welcome to Beyond Blessed Child Care, where Director Cynthia "Cindi" Ahl has created a warm, nurturing home away from home for children ages 0-14. With over 15 dedicated staff members and our Alabama Quality STARS rating, we provide faith-based care grounded in Christian values.</p>
+                <p>Our center is built on love, trust, and a commitment to helping every child reach their full potential. We believe each child is a unique blessing, and we create an environment where children thrive academically, socially, and spiritually.</p>
+            </div>
+            <div class="welcome-image">
+                <img src="photos/team.jpg" alt="Beyond Blessed Team - 15+ caring staff members" style="background: linear-gradient(135deg, #D4896A, #E8A88E);">
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE VALUES -->
+    <section class="core-values">
+        <div class="section-header">
+            <h2>Our Core Values</h2>
+            <p>What guides everything we do at Beyond Blessed</p>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card fade-in">
+                <div class="value-icon">❤</div>
+                <h3>Love & Care</h3>
+                <p>Every child receives compassionate, individualized care from our trained staff. We nurture both the heart and mind of each child.</p>
+            </div>
+
+            <div class="value-card fade-in">
+                <div class="value-icon">🙏</div>
+                <h3>Faith-Based</h3>
+                <p>Our Christian values are woven throughout daily activities, prayers, and lessons. We raise children in faith and moral character.</p>
+            </div>
+
+            <div class="value-card fade-in">
+                <div class="value-icon">⭐</div>
+                <h3>Excellence</h3>
+                <p>We maintain the highest standards of safety, cleanliness, and educational quality. Quality STARS rated and continuously improving.</p>
+            </div>
+
+            <div class="value-card fade-in">
+                <div class="value-icon">🤝</div>
+                <h3>Family Partnership</h3>
+                <p>We work closely with parents, sharing daily updates and progress reports. Your child's journey is our shared mission.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRAMS SECTION -->
+    <section class="programs" id="programs">
+        <div class="section-header">
+            <h2>Our Programs</h2>
+            <p>Tailored care for every age and stage</p>
+        </div>
+
+        <div class="programs-grid">
+            <div class="program-card fade-in">
+                <div class="program-age">0-12M</div>
+                <h3>Infant Care</h3>
+                <p>Gentle, attentive care for our youngest learners during their critical developmental months.</p>
+                <div class="program-highlights">
+                    <ul>
+                        <li>Personalized feeding & sleep schedules</li>
+                        <li>Developmental milestones tracking</li>
+                        <li>Safe, calm environment</li>
+                    </ul>
+                </div>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+
+            <div class="program-card fade-in">
+                <div class="program-age">1-2Y</div>
+                <h3>Toddler Program</h3>
+                <p>Exploration and language development in a safe, nurturing environment as toddlers grow.</p>
+                <div class="program-highlights">
+                    <ul>
+                        <li>Interactive play & learning</li>
+                        <li>Early language development</li>
+                        <li>Social skill building</li>
+                    </ul>
+                </div>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+
+            <div class="program-card fade-in">
+                <div class="program-age">3-5Y</div>
+                <h3>Preschool</h3>
+                <p>Structured academics and creative exploration preparing children for kindergarten success.</p>
+                <div class="program-highlights">
+                    <ul>
+                        <li>Pre-K curriculum & academics</li>
+                        <li>Arts, music & movement</li>
+                        <li>Reading & math readiness</li>
+                    </ul>
+                </div>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+
+            <div class="program-card fade-in">
+                <div class="program-age">6-14Y</div>
+                <h3>Before & After School Care</h3>
+                <p>Extended care for school-age children before school and after dismissal, including homework help.</p>
+                <div class="program-highlights">
+                    <ul>
+                        <li>Homework assistance</li>
+                        <li>Enrichment activities</li>
+                        <li>Safe, supervised environment</li>
+                    </ul>
+                </div>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS BANNER -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Caring Staff Members</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">⭐</div>
+                <div class="stat-label">Quality STARS Rated</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">6AM-5:30PM</div>
+                <div class="stat-label">Extended Hours</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">0-14</div>
+                <div class="stat-label">Ages Served</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ENROLLMENT SECTION -->
+    <section class="enrollment" id="enrollment">
+        <h2>Getting Started</h2>
+
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-number">1</div>
+                <h3>Contact Us</h3>
+                <p>Call Director Cindi at (205) 849-8696 or fill out our contact form to discuss your child's needs.</p>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-number">2</div>
+                <h3>Schedule a Tour</h3>
+                <p>Visit our facility (20-30 minutes) to meet staff, see classrooms, and experience our warm environment.</p>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-number">3</div>
+                <h3>Complete Application</h3>
+                <p>Fill out enrollment paperwork and provide required documentation to secure your child's spot.</p>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-number">4</div>
+                <h3>Welcome!</h3>
+                <p>Your child begins their Beyond Blessed journey in a safe, loving, faith-filled environment.</p>
+            </div>
+        </div>
+
+        <div class="enrollment-requirements">
+            <h3>Enrollment Requirements</h3>
+            <div class="requirements-grid">
+                <div class="requirement-item">Completed enrollment application</div>
+                <div class="requirement-item">Birth certificate copy</div>
+                <div class="requirement-item">Immunization records</div>
+                <div class="requirement-item">Emergency contacts (2+)</div>
+                <div class="requirement-item">Custody documents (if applicable)</div>
+                <div class="requirement-item">Allergy/medical information</div>
+                <div class="requirement-item">Registration fee</div>
+                <div class="requirement-item">Photo release form</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials">
+        <h2>What Families Say</h2>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card fade-in">
+                <div class="quote-mark">"</div>
+                <p class="testimonial-text">Cindi and her team treated our daughter like she was their own. The daily updates and genuine care made us feel completely at peace. Highly recommend!</p>
+                <div class="testimonial-author">— Sarah M., Parent</div>
+            </div>
+
+            <div class="testimonial-card fade-in">
+                <div class="quote-mark">"</div>
+                <p class="testimonial-text">Best decision we made for our son's early education. The faith-based approach and professional staff create the perfect balance of learning and love.</p>
+                <div class="testimonial-author">— James T., Parent</div>
+            </div>
+
+            <div class="testimonial-card fade-in">
+                <div class="quote-mark">"</div>
+                <p class="testimonial-text">Our twins have been thriving at Beyond Blessed. The curriculum is excellent and Director Cindi truly cares about each child as an individual.</p>
+                <div class="testimonial-author">— Maria & David L., Parents</div>
+            </div>
+        </div>
+
+        <div class="review-cta">
+            <button class="review-button" onclick="openReviewModal()">Share Your Experience</button>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq" id="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    What are your hours of operation?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Beyond Blessed Child Care is open Monday through Friday, 6:00 AM to 5:30 PM. This extended schedule accommodates working parents and provides before/after school care for older children. Holidays vary — please ask during your tour.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    What's included in tuition?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Tuition includes care, educational programming, snacks, and age-appropriate materials. Meals beyond snacks, additional supplies, and special programs (field trips, tutoring) may have additional costs. Contact us for a detailed rate sheet.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    Do you offer flexible scheduling?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>We offer full-time (5 days/week), part-time, and drop-in care options. Our goal is to work with families on their unique needs. Please call Director Cindi at (205) 849-8696 to discuss your situation.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    What's your policy on sick children?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>We follow Alabama Department of Public Health guidelines. Children with fever, vomiting, or contagious rashes should stay home until symptom-free. We communicate immediately if a child becomes ill during care. Detailed policies provided at enrollment.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    Are you licensed and insured?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Yes, Beyond Blessed Child Care is fully licensed by the State of Alabama, maintains comprehensive liability insurance, and holds an Alabama Quality STARS rating. Safety, compliance, and excellence are our highest priorities.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(event)">
+                    How do you handle communication with parents?
+                    <span class="accordion-toggle">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>We provide daily updates via text/email, including photos, meals eaten, and activities. Monthly parent-teacher conferences are scheduled. Director Cindi is always available for questions and concerns at (205) 849-8696.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+        <h2>Get in Touch</h2>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-block">
+                    <h3>Call Us</h3>
+                    <p><a href="tel:+12058498696">(205) 849-8696</a></p>
+                    <p style="font-size: 12px; color: var(--text-light);">Mon-Fri 6:00 AM - 5:30 PM</p>
+                </div>
+
+                <div class="contact-block">
+                    <h3>Visit Us</h3>
+                    <p>504 Broad St<br>Fultondale, AL 35068</p>
+                </div>
+
+                <div class="contact-block">
+                    <h3>Connect With Us</h3>
+                    <p><a href="https://facebook.com/beyondblessedchildcare" target="_blank">Follow on Facebook</a></p>
+                    <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">Like us for updates, photos, and events</p>
+                </div>
+
+                <div class="contact-block">
+                    <h3>Director</h3>
+                    <p><strong>Cynthia "Cindi" Ahl</strong></p>
+                    <p style="font-size: 12px; color: var(--text-light);">Always happy to meet families and answer questions</p>
+                </div>
+            </div>
+
+            <form class="contact-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="child-age">Child's Age</label>
+                    <input type="text" id="child-age" name="childAge" placeholder="e.g., 2 years, 4 months">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" required placeholder="Tell us about your inquiry..."></textarea>
+                </div>
+
+                <button type="submit" class="form-submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-block">
+                <h4>Beyond Blessed Child Care</h4>
+                <p>A faith-based child care center dedicated to nurturing hearts and growing minds in Fultondale, Alabama.</p>
+                <p style="margin-top: 12px; font-style: italic;">"Train up a child in the way he should go" — Proverbs 22:6</p>
+            </div>
+
+            <div class="footer-block">
+                <h4>Quick Links</h4>
+                <a href="#programs">Programs</a>
+                <a href="#enrollment">Enrollment</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+            </div>
+
+            <div class="footer-block">
+                <h4>Contact</h4>
+                <p><a href="tel:+12058498696">(205) 849-8696</a></p>
+                <p>504 Broad St<br>Fultondale, AL 35068</p>
+                <p style="margin-top: 12px;"><a href="https://facebook.com/beyondblessedchildcare" target="_blank">Visit us on Facebook</a></p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Beyond Blessed Child Care. All rights reserved. Powered by <a href="#" style="color: var(--accent-light);">GrabCalls</a> | Licensed by State of Alabama | Alabama Quality STARS Rated</p>
+        </div>
+    </footer>
+
+    <!-- CHAT BUTTON -->
+    <button class="chat-button" id="chatButton" onclick="openChat()" title="Chat with us!">
+        <span style="position: relative; z-index: 2;">💬</span>
+    </button>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="chat-avatar">💬</div>
+            <div class="chat-title">
+                <h3>Beyond Blessed Assistant</h3>
+                <div class="chat-status">Usually responds instantly</div>
+            </div>
+            <button class="chat-close" onclick="closeChat()">×</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message bot">
+                <div class="message-bubble">
+                    Hi there! 👋 Welcome to Beyond Blessed Child Care. I'm Cindi's assistant. How can I help you today?
+                </div>
+            </div>
+            <div class="chat-message bot">
+                <div class="message-bubble">
+                    <div class="quick-replies">
+                        <button class="quick-reply" onclick="handleQuickReply('Enrollment Info')">Enrollment Info</button>
+                        <button class="quick-reply" onclick="handleQuickReply('Schedule a Tour')">Schedule a Tour</button>
+                        <button class="quick-reply" onclick="handleQuickReply('Programs & Ages')">Programs & Ages</button>
+                        <button class="quick-reply" onclick="handleQuickReply('Hours & Location')">Hours & Location</button>
+                        <button class="quick-reply" onclick="handleQuickReply('Talk to Staff')">Talk to Staff</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeypress(event)">
+            <button class="chat-send" onclick="sendChatMessage()">⏎</button>
+        </div>
+
+        <div class="chat-footer">
+            Powered by GrabCalls
+        </div>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeReviewModal()">×</button>
+
+            <div class="modal-header">
+                <h2>Share Your Experience</h2>
+                <p>How would you rate Beyond Blessed Child Care?</p>
+            </div>
+
+            <div class="stars-row" id="starsRow">
+                <span class="star" onclick="selectStar(1)">⭐</span>
+                <span class="star" onclick="selectStar(2)">⭐</span>
+                <span class="star" onclick="selectStar(3)">⭐</span>
+                <span class="star" onclick="selectStar(4)">⭐</span>
+                <span class="star" onclick="selectStar(5)">⭐</span>
+            </div>
+
+            <div class="feedback-form" id="feedbackForm">
+                <div class="form-group">
+                    <label for="feedback-text">Tell us more (optional)</label>
+                    <textarea id="feedback-text" placeholder="Share your feedback..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="feedback-name">Your Name (optional)</label>
+                    <input type="text" id="feedback-name">
+                </div>
+                <div class="form-group">
+                    <label for="feedback-phone">Phone (optional)</label>
+                    <input type="tel" id="feedback-phone">
+                </div>
+                <button type="button" class="form-submit" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // AUTO-OPEN CHAT AFTER 4 SECONDS
+        let chatAutoOpened = false;
+        setTimeout(() => {
+            if (!chatAutoOpened) {
+                openChat();
+                chatAutoOpened = true;
+            }
+        }, 4000);
+
+        // CHAT FUNCTIONS
+        function openChat() {
+            document.getElementById('chatPanel').classList.add('open');
+            document.getElementById('chatInput').focus();
+            chatAutoOpened = true;
+        }
+
+        function closeChat() {
+            document.getElementById('chatPanel').classList.remove('open');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message === '') return;
+
+            addChatMessage('user', message);
+            input.value = '';
+
+            // Simulate bot response
+            setTimeout(() => {
+                addChatMessage('bot', 'Thanks for your message! Director Cindi will follow up with you shortly.');
+            }, 500);
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function addChatMessage(sender, text) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = text;
+
+            messageDiv.appendChild(bubble);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function handleQuickReply(option) {
+            addChatMessage('user', option);
+
+            let response = '';
+            switch(option) {
+                case 'Enrollment Info':
+                    response = 'To enroll at Beyond Blessed:\n\n1. Contact us at (205) 849-8696\n2. Schedule a tour (20-30 min)\n3. Complete application\n4. Provide: Birth cert, immunizations, emergency contacts, custody docs, allergy/medical info\n5. Pay registration fee\n\nDirector Cindi is happy to walk you through each step!';
+                    break;
+                case 'Schedule a Tour':
+                    response = 'We\'d love to show you around! Tours are about 20-30 minutes and available Mon-Fri 6:00 AM - 5:30 PM. Just share your:\n- Name\n- Phone\n- Child\'s age\n\nDirector Cindi will set up a perfect time for you!';
+                    break;
+                case 'Programs & Ages':
+                    response = '📚 Infant Care (0-12 months)\n🎒 Toddler Program (1-2 years)\n✏️ Preschool (3-5 years)\n🏫 Before & After School (6-14 years)\n\nEach program is tailored to developmental needs with a faith-based, nurturing approach.';
+                    break;
+                case 'Hours & Location':
+                    response = '⏰ Hours: Mon-Fri 6:00 AM - 5:30 PM\n📍 Address: 504 Broad St, Fultondale, AL 35068\n\nWe\'re conveniently located and ready to welcome your family!';
+                    break;
+                case 'Talk to Staff':
+                    response = 'You can reach Director Cindi directly at (205) 849-8696, or share your name and number here and she\'ll call you back within 24 hours. She loves meeting families!';
+                    break;
+            }
+
+            setTimeout(() => {
+                addChatMessage('bot', response);
+            }, 300);
+        }
+
+        // ACCORDION FUNCTIONS
+        function toggleAccordion(event) {
+            const item = event.target.closest('.accordion-item');
+            item.classList.toggle('active');
+        }
+
+        // REVIEW MODAL FUNCTIONS
+        let selectedRating = 0;
+
+        function openReviewModal() {
+            document.getElementById('reviewModal').classList.add('open');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.remove('open');
+            selectedRating = 0;
+            resetReviewModal();
+        }
+
+        function selectStar(rating) {
+            selectedRating = rating;
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+
+            // Show feedback form for 1-3 stars, redirect for 4-5
+            if (rating >= 4) {
+                setTimeout(() => {
+                    window.location.href = 'https://g.page/r/BEYOND_BLESSED_PLACE_ID/review';
+                }, 500);
+            } else {
+                document.getElementById('feedbackForm').classList.add('show');
+            }
+        }
+
+        function resetReviewModal() {
+            document.getElementById('feedbackForm').classList.remove('show');
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+            document.getElementById('feedback-text').value = '';
+            document.getElementById('feedback-name').value = '';
+            document.getElementById('feedback-phone').value = '';
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById('feedback-name').value || 'Anonymous';
+            const phone = document.getElementById('feedback-phone').value;
+
+            alert('Thank you for your feedback. Director Cindi will personally follow up with you.');
+            closeReviewModal();
+        }
+
+        // FORM SUBMISSION
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            alert(`Thank you, ${name}! We'll get back to you soon.`);
+            event.target.reset();
+        }
+
+        // SCROLL ANIMATIONS
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
