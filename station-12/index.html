@@ -471,6 +471,85 @@
     cursor: pointer;
   }
   .lineup-row .badge-mini.kelly { color: #ffd28a; border-color: rgba(255,165,0,0.5); background: rgba(255,165,0,0.1); }
+  .lineup-row .badge-mini.fillin { color: #d2b3ff; border-color: rgba(160,99,255,0.5); background: rgba(160,99,255,0.12); }
+  .lineup-row .fillin-remove {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 8px;
+    width: 34px; height: 34px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 4px;
+  }
+  .lineup-row .fillin-remove:hover { color: var(--red); border-color: var(--red); }
+
+  /* Fill-in add button + inline form */
+  .fillin-controls { margin-top: 10px; }
+  .fillin-add-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed var(--line);
+    color: var(--muted);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  .fillin-add-btn:hover { color: var(--gold); border-color: var(--gold); }
+  .fillin-form {
+    margin-top: 10px;
+    padding: 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .fillin-form[hidden] { display: none; }
+  .fillin-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .fillin-form input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 15px;
+    min-width: 140px;
+  }
+  .fillin-form .fillin-rig-btn,
+  .fillin-form .fillin-medic-btn {
+    flex: 1;
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .fillin-form .fillin-rig-btn[data-rig="engine"] { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .fillin-form .fillin-rig-btn[data-rig="rescue"] { background: rgba(47,111,235,0.18); border-color: var(--blue); color: #bcd2ff; }
+  .fillin-form .fillin-medic-btn.on { background: rgba(46,160,67,0.15); border-color: var(--green); color: #b8f0c4; }
+  .fillin-form .fillin-save, .fillin-form .fillin-cancel {
+    flex: 1;
+    min-height: 44px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .fillin-form .fillin-save { background: var(--green); color: #0a0a0a; }
+  .fillin-form .fillin-cancel { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+  .fillin-help { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4; }
 
   .emblem-settings {
     display: flex; gap: 14px; align-items: center;
@@ -757,6 +836,23 @@
     </header>
     <div class="body">
       <div class="lineup" id="lineupList"></div>
+      <div class="fillin-controls">
+        <button class="fillin-add-btn" id="addFillInBtn">+ Add fill-in (detail-in from another station)</button>
+        <div class="fillin-form" id="fillInForm" hidden>
+          <div class="fillin-form-row">
+            <input type="text" id="fillInName" placeholder="Name (e.g. Smith)" autocomplete="off" />
+          </div>
+          <div class="fillin-form-row">
+            <button class="fillin-rig-btn" id="fillInRigBtn" data-rig="engine" type="button">E12</button>
+            <button class="fillin-medic-btn" id="fillInMedicBtn" type="button">⚕ Medic</button>
+          </div>
+          <div class="fillin-form-row">
+            <button class="fillin-save" id="fillInSaveBtn" type="button">Add to lineup</button>
+            <button class="fillin-cancel" id="fillInCancelBtn" type="button">Cancel</button>
+          </div>
+          <p class="fillin-help">Eligible to take watch tonight (gives your guys a break). Doesn't affect counts. Auto-removed after Confirm Shift.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -943,6 +1039,7 @@ function defaultState() {
       "2026-06-12": ["wilson"],
       "2026-06-24": ["glover"],
     },
+    fillIns: [],
     lastKellyApplied: null,
     rookieMultiplier: 2,
     useReveal: true,
@@ -984,6 +1081,7 @@ function loadState() {
       if (!("isRookie" in m)) m.isRookie = m.id === "smart";
     }
     if (!parsed.kellyDays)        parsed.kellyDays = {};
+    if (!Array.isArray(parsed.fillIns)) parsed.fillIns = [];
     if (!("lastKellyApplied" in parsed)) parsed.lastKellyApplied = null;
     if (!("rookieMultiplier" in parsed)) parsed.rookieMultiplier = 2;
     if (!("useReveal" in parsed))        parsed.useReveal = true;
@@ -1039,7 +1137,26 @@ function shortDate(iso) {
 }
 
 function getMember(id) {
-  return state.crew.find(m => m.id === id);
+  if (!id) return null;
+  const c = state.crew.find(m => m.id === id);
+  if (c) return c;
+  return state.fillIns.find(f => f.id === id) || null;
+}
+
+function isFillIn(id) {
+  return typeof id === "string" && id.startsWith("fillin_");
+}
+
+// Look up an assignee by id, falling back to a history entry's fill-in snapshot
+// for fill-ins that have been cleared from current state.
+function resolveMember(id, historyEntry) {
+  if (!id) return null;
+  const m = getMember(id);
+  if (m) return m;
+  if (historyEntry && historyEntry.fillInRoster && historyEntry.fillInRoster[id]) {
+    return historyEntry.fillInRoster[id];
+  }
+  return null;
 }
 
 function dailyRig(m) {
@@ -1047,6 +1164,8 @@ function dailyRig(m) {
 }
 
 function effectiveCount(m, rotationId, counts) {
+  // Fill-ins always count as 0 — they should be picked first to give regulars a break.
+  if (m.isFillIn) return 0;
   const raw = counts[m.id] ?? 0;
   // Rookie weighting applies to primary watch only — rookie should take more.
   if (rotationId === "watch" && m.isRookie && state.rookieMultiplier > 1) {
@@ -1067,8 +1186,10 @@ function applyKellyDaysIfNewDay() {
 }
 
 function eligibleForRotation() {
-  // crew that participates in auto-pick: not exempt, present today
-  return state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
+  // crew + fill-ins that participate in auto-pick: not exempt, present today
+  const regulars = state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
+  const fillins = state.fillIns.filter(f => state.presence.includes(f.id));
+  return [...regulars, ...fillins];
 }
 
 function eligibleForBackup(primaryHolder) {
@@ -1077,19 +1198,16 @@ function eligibleForBackup(primaryHolder) {
   const pRig = dailyRig(primaryHolder);
   if (!pRig) return [];
   const oppositeRig = pRig === "engine" ? "rescue" : "engine";
-  return state.crew.filter(m =>
-    !m.exempt &&
-    state.presence.includes(m.id) &&
-    dailyRig(m) === oppositeRig
-  );
+  return eligibleForRotation().filter(m => dailyRig(m) === oppositeRig);
 }
 
 function applyTiebreakers(tied, rotationId) {
   if (tied.length <= 1) return tied;
   // 1. Detail-as-tiebreaker: anyone absent from the most recent prior shift loses ties.
+  //    Fill-ins are exempt — they're not "detailed off", they're new arrivals tonight.
   const lastShift = state.history[state.history.length - 1];
   if (lastShift) {
-    const notDetailedLast = tied.filter(m => lastShift.present.includes(m.id));
+    const notDetailedLast = tied.filter(m => m.isFillIn || lastShift.present.includes(m.id));
     if (notDetailedLast.length && notDetailedLast.length < tied.length) {
       tied = notDetailedLast;
     }
@@ -1301,24 +1419,42 @@ function renderLineup() {
     const isKellyToday = (state.kellyDays[todayISO()] || []).includes(m.id);
     const badges = [];
     if (m.exempt) badges.push(`<span class="badge-mini officer">${/sgt/i.test(m.name) ? "SGT" : "LT"}</span>`);
+    if (m.isFillIn) badges.push(`<span class="badge-mini fillin">🤝 FILL-IN</span>`);
     if (m.isMedic)  badges.push(`<span class="badge-mini medic">⚕ MEDIC</span>`);
     if (m.isCook)   badges.push(`<span class="badge-mini cook">👨‍🍳 COOK</span>`);
     if (m.isRookie) badges.push(`<span class="badge-mini cook">🎓 ROOKIE</span>`);
     if (isKellyToday) badges.push(`<span class="badge-mini kelly">📅 KELLY</span>`);
 
+    const senLabel = m.exempt
+      ? ""
+      : (m.isFillIn ? "" : ` <span style="color:var(--muted);font-weight:500;font-size:12px;">#${m.seniority}</span>`);
+    const removeBtn = m.isFillIn
+      ? `<button class="fillin-remove" data-act="fillin-remove" data-id="${m.id}" title="Remove fill-in">✕</button>`
+      : "";
+
     row.innerHTML = `
       <div class="name">
-        <span>${m.name}${m.exempt ? "" : ` <span style="color:var(--muted);font-weight:500;font-size:12px;">#${m.seniority}</span>`}</span>
+        <span>${m.name}${senLabel}</span>
         <span class="badges">${badges.join("")}</span>
       </div>
       <button class="rig-pill rig-${rig || "none"} ${present ? "" : "hidden"}" data-act="rig" data-id="${m.id}">${rig ? RIGS[rig].short : "—"}</button>
       <button class="presence-pill ${present ? "on" : "off"}" data-act="presence" data-id="${m.id}">${present ? "ON DUTY" : "OFF"}</button>
+      ${removeBtn}
     `;
     return row;
   };
 
   // FFs first
   for (const m of ffs) container.appendChild(renderRow(m));
+
+  // Fill-ins (detail-in for tonight)
+  if (state.fillIns.length) {
+    const label = document.createElement("div");
+    label.className = "lineup-section-label";
+    label.textContent = "Fill-ins (detail-in, tonight only)";
+    container.appendChild(label);
+    for (const f of state.fillIns) container.appendChild(renderRow(f));
+  }
 
   // Officers
   if (officers.length) {
@@ -1335,7 +1471,7 @@ function renderLineup() {
       const id = btn.dataset.id;
       const act = btn.dataset.act;
       const m = getMember(id);
-      if (!m) return;
+      if (!m && act !== "fillin-remove") return;
       if (act === "presence") {
         if (state.presence.includes(id)) {
           state.presence = state.presence.filter(x => x !== id);
@@ -1349,11 +1485,17 @@ function renderLineup() {
       } else if (act === "rig") {
         const current = dailyRig(m);
         const next = current === "engine" ? "rescue" : "engine";
-        if (next === m.rig) {
+        if (m.isFillIn) {
+          // Fill-ins store rig directly on the object (no daily-override layer).
+          m.rig = next;
+        } else if (next === m.rig) {
           delete state.dailyRigs[id]; // back to default, clear override
         } else {
           state.dailyRigs[id] = next;
         }
+      } else if (act === "fillin-remove") {
+        removeFillIn(id);
+        return; // removeFillIn handles save + render
       }
       saveState();
       renderLineup();
@@ -1376,12 +1518,17 @@ function renderAssignments() {
     const emptyText = r.id === "backupWatch"
       ? (watchPick ? "no eligible on opposite rig" : "set primary watch first")
       : "no eligible crew present";
+    const metaText = pick
+      ? (pick.isFillIn
+          ? `<span style="color:#d2b3ff">fill-in · no count</span>`
+          : `count: <strong>${counts[pick.id] ?? 0}</strong>`)
+      : emptyText;
     cell.innerHTML = `
       <div class="label"><span>${r.icon}</span><span>${r.label}</span></div>
       <div class="pick ${pick ? "" : "empty"}">${pick ? pick.name : "—"} ${rigTag}</div>
       <div class="meta">
-        ${pick ? `count: <strong>${counts[pick.id] ?? 0}</strong>` : emptyText}
-        ${pick && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
+        ${metaText}
+        ${pick && !pick.isFillIn && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
       </div>
     `;
     // Override dropdown — show eligible pool for this rotation
@@ -1391,8 +1538,8 @@ function renderAssignments() {
       sel.innerHTML = `<option value="">— auto (recommended) —</option>` +
         eligible
           .slice()
-          .sort((a, b) => a.seniority - b.seniority)
-          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${dailyRig(m) ? " (" + RIGS[dailyRig(m)].short + ")" : ""}</option>`)
+          .sort((a, b) => (a.seniority ?? 999) - (b.seniority ?? 999))
+          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${m.isFillIn ? " · fill-in" : ""}${dailyRig(m) ? " (" + RIGS[dailyRig(m)].short + ")" : ""}</option>`)
           .join("");
       sel.addEventListener("change", e => {
         if (e.target.value) state.pendingOverrides[r.id] = e.target.value;
@@ -1453,8 +1600,8 @@ function renderHistory() {
     const a = h.assignments || {};
     const parts = ROTATIONS.map(r => {
       const id = a[r.id];
-      const m = id ? getMember(id) : null;
-      return m ? `${r.icon} <b>${m.name}</b>` : "";
+      const m = id ? resolveMember(id, h) : null;
+      return m ? `${r.icon} <b>${m.name}${m.isFillIn ? " (fill-in)" : ""}</b>` : "";
     }).filter(Boolean);
     const row = document.createElement("div");
     row.className = "history-item";
@@ -1576,26 +1723,41 @@ function confirmShift() {
     const p = pickFor(r.id);
     if (!p) continue;
     assignments[r.id] = p.id;
-    state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
-    state.rotations[r.id].lastDate[p.id] = date;
+    // Fill-ins are guests — their counts don't accumulate in the permanent rotation.
+    if (!isFillIn(p.id)) {
+      state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+      state.rotations[r.id].lastDate[p.id] = date;
+    }
   }
   // Snapshot rigs for this shift (for history record)
   const rigsSnapshot = {};
   for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
+  for (const f of state.fillIns) rigsSnapshot[f.id] = f.rig;
+  // Snapshot the fill-in roster so history rendering can resolve their names later.
+  const fillInRoster = {};
+  for (const f of state.fillIns) {
+    fillInRoster[f.id] = { id: f.id, name: f.name, rig: f.rig, isMedic: !!f.isMedic, isFillIn: true };
+  }
   state.history.push({
     date,
     assignments,
     present: state.presence.slice(),
     rigs: rigsSnapshot,
+    fillInRoster,
     note: ""
   });
   state.pendingOverrides = {};
   state.dailyRigs = {}; // shift over — rigs snap back to defaults for next time
   revealedThisSession = false; // re-arm reveal for next shift
   saveState();
-  render();
+  // Build the share text BEFORE clearing fill-ins so the modal shows the actual roster.
   showToast("Shift confirmed");
   openShareModal();
+  // Now clear fill-ins — guest mode: they don't persist beyond tonight.
+  state.fillIns = [];
+  state.presence = state.presence.filter(id => !isFillIn(id));
+  saveState();
+  render();
 }
 
 function sgtCoversWatch() {
@@ -1617,26 +1779,37 @@ function sgtCoversWatch() {
       : pickFor(r.id);
     if (p) {
       assignments[r.id] = p.id;
-      state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
-      state.rotations[r.id].lastDate[p.id] = date;
+      if (!isFillIn(p.id)) {
+        state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+        state.rotations[r.id].lastDate[p.id] = date;
+      }
     }
   }
   const rigsSnapshot = {};
   for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
+  for (const f of state.fillIns) rigsSnapshot[f.id] = f.rig;
+  const fillInRoster = {};
+  for (const f of state.fillIns) {
+    fillInRoster[f.id] = { id: f.id, name: f.name, rig: f.rig, isMedic: !!f.isMedic, isFillIn: true };
+  }
   state.history.push({
     date,
     assignments,
     present: state.presence.slice(),
     rigs: rigsSnapshot,
+    fillInRoster,
     note: "Sgt. covered watch"
   });
   state.pendingOverrides = {};
   state.dailyRigs = {};
   revealedThisSession = false;
   saveState();
-  render();
   showToast("Sgt. on watch — counts unchanged");
   openShareModal();
+  state.fillIns = [];
+  state.presence = state.presence.filter(id => !isFillIn(id));
+  saveState();
+  render();
 }
 
 function undoLastShift() {
@@ -1669,8 +1842,10 @@ function buildShareText({ fromConfirmed = false } = {}) {
   let assigns = {};
   let note = "";
   let rigsOfRecord = null;
+  let historyEntry = null;
   if (fromConfirmed && state.history.length && state.history[state.history.length - 1].date === date) {
     const last = state.history[state.history.length - 1];
+    historyEntry = last;
     assigns = last.assignments;
     note = last.note;
     rigsOfRecord = last.rigs || null;
@@ -1682,12 +1857,18 @@ function buildShareText({ fromConfirmed = false } = {}) {
   }
   const rigFor = (m) => rigsOfRecord ? rigsOfRecord[m.id] : dailyRig(m);
 
-  // Lineup
-  const onDuty = state.crew.filter(m => state.presence.includes(m.id));
+  // Lineup — include current fill-ins (or snapshot from history if confirmed)
+  const fillInsForLineup = historyEntry
+    ? Object.values(historyEntry.fillInRoster || {})
+    : state.fillIns;
+  const onDuty = [
+    ...state.crew.filter(m => state.presence.includes(m.id)),
+    ...fillInsForLineup.filter(f => historyEntry || state.presence.includes(f.id)),
+  ];
   const engine = onDuty.filter(m => rigFor(m) === "engine");
   const rescue = onDuty.filter(m => rigFor(m) === "rescue");
   const off = state.crew.filter(m => !m.exempt && !state.presence.includes(m.id));
-  const namify = m => `${m.name}${m.isMedic ? " ⚕" : ""}${m.isCook ? " 👨‍🍳" : ""}`;
+  const namify = m => `${m.name}${m.isMedic ? " ⚕" : ""}${m.isCook ? " 👨‍🍳" : ""}${m.isFillIn ? " (fill-in)" : ""}`;
   if (engine.length) lines.push(`🚒 Engine 12: ${engine.map(namify).join(", ")}`);
   if (rescue.length) lines.push(`🚑 Rescue 12: ${rescue.map(namify).join(", ")}`);
   if (off.length)    lines.push(`Detailed off: ${off.map(m => m.name).join(", ")}`);
@@ -1696,9 +1877,10 @@ function buildShareText({ fromConfirmed = false } = {}) {
   // Assignments
   for (const r of ROTATIONS) {
     const id = assigns[r.id];
-    const m = id ? getMember(id) : null;
+    const m = id ? resolveMember(id, historyEntry) : null;
     const rigTxt = m && rigFor(m) ? ` (${RIGS[rigFor(m)].short})` : "";
-    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name + rigTxt : "—"}`);
+    const fillinTxt = m && m.isFillIn ? " — fill-in" : "";
+    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name + rigTxt + fillinTxt : "—"}`);
   }
   lines.push("━━━━━━━━━━━━━━━━━━━");
 
@@ -1766,6 +1948,63 @@ function addMember() {
   state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false, rig: "engine", isMedic: false, isCook: false });
   for (const r of ROTATIONS) state.rotations[r.id].counts[id] = 0;
   state.presence.push(id);
+  saveState();
+  render();
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Fill-ins (detail-in from another station, tonight only)
+// ────────────────────────────────────────────────────────────────────
+
+function openFillInForm() {
+  document.getElementById("fillInForm").hidden = false;
+  document.getElementById("addFillInBtn").hidden = true;
+  // Reset form state
+  document.getElementById("fillInName").value = "";
+  const rigBtn = document.getElementById("fillInRigBtn");
+  rigBtn.dataset.rig = "engine";
+  rigBtn.textContent = "E12";
+  document.getElementById("fillInMedicBtn").classList.remove("on");
+  setTimeout(() => document.getElementById("fillInName").focus(), 0);
+}
+
+function closeFillInForm() {
+  document.getElementById("fillInForm").hidden = true;
+  document.getElementById("addFillInBtn").hidden = false;
+}
+
+function toggleFillInRig() {
+  const btn = document.getElementById("fillInRigBtn");
+  const next = btn.dataset.rig === "engine" ? "rescue" : "engine";
+  btn.dataset.rig = next;
+  btn.textContent = next === "engine" ? "E12" : "R12";
+}
+
+function toggleFillInMedic() {
+  document.getElementById("fillInMedicBtn").classList.toggle("on");
+}
+
+function saveFillIn() {
+  const name = document.getElementById("fillInName").value.trim();
+  if (!name) { document.getElementById("fillInName").focus(); return; }
+  const rig = document.getElementById("fillInRigBtn").dataset.rig;
+  const isMedic = document.getElementById("fillInMedicBtn").classList.contains("on");
+  const id = `fillin_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+  state.fillIns.push({ id, name, rig, isMedic, isFillIn: true });
+  state.presence.push(id);
+  closeFillInForm();
+  saveState();
+  render();
+  showToast(`${name} added as fill-in`);
+}
+
+function removeFillIn(id) {
+  state.fillIns = state.fillIns.filter(f => f.id !== id);
+  state.presence = state.presence.filter(p => p !== id);
+  // Clear any pending override pointing at this fill-in
+  for (const r of ROTATIONS) {
+    if (state.pendingOverrides[r.id] === id) delete state.pendingOverrides[r.id];
+  }
   saveState();
   render();
 }
@@ -1862,6 +2101,17 @@ document.getElementById("modalBackdrop").addEventListener("click", e => {
 
 // Bay door reveal
 document.getElementById("bayDoor").addEventListener("click", openBayDoors);
+
+// Fill-in form
+document.getElementById("addFillInBtn").addEventListener("click", openFillInForm);
+document.getElementById("fillInCancelBtn").addEventListener("click", closeFillInForm);
+document.getElementById("fillInRigBtn").addEventListener("click", toggleFillInRig);
+document.getElementById("fillInMedicBtn").addEventListener("click", toggleFillInMedic);
+document.getElementById("fillInSaveBtn").addEventListener("click", saveFillIn);
+document.getElementById("fillInName").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); saveFillIn(); }
+  else if (e.key === "Escape") { closeFillInForm(); }
+});
 
 // Kelly days
 document.getElementById("kellyAddBtn").addEventListener("click", () => {
