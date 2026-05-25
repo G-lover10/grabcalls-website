@@ -113,12 +113,9 @@
   /* Assignment cards */
   .assign-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
     padding: 0 12px 8px;
-  }
-  @media (min-width: 560px) {
-    .assign-grid { grid-template-columns: repeat(3, 1fr); }
   }
   .assign {
     background: var(--panel-2);
@@ -143,6 +140,20 @@
     letter-spacing: 0.3px;
   }
   .assign .pick.empty { color: var(--muted); font-size: 18px; font-weight: 600; }
+  .assign .rig-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(245,197,24,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(245,197,24,0.35);
+    vertical-align: middle;
+    position: relative; top: -3px;
+  }
   .assign .meta { font-size: 12px; color: var(--muted); }
   .assign select {
     margin-top: 10px;
@@ -263,6 +274,17 @@
     cursor: pointer;
   }
   .setup-row button:hover { border-color: var(--gold); }
+  .setup-row .rig-btn {
+    width: auto;
+    min-width: 44px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .setup-row .rig-btn.rig-engine { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .setup-row .rig-btn.rig-rescue { background: rgba(47,111,235,0.15); border-color: var(--blue); color: #bcd2ff; }
+  .setup-row .rig-btn.rig-none   { color: var(--muted); }
   .setup-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 4px 0; }
   .setup-actions button {
     flex: 1; min-width: 130px; min-height: 44px;
@@ -451,6 +473,8 @@
         <p style="color:var(--muted); font-size:12px; margin-top:14px; padding: 0 4px;">
           <strong>How fairness works:</strong> Each shift, the rotation picks whoever's present with the lowest count. Ties break by newest-first. Detailed-off members are skipped automatically (their count doesn't move, so they catch up naturally on return).
           Lt. Martin and Sgt. Glover are marked <em>exempt</em> and stay out of the auto-pick.
+          <br><br>
+          <strong>Backup Watch:</strong> Picked from the <em>opposite rig</em> of the primary watch holder — if primary is Engine 12, backup comes from Rescue 12 (and vice versa). Each crew member's rig is set with the red/blue button in the row above (tap to cycle Engine → Rescue → none). Backup watch tracks its own count.
         </p>
       </div>
     </details>
@@ -488,21 +512,28 @@
 const STORAGE_KEY = "station12-bshift-rotation-v1";
 
 const ROTATIONS = [
-  { id: "watch",    label: "Watch",    icon: "🛏️", desc: "Day room / doors / phone / intercom" },
-  { id: "meals",    label: "Meals",    icon: "🍳", desc: "Cook / grocery lead" },
-  { id: "cleaning", label: "Cleaning", icon: "🧹", desc: "Bay / kitchen / dorm lead" },
+  { id: "watch",       label: "Watch",        icon: "🛏️", desc: "Day room / doors / phone / intercom" },
+  { id: "backupWatch", label: "Backup Watch", icon: "🛟", desc: "Opposite-rig cover when primary's truck rolls out", dependsOnWatch: true },
+  { id: "meals",       label: "Meals",        icon: "🍳", desc: "Cook / grocery lead" },
+  { id: "cleaning",    label: "Cleaning",     icon: "🧹", desc: "Bay / kitchen / dorm lead" },
 ];
+
+const RIGS = {
+  engine: { label: "Engine 12", short: "E12" },
+  rescue: { label: "Rescue 12", short: "R12" },
+};
 
 function defaultState() {
   // Seniority: 1 = most senior, higher number = newer. Newer takes ties first.
+  // Rig: "engine" or "rescue" — used by Backup Watch (always picked from opposite rig of primary).
   const crew = [
-    { id: "andrews",  name: "Andrews",  seniority: 1, exempt: false },
-    { id: "holt",     name: "Holt",     seniority: 2, exempt: false },
-    { id: "bentley",  name: "Bentley",  seniority: 3, exempt: false },
-    { id: "wilson",   name: "Wilson",   seniority: 4, exempt: false },
-    { id: "smart",    name: "Smart",    seniority: 5, exempt: false },
-    { id: "martin",   name: "Lt. Martin", seniority: 0, exempt: true },
-    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true },
+    { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine" },
+    { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine" },
+    { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "engine" },
+    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue" },
+    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "rescue" },
+    { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine" },
+    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "rescue" },
   ];
   const rotations = {};
   for (const r of ROTATIONS) {
@@ -526,7 +557,11 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    // Migrate: ensure all crew have count entries for all rotations
+    // Migrate: every crew member needs a rig field (default by exemption guess)
+    for (const m of parsed.crew) {
+      if (!("rig" in m)) m.rig = /sgt|rescue/i.test(m.name) ? "rescue" : "engine";
+    }
+    // Migrate: ensure all crew have count entries for all rotations (including new backupWatch)
     for (const r of ROTATIONS) {
       if (!parsed.rotations[r.id]) parsed.rotations[r.id] = { counts: {}, lastDate: {} };
       for (const m of parsed.crew) {
@@ -578,13 +613,30 @@ function eligibleForRotation() {
   return state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
 }
 
-function pickFor(rotationId) {
+function eligibleForBackup(primaryHolder) {
+  // Backup watch comes from the opposite rig of whoever holds primary watch.
+  if (!primaryHolder || !primaryHolder.rig) return [];
+  const oppositeRig = primaryHolder.rig === "engine" ? "rescue" : "engine";
+  return state.crew.filter(m =>
+    !m.exempt &&
+    state.presence.includes(m.id) &&
+    m.rig === oppositeRig
+  );
+}
+
+function pickFor(rotationId, opts = {}) {
   const override = state.pendingOverrides[rotationId];
   if (override) {
     const m = getMember(override);
     if (m && state.presence.includes(m.id)) return m;
   }
-  const eligible = eligibleForRotation();
+  let eligible;
+  if (rotationId === "backupWatch") {
+    const primary = opts.primaryHolder || pickFor("watch");
+    eligible = eligibleForBackup(primary);
+  } else {
+    eligible = eligibleForRotation();
+  }
   if (eligible.length === 0) return null;
   const counts = state.rotations[rotationId].counts;
   const minCount = Math.min(...eligible.map(m => counts[m.id] ?? 0));
@@ -653,29 +705,34 @@ function renderPresence() {
 function renderAssignments() {
   const grid = document.getElementById("assignGrid");
   grid.innerHTML = "";
+  const watchPick = pickFor("watch");
   for (const r of ROTATIONS) {
     const pick = pickFor(r.id);
     const cell = document.createElement("div");
     cell.className = "assign";
     const counts = state.rotations[r.id].counts;
     const lastDate = pick ? state.rotations[r.id].lastDate[pick.id] : null;
+    const rigTag = pick && pick.rig ? `<span class="rig-tag">${RIGS[pick.rig].short}</span>` : "";
+    const emptyText = r.id === "backupWatch"
+      ? (watchPick ? "no eligible on opposite rig" : "set primary watch first")
+      : "no eligible crew present";
     cell.innerHTML = `
       <div class="label"><span>${r.icon}</span><span>${r.label}</span></div>
-      <div class="pick ${pick ? "" : "empty"}">${pick ? pick.name : "—"}</div>
+      <div class="pick ${pick ? "" : "empty"}">${pick ? pick.name : "—"} ${rigTag}</div>
       <div class="meta">
-        ${pick ? `count: <strong>${counts[pick.id] ?? 0}</strong>` : "no eligible crew present"}
+        ${pick ? `count: <strong>${counts[pick.id] ?? 0}</strong>` : emptyText}
         ${pick && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
       </div>
     `;
-    // Override dropdown — only show present members
-    const eligible = eligibleForRotation();
+    // Override dropdown — show eligible pool for this rotation
+    const eligible = r.id === "backupWatch" ? eligibleForBackup(watchPick) : eligibleForRotation();
     if (eligible.length > 1) {
       const sel = document.createElement("select");
       sel.innerHTML = `<option value="">— auto (recommended) —</option>` +
         eligible
           .slice()
           .sort((a, b) => a.seniority - b.seniority)
-          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}</option>`)
+          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${m.rig ? " (" + RIGS[m.rig].short + ")" : ""}</option>`)
           .join("");
       sel.addEventListener("change", e => {
         if (e.target.value) state.pendingOverrides[r.id] = e.target.value;
@@ -762,10 +819,12 @@ function renderCrewEditor() {
   for (const m of sorted) {
     const row = document.createElement("div");
     row.className = "setup-row";
+    const rigBtn = `<button data-act="toggle-rig" data-id="${m.id}" class="rig-btn rig-${m.rig || "none"}" title="Tap to switch rig">${m.rig ? RIGS[m.rig].short : "—"}</button>`;
     row.innerHTML = `
       <span class="sen-label">${m.exempt ? "Exempt" : "#" + m.seniority}</span>
       <input type="text" value="${m.name.replace(/"/g, "&quot;")}" data-id="${m.id}" />
       <div class="row-actions">
+        ${rigBtn}
         ${m.exempt ? "" : `<button data-act="up" data-id="${m.id}" title="More senior">↑</button>`}
         ${m.exempt ? "" : `<button data-act="down" data-id="${m.id}" title="Less senior">↓</button>`}
         <button data-act="toggle-exempt" data-id="${m.id}" title="${m.exempt ? "Add to rotation" : "Mark exempt"}">${m.exempt ? "+" : "★"}</button>
@@ -802,6 +861,9 @@ function renderCrewEditor() {
         }
       } else if (act === "up" || act === "down") {
         moveSeniority(id, act === "up" ? -1 : 1);
+      } else if (act === "toggle-rig") {
+        const m = getMember(id);
+        m.rig = m.rig === "engine" ? "rescue" : m.rig === "rescue" ? null : "engine";
       }
       saveState();
       render();
@@ -863,10 +925,13 @@ function sgtCoversWatch() {
   const assignments = {};
   for (const r of ROTATIONS) {
     if (r.id === "watch") {
-      assignments[r.id] = sgtId; // logged but not incremented
+      assignments[r.id] = sgtId; // watch logged to Sgt but counts untouched
       continue;
     }
-    const p = pickFor(r.id);
+    // Backup watch is keyed off Sgt's rig, not the regular auto-pick
+    const p = r.id === "backupWatch"
+      ? pickFor(r.id, { primaryHolder: sgt })
+      : pickFor(r.id);
     if (p) {
       assignments[r.id] = p.id;
       state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
@@ -929,17 +994,18 @@ function buildShareText({ fromConfirmed = false } = {}) {
   for (const r of ROTATIONS) {
     const id = assigns[r.id];
     const m = id ? getMember(id) : null;
-    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name : "—"}`);
+    const rigTxt = m && m.rig ? ` (${RIGS[m.rig].short})` : "";
+    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name + rigTxt : "—"}`);
   }
   lines.push("━━━━━━━━━━━━━━━━━━━");
 
   const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
-  const on = ffs.filter(m => state.presence.includes(m.id)).map(m => m.name);
+  const on = ffs.filter(m => state.presence.includes(m.id)).map(m => `${m.name}${m.rig ? " " + RIGS[m.rig].short : ""}`);
   const out = ffs.filter(m => !state.presence.includes(m.id)).map(m => m.name);
   lines.push(`On duty: ${on.length ? on.join(", ") : "—"}`);
   if (out.length) lines.push(`Detailed off: ${out.join(", ")}`);
 
-  // Watch standings only — that's what the crew cares about
+  // Watch + Backup standings — what the crew cares about
   lines.push("━━━━━━━━━━━━━━━━━━━");
   const watchLine = ffs
     .slice()
@@ -947,6 +1013,12 @@ function buildShareText({ fromConfirmed = false } = {}) {
     .map(m => `${m.name} ${state.rotations.watch.counts[m.id] ?? 0}`)
     .join(" · ");
   lines.push(`Watch counts: ${watchLine}`);
+  const backupLine = ffs
+    .slice()
+    .sort((a, b) => (state.rotations.backupWatch.counts[a.id] ?? 0) - (state.rotations.backupWatch.counts[b.id] ?? 0))
+    .map(m => `${m.name} ${state.rotations.backupWatch.counts[m.id] ?? 0}`)
+    .join(" · ");
+  lines.push(`Backup counts: ${backupLine}`);
   lines.push(`(since ${prettyDate(state.startedOn)})`);
 
   if (note) lines.push(`Note: ${note}`);
@@ -996,7 +1068,7 @@ function addMember() {
   const id = name.toLowerCase().replace(/[^a-z0-9]/g, "") || ("ff" + Date.now());
   if (state.crew.some(m => m.id === id)) { alert("Name already in roster."); return; }
   const maxSen = Math.max(0, ...state.crew.filter(m => !m.exempt).map(m => m.seniority));
-  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false });
+  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false, rig: "engine" });
   for (const r of ROTATIONS) state.rotations[r.id].counts[id] = 0;
   state.presence.push(id);
   saveState();
