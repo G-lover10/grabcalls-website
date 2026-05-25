@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#d62828" />
+<title>Station 12 B-Shift · Watch Rotation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E🚒%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="assets/emblem.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Station 12" />
+<meta name="mobile-web-app-capable" content="yes" />
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #16181c;
+    --panel-2: #1f2227;
+    --line: #2a2e35;
+    --text: #f5f5f5;
+    --muted: #9aa0a6;
+    --red: #d62828;
+    --red-soft: #8b1c1c;
+    --gold: #f5c518;
+    --green: #2ea043;
+    --blue: #2f6feb;
+    --radius: 14px;
+    --shadow: 0 6px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Fixed photo background (helmet) — sits behind all content with a strong dark overlay */
+  .app-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(10,10,10,0.82) 0%, rgba(10,10,10,0.90) 45%, rgba(10,10,10,0.97) 100%),
+      url("assets/helmet-12.jpg") center 50% / cover no-repeat;
+    pointer-events: none;
+  }
+  header.app {
+    background:
+      linear-gradient(180deg, rgba(198,40,40,0.92) 0%, rgba(155,28,28,0.92) 100%),
+      url("assets/helmet-12.jpg") center 30% / cover no-repeat;
+    color: white;
+    padding: 18px 18px 14px;
+    box-shadow: var(--shadow);
+    position: sticky; top: 0; z-index: 10;
+  }
+  header.app .row { display: flex; align-items: center; gap: 12px; }
+  header.app .emblem-wrap { width: 56px; height: 56px; flex-shrink: 0; }
+  header.app .emblem-wrap svg, header.app .emblem-wrap img {
+    width: 100%; height: 100%; display: block;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.25);
+  }
+  header.app .emblem-wrap img { object-fit: cover; }
+  header.app h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; }
+  header.app .sub { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  header.app .badge {
+    margin-left: auto;
+    background: rgba(0,0,0,0.25);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  main { padding: 16px 14px 80px; max-width: 720px; margin: 0 auto; }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  section header.sec {
+    padding: 12px 16px 8px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 8px;
+  }
+  section header.sec h2 {
+    margin: 0; font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+  }
+  section header.sec .hint { font-size: 12px; color: var(--muted); }
+  section .body { padding: 4px 12px 14px; }
+
+  /* Tonight's Lineup */
+  .lineup { display: flex; flex-direction: column; gap: 6px; }
+  .lineup-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    margin: 8px 4px 2px;
+    font-weight: 700;
+  }
+  .lineup-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .lineup-row.absent { opacity: 0.45; }
+  .lineup-row .name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+  .lineup-row .badges { display: inline-flex; gap: 4px; }
+  .lineup-row .badge-mini {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .lineup-row .badge-mini.medic { color: #b8f0c4; border-color: rgba(46,160,67,0.5); background: rgba(46,160,67,0.1); }
+  .lineup-row .badge-mini.cook  { color: var(--gold); border-color: rgba(245,197,24,0.4); background: rgba(245,197,24,0.08); }
+  .lineup-row .badge-mini.officer { color: #ffb3b3; border-color: rgba(214,40,40,0.45); background: rgba(214,40,40,0.1); }
+  .lineup-row .rig-pill, .lineup-row .presence-pill {
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .lineup-row .rig-pill.rig-engine { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .lineup-row .rig-pill.rig-rescue { background: rgba(47,111,235,0.18); border-color: var(--blue); color: #bcd2ff; }
+  .lineup-row .rig-pill.hidden { visibility: hidden; }
+  .lineup-row .presence-pill.on  { background: rgba(46,160,67,0.18); border-color: var(--green); color: #b8f0c4; }
+  .lineup-row .presence-pill.off { color: var(--muted); }
+
+  /* Presence chips (legacy, no longer used but kept for safety) */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--panel-2);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+  .chip[aria-pressed="true"] {
+    background: rgba(46,160,67,0.15);
+    border-color: var(--green);
+    color: #b8f0c4;
+  }
+  .chip[aria-pressed="false"] {
+    opacity: 0.55;
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+  }
+  .chip .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+  }
+  .chip[aria-pressed="false"] .dot { background: #666; }
+  .chip .sen {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* Assignment cards */
+  .assign-stage { position: relative; }
+  .assign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 0 12px 8px;
+  }
+
+  /* Bay door reveal */
+  .bay-door {
+    position: absolute;
+    inset: 0 12px 8px;
+    display: flex;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+  }
+  .bay-door.hidden { display: none; }
+  .bay-door-panel {
+    flex: 1;
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.55) 100%),
+      url("assets/helmet-12.jpg");
+    background-size: cover, 200% 100%;
+    background-repeat: no-repeat, no-repeat;
+    border-top: 4px solid #d62828;
+    border-bottom: 4px solid #d62828;
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.3, 1);
+  }
+  .bay-door-panel.left  { background-position: left center, left center;  border-right: 2px solid #000; }
+  .bay-door-panel.right { background-position: right center, right center; border-left:  2px solid #000; }
+  .bay-door.opening .bay-door-panel.left  { transform: translateY(-110%); }
+  .bay-door.opening .bay-door-panel.right { transform: translateY(-110%); }
+  .bay-door.opening .bay-door-cta { opacity: 0; }
+  .bay-door-cta {
+    position: absolute;
+    inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+    color: var(--gold);
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .bay-door-icon { font-size: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+  .bay-door-text {
+    font-size: 16px; font-weight: 900; letter-spacing: 2px;
+    line-height: 1.2;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  }
+  .bay-door-sub { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+  .assign.reveal-pop {
+    animation: revealPop 0.5s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+  }
+  .assign.reveal-pop:nth-child(1) { animation-delay: 0.4s; }
+  .assign.reveal-pop:nth-child(2) { animation-delay: 0.6s; }
+  .assign.reveal-pop:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes revealPop {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .assign {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    position: relative;
+  }
+  .assign .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .assign .pick {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 6px 0 2px;
+    color: var(--gold);
+    letter-spacing: 0.3px;
+  }
+  .assign .pick.empty { color: var(--muted); font-size: 18px; font-weight: 600; }
+  .assign .rig-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(245,197,24,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(245,197,24,0.35);
+    vertical-align: middle;
+    position: relative; top: -3px;
+  }
+  .assign .meta { font-size: 12px; color: var(--muted); }
+  .assign select {
+    margin-top: 10px;
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  .meal-ideas-link {
+    margin-top: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+  .meal-ideas-link:hover { border-color: var(--gold); background: rgba(245,197,24,0.08); }
+  .meal-ideas-link:active { transform: scale(0.99); }
+
+  /* Big confirm button */
+  .confirm-row { padding: 4px 12px 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+  button.btn {
+    flex: 1 1 auto;
+    min-height: 52px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 18px;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+  }
+  button.btn:active { transform: scale(0.98); }
+  button.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--green); color: #0a0a0a; }
+  .btn-share { background: var(--blue); color: white; }
+  .btn-sgt { background: var(--gold); color: #1a1a1a; flex: 0 0 auto; min-width: 140px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+
+  /* Standings table */
+  table.standings {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.standings th, table.standings td {
+    padding: 9px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+  }
+  table.standings th:first-child, table.standings td:first-child { text-align: left; }
+  table.standings th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  table.standings tr:last-child td { border-bottom: none; }
+  table.standings td.name { font-weight: 600; }
+  table.standings td.count { color: var(--gold); font-variant-numeric: tabular-nums; }
+  table.standings tr.lowest td.count { color: var(--green); font-weight: 700; }
+
+  /* History */
+  .history-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px 14px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-item .date {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 64px;
+  }
+  .history-item .assignments { color: var(--text); }
+  .history-item .assignments b { color: var(--gold); }
+  .history-item .undo {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .history-item .undo:hover { color: var(--red); border-color: var(--red); }
+
+  /* Setup */
+  .setup-grid { display: grid; gap: 8px; padding: 0 4px; }
+  .setup-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+    background: var(--panel-2);
+    border-radius: 10px;
+  }
+  .setup-row input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 15px;
+  }
+  .setup-row .sen-label { font-size: 11px; color: var(--muted); min-width: 70px; }
+  .setup-row .row-actions { display: flex; gap: 4px; }
+  .setup-row button {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .setup-row button:hover { border-color: var(--gold); }
+  .setup-row .rig-btn {
+    width: auto;
+    min-width: 44px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .setup-row .rig-btn.rig-engine { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .setup-row .rig-btn.rig-rescue { background: rgba(47,111,235,0.15); border-color: var(--blue); color: #bcd2ff; }
+  .setup-row .rig-btn.rig-none   { color: var(--muted); }
+  .setup-row .flag-btn { opacity: 0.35; }
+  .setup-row .flag-btn.on { opacity: 1; border-color: var(--gold); background: rgba(245,197,24,0.1); }
+
+  .settings-h3 {
+    margin: 20px 4px 8px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 700;
+  }
+  .kelly-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .kelly-row .kd-date { color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .kelly-row .kd-name { font-weight: 600; }
+  .kelly-row button {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .kelly-row button:hover { color: var(--red); border-color: var(--red); }
+  .kelly-add {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+  .kelly-add input, .kelly-add select {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .kelly-add input { flex: 0 0 auto; min-width: 130px; }
+  .kelly-add select { flex: 1; }
+  .kelly-add button {
+    background: var(--green);
+    color: #0a0a0a;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  .kelly-repeat {
+    margin-top: 6px;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .kelly-repeat-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text);
+    flex-wrap: wrap;
+    cursor: pointer;
+  }
+  .kelly-repeat-toggle input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+  }
+  .kelly-repeat-toggle input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 50px;
+    text-align: center;
+  }
+  .kelly-repeat-help {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.4;
+  }
+  .kelly-repeat-help strong { color: var(--gold); }
+  .lineup-row .badge-mini.kelly { color: #ffd28a; border-color: rgba(255,165,0,0.5); background: rgba(255,165,0,0.1); }
+  .lineup-row .badge-mini.fillin { color: #d2b3ff; border-color: rgba(160,99,255,0.5); background: rgba(160,99,255,0.12); }
+  .lineup-row .fillin-remove {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 8px;
+    width: 34px; height: 34px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 4px;
+  }
+  .lineup-row .fillin-remove:hover { color: var(--red); border-color: var(--red); }
+
+  /* Fill-in add button + inline form */
+  .fillin-controls { margin-top: 10px; }
+  .fillin-add-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed var(--line);
+    color: var(--muted);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  .fillin-add-btn:hover { color: var(--gold); border-color: var(--gold); }
+  .fillin-form {
+    margin-top: 10px;
+    padding: 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .fillin-form[hidden] { display: none; }
+  .fillin-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .fillin-form input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 15px;
+    min-width: 140px;
+  }
+  .fillin-form .fillin-rig-btn,
+  .fillin-form .fillin-medic-btn {
+    flex: 1;
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .fillin-form .fillin-rig-btn[data-rig="engine"] { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .fillin-form .fillin-rig-btn[data-rig="rescue"] { background: rgba(47,111,235,0.18); border-color: var(--blue); color: #bcd2ff; }
+  .fillin-form .fillin-medic-btn.on { background: rgba(46,160,67,0.15); border-color: var(--green); color: #b8f0c4; }
+  .fillin-form .fillin-save, .fillin-form .fillin-cancel {
+    flex: 1;
+    min-height: 44px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .fillin-form .fillin-save { background: var(--green); color: #0a0a0a; }
+  .fillin-form .fillin-cancel { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+  .fillin-help { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4; }
+
+  /* Meal ideas */
+  .meal-intro, .meal-help {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 0 4px;
+    margin: 8px 0 12px;
+    line-height: 1.5;
+  }
+  .meal-help { margin-top: 16px; }
+  .meal-list { display: flex; flex-direction: column; gap: 8px; padding: 0 4px; }
+  .meal-item {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    padding: 12px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color 0.15s ease, transform 0.05s ease;
+  }
+  .meal-item:hover { border-color: var(--gold); }
+  .meal-item:active { transform: scale(0.99); }
+  .meal-item .meal-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--gold);
+  }
+  .meal-item .meal-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .emblem-settings {
+    display: flex; gap: 14px; align-items: center;
+    padding: 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .emblem-preview {
+    width: 90px; height: 90px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .emblem-preview svg, .emblem-preview img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+  }
+  .emblem-preview img { object-fit: cover; }
+  .emblem-controls { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .emblem-controls button {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .emblem-controls .btn-ghost-mini {
+    background: transparent;
+    font-weight: 500;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+
+  .behavior-grid { display: flex; flex-direction: column; gap: 6px; }
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .toggle-row input[type=checkbox] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--gold); }
+  .toggle-row input[type=number] {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+  }
+  .setup-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 4px 0; }
+  .setup-actions button {
+    flex: 1; min-width: 130px; min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  /* Collapsible */
+  details > summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    list-style: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    user-select: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after { content: " ▾"; }
+  details[open] > summary::after { content: " ▴"; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: flex-end; justify-content: center;
+    z-index: 50;
+  }
+  .modal-backdrop.show { display: flex; }
+  @media (min-width: 560px) { .modal-backdrop.show { align-items: center; } }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-width: 520px;
+    padding: 20px;
+    max-height: 86vh;
+    overflow-y: auto;
+  }
+  @media (min-width: 560px) { .modal { border-radius: 16px; } }
+  .modal h3 { margin: 0 0 10px; font-size: 18px; }
+  .modal textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px;
+    resize: vertical;
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .modal-actions button {
+    flex: 1; min-height: 44px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  footer.app {
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 18px 16px 30px;
+  }
+  footer.app .reset {
+    background: none;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 11px;
+  }
+  .empty-state {
+    padding: 16px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+  .empty-hero {
+    position: relative;
+    margin: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #000 url("assets/helmet-12.jpg") center 35% / cover no-repeat;
+    box-shadow: var(--shadow);
+  }
+  .empty-hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.92) 100%);
+  }
+  .empty-hero-text {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 14px 16px 16px;
+    color: #fff;
+    z-index: 1;
+    text-align: center;
+  }
+  .empty-hero-title {
+    font-size: 15px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  }
+  .empty-hero-sub {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 4px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+
+  /* Intro splash */
+  .intro-splash {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .intro-splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .intro-video {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
+    background: #000;
+  }
+  .intro-skip {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 14px);
+    right: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+  .intro-skip:hover { background: rgba(0,0,0,0.8); }
+</style>
+</head>
+<body>
+
+<!-- Fixed app background photo -->
+<div class="app-bg" aria-hidden="true"></div>
+
+<!-- Intro splash -->
+<div class="intro-splash" id="introSplash">
+  <video
+    id="introVideo"
+    class="intro-video"
+    src="assets/intro.mp4"
+    poster="assets/intro-poster.jpg"
+    muted
+    playsinline
+    preload="auto"
+  ></video>
+  <button class="intro-skip" id="introSkip">Skip ▶</button>
+</div>
+
+<header class="app">
+  <div class="row">
+    <div class="emblem-wrap" id="emblemWrap"></div>
+    <div>
+      <h1>Station 12 · B-Shift</h1>
+      <div class="sub"><span style="opacity:0.75;">Battalion 5 · Special Ops · </span><span id="dateline">—</span></div>
+    </div>
+    <span class="badge" id="shiftBadge">B</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Tonight's Lineup -->
+  <section>
+    <header class="sec">
+      <h2>Tonight's Lineup</h2>
+      <span class="hint">Tap rig or presence to change</span>
+    </header>
+    <div class="body">
+      <div class="lineup" id="lineupList"></div>
+      <div class="fillin-controls">
+        <button class="fillin-add-btn" id="addFillInBtn">+ Add fill-in (detail-in from another station)</button>
+        <div class="fillin-form" id="fillInForm" hidden>
+          <div class="fillin-form-row">
+            <input type="text" id="fillInName" placeholder="Name (e.g. Smith)" autocomplete="off" />
+          </div>
+          <div class="fillin-form-row">
+            <button class="fillin-rig-btn" id="fillInRigBtn" data-rig="engine" type="button">E12</button>
+            <button class="fillin-medic-btn" id="fillInMedicBtn" type="button">⚕ Medic</button>
+          </div>
+          <div class="fillin-form-row">
+            <button class="fillin-save" id="fillInSaveBtn" type="button">Add to lineup</button>
+            <button class="fillin-cancel" id="fillInCancelBtn" type="button">Cancel</button>
+          </div>
+          <p class="fillin-help">Eligible to take watch tonight (gives your guys a break). Doesn't affect counts. Auto-removed after Confirm Shift.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assignments -->
+  <section>
+    <header class="sec">
+      <h2>Tonight's Assignments</h2>
+      <span class="hint">Newest takes ties · rookie weighted</span>
+    </header>
+    <div class="assign-stage" id="assignStage">
+      <div class="assign-grid" id="assignGrid"></div>
+      <div class="bay-door" id="bayDoor">
+        <div class="bay-door-panel left"></div>
+        <div class="bay-door-panel right"></div>
+        <div class="bay-door-cta">
+          <div class="bay-door-icon">🚪</div>
+          <div class="bay-door-text">OPEN BAY DOORS<br/>TO REVEAL DUTY</div>
+          <div class="bay-door-sub">tap anywhere</div>
+        </div>
+      </div>
+    </div>
+    <div class="confirm-row">
+      <button class="btn btn-primary" id="confirmBtn">Confirm Shift</button>
+      <button class="btn btn-sgt" id="sgtBtn" title="Sgt. covers watch — logs to history but does not change counts">Sgt. Covers Watch</button>
+      <button class="btn btn-share" id="shareBtn">Share</button>
+    </div>
+  </section>
+
+  <!-- Standings -->
+  <section>
+    <header class="sec">
+      <h2>Standings</h2>
+      <span class="hint" id="sinceLabel">since —</span>
+    </header>
+    <div class="body" style="padding:0 4px 4px;">
+      <table class="standings" id="standingsTable"></table>
+    </div>
+  </section>
+
+  <!-- Meal Ideas -->
+  <section id="mealIdeasSection">
+    <details id="mealIdeasDetails">
+      <summary>🍳 Meal Ideas (lunch & dinner)</summary>
+      <div class="body">
+        <p class="meal-intro">Tried-and-true firehouse meals — hearty, one-pot, pause-friendly when the tones drop. Tap a card to open the recipe.</p>
+
+        <h3 class="settings-h3">Lunch · quick &amp; easy</h3>
+        <div class="meal-list">
+          <a href="https://www.allrecipes.com/recipe/9099/italian-sausage-with-peppers-and-onions/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥪 Sausage, Peppers &amp; Onions Subs</div>
+            <div class="meal-desc">One pan, ~30 min. Italian sausage + bell peppers + onions on hoagies w/ provolone. Cheap, fast, feeds 6 easy.</div>
+          </a>
+          <a href="https://www.tasteofhome.com/recipes/firehouse-chili/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🌶️ Firehouse Chili</div>
+            <div class="meal-desc">Hamburger + beans + chunky tomatoes + chili powder. Simmers while you run calls. Better the longer it sits.</div>
+          </a>
+          <a href="https://www.365daysofcrockpot.com/fire-station-casserole/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥘 Fire Station Casserole</div>
+            <div class="meal-desc">Ground beef + tater tots + cream of mushroom + cheddar. Slow-cooker classic. Doubles to feed 10.</div>
+          </a>
+          <a href="https://www.thepioneerwoman.com/food-cooking/recipes/a32522709/sheet-pan-chicken-fajitas-recipe/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🌯 Sheet Pan Fajitas</div>
+            <div class="meal-desc">Chicken or steak + peppers + onions, all on one tray at 425°F. Tortillas, salsa, sour cream on the side.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/15044/easy-slow-cooker-french-dip/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥩 Italian Beef Sandwiches (crockpot)</div>
+            <div class="meal-desc">Chuck roast + pepperoncini + Italian dressing mix. Start in the morning, slice and pile on hoagies for lunch.</div>
+          </a>
+          <a href="https://www.google.com/search?q=loaded+baked+potato+bar+firehouse" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥔 Loaded Baked Potato Bar</div>
+            <div class="meal-desc">Bake russets in the oven, set out chili / cheese / bacon / scallions / sour cream. Cheap, customizable, no two plates alike.</div>
+          </a>
+        </div>
+
+        <h3 class="settings-h3">Dinner · hearty &amp; filling</h3>
+        <div class="meal-list">
+          <a href="https://www.simplyrecipes.com/recipes/classic_baked_lasagna/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍝 Classic Baked Lasagna</div>
+            <div class="meal-desc">Make-ahead friendly. Pull from the oven anytime — reheats great if a call drags. Garlic bread on the side.</div>
+          </a>
+          <a href="https://www.simplyrecipes.com/recipes/beef_stew/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍖 Beef Stew (or Guinness Stew)</div>
+            <div class="meal-desc">Chuck roast + potatoes + carrots + onion + stock. Slow simmer all afternoon — Guinness version is a Milwaukee firehouse staple.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/228823/pulled-pork-barbecue/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🐖 Pulled Pork</div>
+            <div class="meal-desc">Pork shoulder + dry rub overnight, low &amp; slow on smoker or crockpot. Buns, slaw, baked beans = full plate.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/14797/jambalaya/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍤 Jambalaya</div>
+            <div class="meal-desc">One pot. Andouille + chicken + shrimp + rice + Cajun spice. Spicy, scales to 8 without breaking a sweat.</div>
+          </a>
+          <a href="https://www.foodnetwork.com/recipes/ree-drummond/spaghetti-and-meatballs-recipe-2120350" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍝 Spaghetti &amp; Meatballs</div>
+            <div class="meal-desc">Eternal crew favorite. Big pot of sauce, frozen meatballs if you're short on time. Garlic bread is mandatory.</div>
+          </a>
+          <a href="https://www.foodnetwork.com/recipes/aaron-franklin/foolproof-smoked-brisket-3565829" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🔥 Smoked Brisket</div>
+            <div class="meal-desc">Set on the smoker at sunrise, eat at dinner. Mac &amp; cheese, beans, white bread = Texas style.</div>
+          </a>
+        </div>
+
+        <p class="meal-help">💡 <strong>Firehouse rules:</strong> anything in a crockpot or smoker is gold — it can simmer while you run calls. One-pot &amp; sheet-pan meals minimize cleanup. Always cook for one or two extra in case of detail-ins.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- History -->
+  <section>
+    <details>
+      <summary>Recent Shifts (history)</summary>
+      <div id="historyList"></div>
+    </details>
+  </section>
+
+  <!-- Setup -->
+  <section>
+    <details>
+      <summary>Crew & Settings</summary>
+      <div class="body">
+        <div class="setup-grid" id="crewEditor"></div>
+        <div class="setup-actions">
+          <button id="addMemberBtn">+ Add member</button>
+          <button id="exportBtn">Export data</button>
+          <button id="importBtn">Import data</button>
+          <button id="resetCountsBtn" class="btn-danger">Reset counts</button>
+        </div>
+
+        <h3 class="settings-h3">Kelly Days (off-duty)</h3>
+        <div id="kellyList"></div>
+        <div class="kelly-add">
+          <input type="date" id="kellyDate" />
+          <select id="kellyCrew"></select>
+          <button id="kellyAddBtn">+ Add</button>
+        </div>
+        <div class="kelly-repeat">
+          <label class="kelly-repeat-toggle">
+            <input type="checkbox" id="kellyRepeatToggle" />
+            <span>Repeats every</span>
+            <input type="number" id="kellyRepeatInterval" value="27" min="1" max="90" />
+            <span>days · generate</span>
+            <input type="number" id="kellyRepeatCount" value="12" min="1" max="60" />
+            <span>dates</span>
+          </label>
+          <p class="kelly-repeat-help">Birmingham FD 24/48 with 9 positions = <strong>27 days</strong> between same-person Kelly days. 12 occurrences ≈ one year.</p>
+        </div>
+
+        <h3 class="settings-h3">Station Emblem</h3>
+        <div class="emblem-settings">
+          <div class="emblem-preview" id="emblemPreview"></div>
+          <div class="emblem-controls">
+            <input type="file" id="emblemFile" accept="image/*" style="display:none" />
+            <button id="emblemUploadBtn">Upload custom emblem</button>
+            <button id="emblemResetBtn" class="btn-ghost-mini">Use default</button>
+            <p style="color:var(--muted); font-size:12px; margin:6px 0 0;">Make one on Grok / Midjourney / wherever, then upload here.</p>
+          </div>
+        </div>
+
+        <h3 class="settings-h3">Behavior</h3>
+        <div class="behavior-grid">
+          <label class="toggle-row">
+            <span>Play intro video on app open</span>
+            <input type="checkbox" id="useIntroToggle" />
+          </label>
+          <label class="toggle-row">
+            <span>Use bay-door reveal animation</span>
+            <input type="checkbox" id="useRevealToggle" />
+          </label>
+          <label class="toggle-row">
+            <span>Rookie weight (Smart picks this many times more)</span>
+            <input type="number" id="rookieMult" min="1" max="5" step="1" style="width:60px;" />
+          </label>
+        </div>
+        <p style="color:var(--muted); font-size:12px; margin-top:14px; padding: 0 4px;">
+          <strong>How fairness works:</strong> Each shift, the rotation picks whoever's present with the lowest count. Detailed-off members are skipped automatically (count doesn't move → catches up naturally on return). Lt. Martin and Sgt. Glover are <em>exempt</em>.
+          <br><br>
+          <strong>Tiebreaker chain</strong> (when two crew are tied at lowest count):
+          <ol style="margin:6px 0 0 20px; padding:0; color:var(--muted);">
+            <li><strong>Detail break:</strong> if one of the tied crew was detailed off last shift, they lose the tie (give them a breather).</li>
+            <li><strong>Medic break (watch/backup only):</strong> medics on Rescue lose ties — they're acting officer, so the non-medic takes it.</li>
+            <li><strong>Newest first:</strong> if still tied, newest member takes it (Smart → Wilson → … → Andrews).</li>
+          </ol>
+          <br>
+          <strong>Backup Watch:</strong> Always from the <em>opposite rig</em> of primary. Uses today's lineup, so if you put Bentley on Engine for the night, the algorithm respects that.
+          <br><br>
+          <strong>Meals:</strong> Designated cook (Holt) auto-picks when present. When Holt's off, fair rotation among others.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <footer class="app">
+    Station 12 B-Shift Watch Rotation · saves to this device only ·
+    <button class="reset" id="resetAllBtn">factory reset</button>
+  </footer>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Share tonight's roster</h3>
+    <p style="color:var(--muted); font-size:13px; margin: 0 0 10px;" id="modalDesc">Copy and text this to the crew:</p>
+    <textarea id="modalText" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-primary" id="modalCopyBtn" style="background:var(--green); color:#0a0a0a;">Copy</button>
+      <button class="btn-share" id="modalShareBtn" style="background:var(--blue); color:white;">Share…</button>
+      <button id="modalCloseBtn" style="background:var(--panel-2); color:var(--text); border:1px solid var(--line);">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ────────────────────────────────────────────────────────────────────
+// Data model
+// ────────────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = "station12-bshift-rotation-v1";
+
+const ROTATIONS = [
+  { id: "watch",       label: "Watch",        icon: "🛏️", desc: "Day room / doors / phone / intercom" },
+  { id: "backupWatch", label: "Backup Watch", icon: "🛟", desc: "Opposite-rig cover when primary's truck rolls out", dependsOnWatch: true },
+  { id: "meals",       label: "Meals",        icon: "🍳", desc: "Cook for the shift (Holt by default)" },
+];
+
+const RIGS = {
+  engine: { label: "Engine 12", short: "E12" },
+  rescue: { label: "Rescue 12", short: "R12" },
+};
+
+function defaultState() {
+  // Seniority: 1 = most senior, higher number = newer. Newer takes ties first.
+  // Rig: default rig (Engine 12 or Rescue 12). Can be overridden per shift via dailyRigs.
+  // isMedic: medics (paramedics). They take watch like anyone else but lose tiebreakers.
+  // isCook: designated cook — auto-picked for meals when present.
+  const crew = [
+    { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
+    { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine", isMedic: false, isCook: true,  isRookie: false },
+    { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
+    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
+    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
+    { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine", isMedic: false, isCook: false, isRookie: false },
+    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "engine", isMedic: true,  isCook: false, isRookie: false },
+  ];
+  const rotations = {};
+  for (const r of ROTATIONS) {
+    rotations[r.id] = { counts: {}, lastDate: {} };
+    for (const m of crew) rotations[r.id].counts[m.id] = 0;
+  }
+  return {
+    startedOn: todayISO(),
+    crew,
+    rotations,
+    presence: crew.map(m => m.id),
+    dailyRigs: {},
+    pendingOverrides: {},
+    history: [],
+    kellyDays: {
+      // Birmingham Fire & Rescue special-events schedule, Station 12 B-shift.
+      // B-shift cycle: every 3rd day starting (confirmed) Sun 2026-05-24.
+      // Extracted from the BFRS May/June 2026 calendar photo.
+      "2026-06-05": ["wilson"], // Fri
+      "2026-06-08": ["holt"],   // Mon
+      "2026-06-29": ["smart"],  // Mon
+    },
+    fillIns: [],
+    lastKellyApplied: null,
+    rookieMultiplier: 2,
+    useReveal: true,
+    useIntro: true,
+    emblemUrl: null,
+  };
+}
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    // Migrate: rig field
+    for (const m of parsed.crew) {
+      if (!("rig" in m)) m.rig = /sgt|martin|engine/i.test(m.name) ? "engine" : "engine";
+    }
+    // Migrate: isMedic + isCook (one-time apply of Station 12 defaults if absent)
+    const needsMedicSeed = parsed.crew.every(m => !("isMedic" in m));
+    if (needsMedicSeed) {
+      for (const m of parsed.crew) {
+        m.isMedic = false;
+        m.isCook = false;
+      }
+      const bentley = parsed.crew.find(m => m.id === "bentley");
+      const wilson  = parsed.crew.find(m => m.id === "wilson");
+      const glover  = parsed.crew.find(m => m.id === "glover");
+      const holt    = parsed.crew.find(m => m.id === "holt");
+      if (bentley) { bentley.isMedic = true; bentley.rig = "rescue"; }
+      if (wilson)  { wilson.isMedic  = true; wilson.rig  = "rescue"; }
+      if (glover)  { glover.isMedic  = true; glover.rig  = "engine"; }
+      if (holt)    { holt.isCook = true; }
+    }
+    for (const m of parsed.crew) {
+      if (!("isMedic" in m)) m.isMedic = false;
+      if (!("isCook" in m))  m.isCook  = false;
+      if (!("isRookie" in m)) m.isRookie = m.id === "smart";
+      if (m.id === "andrews" && m.name === "Cam Andrews") m.name = "Andrews";
+    }
+    if (!parsed.kellyDays)        parsed.kellyDays = {};
+    // One-time migration: drop placeholder Kelly days that were on non-B-shift dates,
+    // then merge in the real BFRS schedule from defaults. Anything the user added via
+    // the Settings UI is preserved.
+    if (!parsed.kellyDaysSeed) {
+      const DEPRECATED = { "2026-06-09": "smart", "2026-06-12": "wilson", "2026-06-24": "glover" };
+      for (const [date, id] of Object.entries(DEPRECATED)) {
+        if (parsed.kellyDays[date]) {
+          parsed.kellyDays[date] = parsed.kellyDays[date].filter(x => x !== id);
+          if (!parsed.kellyDays[date].length) delete parsed.kellyDays[date];
+        }
+      }
+      const seed = defaultState().kellyDays;
+      for (const [date, ids] of Object.entries(seed)) {
+        if (!parsed.kellyDays[date]) parsed.kellyDays[date] = [];
+        for (const id of ids) {
+          if (!parsed.kellyDays[date].includes(id)) parsed.kellyDays[date].push(id);
+        }
+      }
+      parsed.kellyDaysSeed = "bfrs-may-jun-2026";
+    }
+    if (!Array.isArray(parsed.fillIns)) parsed.fillIns = [];
+    if (!("lastKellyApplied" in parsed)) parsed.lastKellyApplied = null;
+    if (!("rookieMultiplier" in parsed)) parsed.rookieMultiplier = 2;
+    if (!("useReveal" in parsed))        parsed.useReveal = true;
+    if (!("useIntro" in parsed))         parsed.useIntro = true;
+    if (!("emblemUrl" in parsed))        parsed.emblemUrl = null;
+    // Remove deprecated rotations (cleaning) and ensure all current rotations exist
+    if (parsed.rotations && parsed.rotations.cleaning) delete parsed.rotations.cleaning;
+    for (const r of ROTATIONS) {
+      if (!parsed.rotations[r.id]) parsed.rotations[r.id] = { counts: {}, lastDate: {} };
+      for (const m of parsed.crew) {
+        if (!(m.id in parsed.rotations[r.id].counts)) parsed.rotations[r.id].counts[m.id] = 0;
+      }
+    }
+    if (!parsed.pendingOverrides) parsed.pendingOverrides = {};
+    if (!parsed.dailyRigs)        parsed.dailyRigs = {};
+    // Include officers in presence by default if missing
+    for (const m of parsed.crew) {
+      if (m.exempt && !parsed.presence.includes(m.id)) parsed.presence.push(m.id);
+    }
+    return parsed;
+  } catch (e) {
+    console.warn("Bad saved state, resetting", e);
+    return defaultState();
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────────────────────────────
+
+function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function prettyDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+}
+
+function shortDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
+}
+
+function getMember(id) {
+  if (!id) return null;
+  const c = state.crew.find(m => m.id === id);
+  if (c) return c;
+  return state.fillIns.find(f => f.id === id) || null;
+}
+
+function isFillIn(id) {
+  return typeof id === "string" && id.startsWith("fillin_");
+}
+
+// Look up an assignee by id, falling back to a history entry's fill-in snapshot
+// for fill-ins that have been cleared from current state.
+function resolveMember(id, historyEntry) {
+  if (!id) return null;
+  const m = getMember(id);
+  if (m) return m;
+  if (historyEntry && historyEntry.fillInRoster && historyEntry.fillInRoster[id]) {
+    return historyEntry.fillInRoster[id];
+  }
+  return null;
+}
+
+function dailyRig(m) {
+  return state.dailyRigs[m.id] ?? m.rig;
+}
+
+function effectiveCount(m, rotationId, counts) {
+  // Fill-ins always count as 0 — they should be picked first to give regulars a break.
+  if (m.isFillIn) return 0;
+  const raw = counts[m.id] ?? 0;
+  // Rookie weighting applies to primary watch only — rookie should take more.
+  if (rotationId === "watch" && m.isRookie && state.rookieMultiplier > 1) {
+    return Math.floor(raw / state.rookieMultiplier);
+  }
+  return raw;
+}
+
+function applyKellyDaysIfNewDay() {
+  const today = todayISO();
+  if (state.lastKellyApplied === today) return;
+  const offToday = state.kellyDays[today] || [];
+  for (const id of offToday) {
+    state.presence = state.presence.filter(p => p !== id);
+  }
+  state.lastKellyApplied = today;
+  saveState();
+}
+
+function eligibleForRotation() {
+  // crew + fill-ins that participate in auto-pick: not exempt, present today
+  const regulars = state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
+  const fillins = state.fillIns.filter(f => state.presence.includes(f.id));
+  return [...regulars, ...fillins];
+}
+
+function eligibleForBackup(primaryHolder) {
+  // Backup watch comes from the opposite rig of whoever holds primary watch (today's rig).
+  if (!primaryHolder) return [];
+  const pRig = dailyRig(primaryHolder);
+  if (!pRig) return [];
+  const oppositeRig = pRig === "engine" ? "rescue" : "engine";
+  return eligibleForRotation().filter(m => dailyRig(m) === oppositeRig);
+}
+
+function applyTiebreakers(tied, rotationId) {
+  if (tied.length <= 1) return tied;
+  // 1. Detail-as-tiebreaker: anyone absent from the most recent prior shift loses ties.
+  //    Fill-ins are exempt — they're not "detailed off", they're new arrivals tonight.
+  const lastShift = state.history[state.history.length - 1];
+  if (lastShift) {
+    const notDetailedLast = tied.filter(m => m.isFillIn || lastShift.present.includes(m.id));
+    if (notDetailedLast.length && notDetailedLast.length < tied.length) {
+      tied = notDetailedLast;
+    }
+  }
+  // 2. Medic-as-tiebreaker (watch/backup only): medics on Rescue have a "leg up", they lose ties.
+  if (tied.length > 1 && (rotationId === "watch" || rotationId === "backupWatch")) {
+    const nonMedics = tied.filter(m => !m.isMedic);
+    if (nonMedics.length && nonMedics.length < tied.length) {
+      tied = nonMedics;
+    }
+  }
+  return tied;
+}
+
+function pickFor(rotationId, opts = {}) {
+  const override = state.pendingOverrides[rotationId];
+  if (override) {
+    const m = getMember(override);
+    if (m && state.presence.includes(m.id)) return m;
+  }
+  // Meals: designated cook auto-picks when present.
+  if (rotationId === "meals") {
+    const cook = state.crew.find(m => m.isCook && !m.exempt);
+    if (cook && state.presence.includes(cook.id)) return cook;
+  }
+  let eligible;
+  if (rotationId === "backupWatch") {
+    const primary = opts.primaryHolder || pickFor("watch");
+    eligible = eligibleForBackup(primary);
+  } else if (rotationId === "meals") {
+    eligible = eligibleForRotation().filter(m => !m.isCook); // cook absent — pick from others
+  } else {
+    eligible = eligibleForRotation();
+  }
+  if (eligible.length === 0) return null;
+  const counts = state.rotations[rotationId].counts;
+  const eff = m => effectiveCount(m, rotationId, counts);
+  const minCount = Math.min(...eligible.map(eff));
+  let tied = eligible.filter(m => eff(m) === minCount);
+  tied = applyTiebreakers(tied, rotationId);
+  // Newest first (highest seniority number)
+  tied.sort((a, b) => b.seniority - a.seniority);
+  return tied[0];
+}
+
+function openMealIdeas() {
+  const details = document.getElementById("mealIdeasDetails");
+  if (!details) return;
+  details.open = true;
+  details.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Render
+// ────────────────────────────────────────────────────────────────────
+
+const DEFAULT_EMBLEM_SVG = `
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg12" cx="50%" cy="35%" r="80%">
+      <stop offset="0%" stop-color="#3a1212"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#bg12)" stroke="#d62828" stroke-width="6"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#f5c518" stroke-width="1.5"/>
+  <text x="100" y="48" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#d62828">STATION</text>
+  <text x="100" y="130" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="92" font-weight="900" fill="#f5c518">12</text>
+  <text x="100" y="162" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="4" fill="#fff">B SHIFT</text>
+  <text x="100" y="178" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="8" font-weight="500" letter-spacing="2" fill="#9aa0a6">BFRS</text>
+</svg>`;
+
+let revealedThisSession = false;
+
+function render() {
+  renderEmblem();
+  renderDateline();
+  renderLineup();
+  renderAssignments();
+  renderStandings();
+  renderHistory();
+  renderCrewEditor();
+  renderKellyDays();
+  renderBehaviorSettings();
+  renderBayDoor();
+}
+
+const DEFAULT_EMBLEM_IMG = `<img src="assets/emblem.jpg" alt="Battalion 5 Station 12 Special Ops" />`;
+
+function renderEmblem() {
+  const wrap = document.getElementById("emblemWrap");
+  const preview = document.getElementById("emblemPreview");
+  const inner = state.emblemUrl
+    ? `<img src="${state.emblemUrl}" alt="Station 12 emblem" />`
+    : DEFAULT_EMBLEM_IMG;
+  wrap.innerHTML = inner;
+  if (preview) preview.innerHTML = inner;
+}
+
+function renderBayDoor() {
+  const door = document.getElementById("bayDoor");
+  if (!state.useReveal) {
+    door.classList.add("hidden");
+    return;
+  }
+  if (revealedThisSession) {
+    door.classList.add("hidden");
+  } else {
+    door.classList.remove("hidden", "opening");
+  }
+}
+
+function openBayDoors() {
+  if (!state.useReveal || revealedThisSession) return;
+  const door = document.getElementById("bayDoor");
+  door.classList.add("opening");
+  // Re-render assignments with pop animation
+  document.querySelectorAll("#assignGrid .assign").forEach(el => {
+    el.classList.add("reveal-pop");
+  });
+  setTimeout(() => {
+    door.classList.add("hidden");
+    revealedThisSession = true;
+  }, 1300);
+}
+
+function renderKellyDays() {
+  const list = document.getElementById("kellyList");
+  if (!list) return;
+  const entries = Object.entries(state.kellyDays || {}).flatMap(([date, ids]) =>
+    ids.map(id => ({ date, id }))
+  );
+  entries.sort((a, b) => a.date.localeCompare(b.date));
+  list.innerHTML = "";
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty-state">No Kelly days set. Add upcoming off-duty dates below.</div>`;
+  }
+  for (const e of entries) {
+    const m = getMember(e.id);
+    const row = document.createElement("div");
+    row.className = "kelly-row";
+    row.innerHTML = `
+      <span class="kd-date">${shortDate(e.date)}</span>
+      <span class="kd-name">${m ? m.name : e.id}</span>
+      <button data-date="${e.date}" data-id="${e.id}">Remove</button>
+    `;
+    row.querySelector("button").addEventListener("click", () => removeKelly(e.date, e.id));
+    list.appendChild(row);
+  }
+  // Populate crew dropdown
+  const sel = document.getElementById("kellyCrew");
+  if (sel) {
+    sel.innerHTML = state.crew
+      .slice()
+      .sort((a, b) => (a.exempt ? 1 : 0) - (b.exempt ? 1 : 0) || a.seniority - b.seniority)
+      .map(m => `<option value="${m.id}">${m.name}</option>`)
+      .join("");
+  }
+}
+
+function renderBehaviorSettings() {
+  const r = document.getElementById("useRevealToggle");
+  if (r) r.checked = !!state.useReveal;
+  const i = document.getElementById("useIntroToggle");
+  if (i) i.checked = !!state.useIntro;
+  const m = document.getElementById("rookieMult");
+  if (m) m.value = state.rookieMultiplier;
+}
+
+function addKelly(date, id) {
+  if (!date || !id) return;
+  if (!state.kellyDays[date]) state.kellyDays[date] = [];
+  if (!state.kellyDays[date].includes(id)) state.kellyDays[date].push(id);
+  // If it's today, apply immediately
+  if (date === todayISO()) {
+    state.presence = state.presence.filter(p => p !== id);
+  }
+  saveState();
+  render();
+}
+
+// Add a series of repeating Kelly days for one person.
+// Used for fixed-interval rotations like Birmingham FD's 9-position cycle (27-day repeat).
+function addKellyRepeating(startISO, id, intervalDays, count) {
+  if (!startISO || !id || intervalDays < 1 || count < 1) return 0;
+  const start = new Date(startISO + "T12:00:00");
+  let added = 0;
+  for (let i = 0; i < count; i++) {
+    const d = new Date(start.getTime() + i * intervalDays * 24 * 60 * 60 * 1000);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    if (!state.kellyDays[iso]) state.kellyDays[iso] = [];
+    if (!state.kellyDays[iso].includes(id)) {
+      state.kellyDays[iso].push(id);
+      added++;
+    }
+    if (iso === todayISO()) {
+      state.presence = state.presence.filter(p => p !== id);
+    }
+  }
+  saveState();
+  render();
+  return added;
+}
+
+function removeKelly(date, id) {
+  if (!state.kellyDays[date]) return;
+  state.kellyDays[date] = state.kellyDays[date].filter(x => x !== id);
+  if (!state.kellyDays[date].length) delete state.kellyDays[date];
+  saveState();
+  render();
+}
+
+function renderDateline() {
+  document.getElementById("dateline").textContent = prettyDate(todayISO());
+  document.getElementById("sinceLabel").textContent = "since " + (state.startedOn ? prettyDate(state.startedOn) : "—");
+}
+
+function renderLineup() {
+  const container = document.getElementById("lineupList");
+  container.innerHTML = "";
+
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const officers = state.crew.filter(m => m.exempt);
+
+  const renderRow = (m) => {
+    const present = state.presence.includes(m.id);
+    const rig = dailyRig(m);
+    const row = document.createElement("div");
+    row.className = "lineup-row" + (present ? "" : " absent");
+
+    const isKellyToday = (state.kellyDays[todayISO()] || []).includes(m.id);
+    const badges = [];
+    if (m.exempt) badges.push(`<span class="badge-mini officer">${/sgt/i.test(m.name) ? "SGT" : "LT"}</span>`);
+    if (m.isFillIn) badges.push(`<span class="badge-mini fillin">🤝 FILL-IN</span>`);
+    if (m.isMedic)  badges.push(`<span class="badge-mini medic">⚕ MEDIC</span>`);
+    if (m.isCook)   badges.push(`<span class="badge-mini cook">👨‍🍳 COOK</span>`);
+    if (m.isRookie) badges.push(`<span class="badge-mini cook">🎓 ROOKIE</span>`);
+    if (isKellyToday) badges.push(`<span class="badge-mini kelly">📅 KELLY</span>`);
+
+    const senLabel = m.exempt
+      ? ""
+      : (m.isFillIn ? "" : ` <span style="color:var(--muted);font-weight:500;font-size:12px;">#${m.seniority}</span>`);
+    const removeBtn = m.isFillIn
+      ? `<button class="fillin-remove" data-act="fillin-remove" data-id="${m.id}" title="Remove fill-in">✕</button>`
+      : "";
+
+    row.innerHTML = `
+      <div class="name">
+        <span>${m.name}${senLabel}</span>
+        <span class="badges">${badges.join("")}</span>
+      </div>
+      <button class="rig-pill rig-${rig || "none"} ${present ? "" : "hidden"}" data-act="rig" data-id="${m.id}">${rig ? RIGS[rig].short : "—"}</button>
+      <button class="presence-pill ${present ? "on" : "off"}" data-act="presence" data-id="${m.id}">${present ? "ON DUTY" : "OFF"}</button>
+      ${removeBtn}
+    `;
+    return row;
+  };
+
+  // FFs first
+  for (const m of ffs) container.appendChild(renderRow(m));
+
+  // Fill-ins (detail-in for tonight)
+  if (state.fillIns.length) {
+    const label = document.createElement("div");
+    label.className = "lineup-section-label";
+    label.textContent = "Fill-ins (detail-in, tonight only)";
+    container.appendChild(label);
+    for (const f of state.fillIns) container.appendChild(renderRow(f));
+  }
+
+  // Officers
+  if (officers.length) {
+    const label = document.createElement("div");
+    label.className = "lineup-section-label";
+    label.textContent = "Officers (exempt from auto-pick)";
+    container.appendChild(label);
+    for (const m of officers) container.appendChild(renderRow(m));
+  }
+
+  // Wire up clicks
+  container.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      const m = getMember(id);
+      if (!m && act !== "fillin-remove") return;
+      if (act === "presence") {
+        if (state.presence.includes(id)) {
+          state.presence = state.presence.filter(x => x !== id);
+          // Clear stale overrides for this person
+          for (const r of ROTATIONS) {
+            if (state.pendingOverrides[r.id] === id) delete state.pendingOverrides[r.id];
+          }
+        } else {
+          state.presence = [...state.presence, id];
+        }
+      } else if (act === "rig") {
+        const current = dailyRig(m);
+        const next = current === "engine" ? "rescue" : "engine";
+        if (m.isFillIn) {
+          // Fill-ins store rig directly on the object (no daily-override layer).
+          m.rig = next;
+        } else if (next === m.rig) {
+          delete state.dailyRigs[id]; // back to default, clear override
+        } else {
+          state.dailyRigs[id] = next;
+        }
+      } else if (act === "fillin-remove") {
+        removeFillIn(id);
+        return; // removeFillIn handles save + render
+      }
+      saveState();
+      renderLineup();
+      renderAssignments();
+    });
+  });
+}
+
+function renderAssignments() {
+  const grid = document.getElementById("assignGrid");
+  grid.innerHTML = "";
+  const watchPick = pickFor("watch");
+  for (const r of ROTATIONS) {
+    const pick = pickFor(r.id);
+    const cell = document.createElement("div");
+    cell.className = "assign";
+    const counts = state.rotations[r.id].counts;
+    const lastDate = pick ? state.rotations[r.id].lastDate[pick.id] : null;
+    const rigTag = pick && dailyRig(pick) ? `<span class="rig-tag">${RIGS[dailyRig(pick)].short}</span>` : "";
+    const emptyText = r.id === "backupWatch"
+      ? (watchPick ? "no eligible on opposite rig" : "set primary watch first")
+      : "no eligible crew present";
+    const metaText = pick
+      ? (pick.isFillIn
+          ? `<span style="color:#d2b3ff">fill-in · no count</span>`
+          : `count: <strong>${counts[pick.id] ?? 0}</strong>`)
+      : emptyText;
+    cell.innerHTML = `
+      <div class="label"><span>${r.icon}</span><span>${r.label}</span></div>
+      <div class="pick ${pick ? "" : "empty"}">${pick ? pick.name : "—"} ${rigTag}</div>
+      <div class="meta">
+        ${metaText}
+        ${pick && !pick.isFillIn && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
+      </div>
+    `;
+    // Meals slot gets a tap-to-recipes shortcut
+    if (r.id === "meals") {
+      const ideasBtn = document.createElement("button");
+      ideasBtn.className = "meal-ideas-link";
+      ideasBtn.type = "button";
+      ideasBtn.textContent = "🍳 See recipe ideas →";
+      ideasBtn.addEventListener("click", openMealIdeas);
+      cell.appendChild(ideasBtn);
+    }
+    // Override dropdown — show eligible pool for this rotation
+    const eligible = r.id === "backupWatch" ? eligibleForBackup(watchPick) : eligibleForRotation();
+    if (eligible.length > 1) {
+      const sel = document.createElement("select");
+      sel.innerHTML = `<option value="">— auto (recommended) —</option>` +
+        eligible
+          .slice()
+          .sort((a, b) => (a.seniority ?? 999) - (b.seniority ?? 999))
+          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${m.isFillIn ? " · fill-in" : ""}${dailyRig(m) ? " (" + RIGS[dailyRig(m)].short + ")" : ""}</option>`)
+          .join("");
+      sel.addEventListener("change", e => {
+        if (e.target.value) state.pendingOverrides[r.id] = e.target.value;
+        else delete state.pendingOverrides[r.id];
+        saveState();
+        renderAssignments();
+      });
+      cell.appendChild(sel);
+    }
+    grid.appendChild(cell);
+  }
+  // Disable buttons if no one eligible
+  const noOne = eligibleForRotation().length === 0;
+  document.getElementById("confirmBtn").disabled = noOne;
+  document.getElementById("shareBtn").disabled = noOne;
+}
+
+function renderStandings() {
+  const table = document.getElementById("standingsTable");
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  let html = `<thead><tr><th>Name</th>`;
+  for (const r of ROTATIONS) html += `<th title="${r.label}">${r.icon}</th>`;
+  html += `<th>Total</th></tr></thead><tbody>`;
+  // figure out the lowest watch count for highlighting
+  const watchCounts = ffs.map(m => state.rotations.watch.counts[m.id] ?? 0);
+  const minWatch = watchCounts.length ? Math.min(...watchCounts) : 0;
+  for (const m of ffs) {
+    let total = 0;
+    let row = `<tr class="${(state.rotations.watch.counts[m.id] ?? 0) === minWatch ? "lowest" : ""}"><td class="name">${m.name}</td>`;
+    for (const r of ROTATIONS) {
+      const c = state.rotations[r.id].counts[m.id] ?? 0;
+      total += c;
+      row += `<td class="count">${c}</td>`;
+    }
+    row += `<td class="count" style="font-weight:700">${total}</td></tr>`;
+    html += row;
+  }
+  html += `</tbody>`;
+  table.innerHTML = html;
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  if (!state.history.length) {
+    list.innerHTML = `
+      <div class="empty-hero">
+        <div class="empty-hero-text">
+          <div class="empty-hero-title">Ready for Duty</div>
+          <div class="empty-hero-sub">Confirm tonight's watch above to start tracking Station 12's history.</div>
+        </div>
+      </div>`;
+    return;
+  }
+  const recent = state.history.slice().reverse().slice(0, 14);
+  list.innerHTML = "";
+  for (let i = 0; i < recent.length; i++) {
+    const h = recent[i];
+    const a = h.assignments || {};
+    const parts = ROTATIONS.map(r => {
+      const id = a[r.id];
+      const m = id ? resolveMember(id, h) : null;
+      return m ? `${r.icon} <b>${m.name}${m.isFillIn ? " (fill-in)" : ""}</b>` : "";
+    }).filter(Boolean);
+    const row = document.createElement("div");
+    row.className = "history-item";
+    row.innerHTML = `
+      <div class="date">${shortDate(h.date)}</div>
+      <div class="assignments">${parts.join(" · ")} ${h.note ? `<span style='color:var(--muted)'>· ${h.note}</span>` : ""}</div>
+      <div></div>
+    `;
+    if (i === 0) {
+      const undo = document.createElement("button");
+      undo.className = "undo";
+      undo.textContent = "Undo";
+      undo.title = "Reverse the most recent shift";
+      undo.addEventListener("click", undoLastShift);
+      row.lastElementChild.appendChild(undo);
+    }
+    list.appendChild(row);
+  }
+}
+
+function renderCrewEditor() {
+  const ed = document.getElementById("crewEditor");
+  ed.innerHTML = "";
+  const sorted = state.crew.slice().sort((a, b) => {
+    if (a.exempt !== b.exempt) return a.exempt ? 1 : -1;
+    return a.seniority - b.seniority;
+  });
+  for (const m of sorted) {
+    const row = document.createElement("div");
+    row.className = "setup-row";
+    const rigBtn   = `<button data-act="toggle-rig"   data-id="${m.id}" class="rig-btn rig-${m.rig || "none"}" title="Default rig (tap to cycle)">${m.rig ? RIGS[m.rig].short : "—"}</button>`;
+    const medicBtn = `<button data-act="toggle-medic" data-id="${m.id}" class="flag-btn ${m.isMedic ? "on" : ""}" title="Toggle medic">⚕</button>`;
+    const cookBtn  = `<button data-act="toggle-cook"  data-id="${m.id}" class="flag-btn ${m.isCook  ? "on" : ""}" title="Toggle designated cook">👨‍🍳</button>`;
+    row.innerHTML = `
+      <span class="sen-label">${m.exempt ? "Exempt" : "#" + m.seniority}</span>
+      <input type="text" value="${m.name.replace(/"/g, "&quot;")}" data-id="${m.id}" />
+      <div class="row-actions">
+        ${rigBtn}${medicBtn}${cookBtn}
+        ${m.exempt ? "" : `<button data-act="up" data-id="${m.id}" title="More senior">↑</button>`}
+        ${m.exempt ? "" : `<button data-act="down" data-id="${m.id}" title="Less senior">↓</button>`}
+        <button data-act="toggle-exempt" data-id="${m.id}" title="${m.exempt ? "Add to rotation" : "Mark exempt"}">${m.exempt ? "+" : "★"}</button>
+        <button data-act="remove" data-id="${m.id}" title="Remove">✕</button>
+      </div>
+    `;
+    ed.appendChild(row);
+  }
+  ed.querySelectorAll("input[type=text]").forEach(inp => {
+    inp.addEventListener("change", e => {
+      const m = getMember(e.target.dataset.id);
+      if (m) { m.name = e.target.value.trim() || m.name; saveState(); render(); }
+    });
+  });
+  ed.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      if (act === "remove") {
+        if (!confirm(`Remove ${getMember(id).name}? Their history stays in the log.`)) return;
+        state.crew = state.crew.filter(m => m.id !== id);
+        state.presence = state.presence.filter(p => p !== id);
+        resequenceSeniority();
+      } else if (act === "toggle-exempt") {
+        const m = getMember(id);
+        m.exempt = !m.exempt;
+        if (m.exempt) {
+          state.presence = state.presence.filter(p => p !== id);
+        } else {
+          // assign a seniority at the bottom (newest)
+          const maxSen = Math.max(0, ...state.crew.filter(x => !x.exempt && x.id !== id).map(x => x.seniority));
+          m.seniority = maxSen + 1;
+          if (!state.presence.includes(id)) state.presence.push(id);
+        }
+      } else if (act === "up" || act === "down") {
+        moveSeniority(id, act === "up" ? -1 : 1);
+      } else if (act === "toggle-rig") {
+        const m = getMember(id);
+        m.rig = m.rig === "engine" ? "rescue" : m.rig === "rescue" ? null : "engine";
+        delete state.dailyRigs[id]; // editing default clears any daily override
+      } else if (act === "toggle-medic") {
+        getMember(id).isMedic = !getMember(id).isMedic;
+      } else if (act === "toggle-cook") {
+        // Only one designated cook at a time; toggle off others first
+        const m = getMember(id);
+        const turningOn = !m.isCook;
+        if (turningOn) for (const x of state.crew) x.isCook = false;
+        m.isCook = turningOn;
+      }
+      saveState();
+      render();
+    });
+  });
+}
+
+function resequenceSeniority() {
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  ffs.forEach((m, i) => m.seniority = i + 1);
+}
+
+function moveSeniority(id, dir) {
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const idx = ffs.findIndex(m => m.id === id);
+  const swap = idx + dir;
+  if (idx < 0 || swap < 0 || swap >= ffs.length) return;
+  const a = ffs[idx], b = ffs[swap];
+  const t = a.seniority; a.seniority = b.seniority; b.seniority = t;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Shift actions
+// ────────────────────────────────────────────────────────────────────
+
+function confirmShift() {
+  const date = todayISO();
+  if (state.history.some(h => h.date === date)) {
+    if (!confirm("A shift is already logged for today. Add a second entry?")) return;
+  }
+  const assignments = {};
+  for (const r of ROTATIONS) {
+    const p = pickFor(r.id);
+    if (!p) continue;
+    assignments[r.id] = p.id;
+    // Fill-ins are guests — their counts don't accumulate in the permanent rotation.
+    if (!isFillIn(p.id)) {
+      state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+      state.rotations[r.id].lastDate[p.id] = date;
+    }
+  }
+  // Snapshot rigs for this shift (for history record)
+  const rigsSnapshot = {};
+  for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
+  for (const f of state.fillIns) rigsSnapshot[f.id] = f.rig;
+  // Snapshot the fill-in roster so history rendering can resolve their names later.
+  const fillInRoster = {};
+  for (const f of state.fillIns) {
+    fillInRoster[f.id] = { id: f.id, name: f.name, rig: f.rig, isMedic: !!f.isMedic, isFillIn: true };
+  }
+  state.history.push({
+    date,
+    assignments,
+    present: state.presence.slice(),
+    rigs: rigsSnapshot,
+    fillInRoster,
+    note: ""
+  });
+  state.pendingOverrides = {};
+  state.dailyRigs = {}; // shift over — rigs snap back to defaults for next time
+  revealedThisSession = false; // re-arm reveal for next shift
+  saveState();
+  // Build the share text BEFORE clearing fill-ins so the modal shows the actual roster.
+  showToast("Shift confirmed");
+  openShareModal();
+  // Now clear fill-ins — guest mode: they don't persist beyond tonight.
+  state.fillIns = [];
+  state.presence = state.presence.filter(id => !isFillIn(id));
+  saveState();
+  render();
+}
+
+function sgtCoversWatch() {
+  const date = todayISO();
+  if (state.history.some(h => h.date === date)) {
+    if (!confirm("A shift is already logged for today. Add a second entry?")) return;
+  }
+  const sgt = state.crew.find(m => m.exempt && /sgt/i.test(m.name));
+  const sgtId = sgt ? sgt.id : null;
+  const assignments = {};
+  for (const r of ROTATIONS) {
+    if (r.id === "watch") {
+      assignments[r.id] = sgtId; // watch logged to Sgt but counts untouched
+      continue;
+    }
+    // Backup watch is keyed off Sgt's rig, not the regular auto-pick
+    const p = r.id === "backupWatch"
+      ? pickFor(r.id, { primaryHolder: sgt })
+      : pickFor(r.id);
+    if (p) {
+      assignments[r.id] = p.id;
+      if (!isFillIn(p.id)) {
+        state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+        state.rotations[r.id].lastDate[p.id] = date;
+      }
+    }
+  }
+  const rigsSnapshot = {};
+  for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
+  for (const f of state.fillIns) rigsSnapshot[f.id] = f.rig;
+  const fillInRoster = {};
+  for (const f of state.fillIns) {
+    fillInRoster[f.id] = { id: f.id, name: f.name, rig: f.rig, isMedic: !!f.isMedic, isFillIn: true };
+  }
+  state.history.push({
+    date,
+    assignments,
+    present: state.presence.slice(),
+    rigs: rigsSnapshot,
+    fillInRoster,
+    note: "Sgt. covered watch"
+  });
+  state.pendingOverrides = {};
+  state.dailyRigs = {};
+  revealedThisSession = false;
+  saveState();
+  showToast("Sgt. on watch — counts unchanged");
+  openShareModal();
+  state.fillIns = [];
+  state.presence = state.presence.filter(id => !isFillIn(id));
+  saveState();
+  render();
+}
+
+function undoLastShift() {
+  if (!state.history.length) return;
+  if (!confirm("Undo the most recent shift?")) return;
+  const last = state.history.pop();
+  for (const r of ROTATIONS) {
+    const id = last.assignments[r.id];
+    if (!id) continue;
+    const member = getMember(id);
+    if (!member || member.exempt) continue; // Sgt covers doesn't increment, skip
+    state.rotations[r.id].counts[id] = Math.max(0, (state.rotations[r.id].counts[id] ?? 1) - 1);
+  }
+  saveState();
+  render();
+  showToast("Last shift undone");
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Share
+// ────────────────────────────────────────────────────────────────────
+
+function buildShareText({ fromConfirmed = false } = {}) {
+  const date = todayISO();
+  const lines = [];
+  lines.push(`🚒 Station 12 · B-Shift · Battalion 5 — ${prettyDate(date)}`);
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  // Use confirmed history if available for today; else live picks + live rigs
+  let assigns = {};
+  let note = "";
+  let rigsOfRecord = null;
+  let historyEntry = null;
+  if (fromConfirmed && state.history.length && state.history[state.history.length - 1].date === date) {
+    const last = state.history[state.history.length - 1];
+    historyEntry = last;
+    assigns = last.assignments;
+    note = last.note;
+    rigsOfRecord = last.rigs || null;
+  } else {
+    for (const r of ROTATIONS) {
+      const p = pickFor(r.id);
+      if (p) assigns[r.id] = p.id;
+    }
+  }
+  const rigFor = (m) => rigsOfRecord ? rigsOfRecord[m.id] : dailyRig(m);
+
+  // Lineup — include current fill-ins (or snapshot from history if confirmed)
+  const fillInsForLineup = historyEntry
+    ? Object.values(historyEntry.fillInRoster || {})
+    : state.fillIns;
+  const onDuty = [
+    ...state.crew.filter(m => state.presence.includes(m.id)),
+    ...fillInsForLineup.filter(f => historyEntry || state.presence.includes(f.id)),
+  ];
+  const engine = onDuty.filter(m => rigFor(m) === "engine");
+  const rescue = onDuty.filter(m => rigFor(m) === "rescue");
+  const off = state.crew.filter(m => !m.exempt && !state.presence.includes(m.id));
+  const namify = m => `${m.name}${m.isMedic ? " ⚕" : ""}${m.isCook ? " 👨‍🍳" : ""}${m.isFillIn ? " (fill-in)" : ""}`;
+  if (engine.length) lines.push(`🚒 Engine 12: ${engine.map(namify).join(", ")}`);
+  if (rescue.length) lines.push(`🚑 Rescue 12: ${rescue.map(namify).join(", ")}`);
+  if (off.length)    lines.push(`Detailed off: ${off.map(m => m.name).join(", ")}`);
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  // Assignments
+  for (const r of ROTATIONS) {
+    const id = assigns[r.id];
+    const m = id ? resolveMember(id, historyEntry) : null;
+    const rigTxt = m && rigFor(m) ? ` (${RIGS[rigFor(m)].short})` : "";
+    const fillinTxt = m && m.isFillIn ? " — fill-in" : "";
+    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name + rigTxt + fillinTxt : "—"}`);
+  }
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  // Watch + Backup standings — what the crew cares about
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const watchLine = ffs.slice()
+    .sort((a, b) => (state.rotations.watch.counts[a.id] ?? 0) - (state.rotations.watch.counts[b.id] ?? 0))
+    .map(m => `${m.name} ${state.rotations.watch.counts[m.id] ?? 0}`)
+    .join(" · ");
+  lines.push(`Watch counts: ${watchLine}`);
+  const backupLine = ffs.slice()
+    .sort((a, b) => (state.rotations.backupWatch.counts[a.id] ?? 0) - (state.rotations.backupWatch.counts[b.id] ?? 0))
+    .map(m => `${m.name} ${state.rotations.backupWatch.counts[m.id] ?? 0}`)
+    .join(" · ");
+  lines.push(`Backup counts: ${backupLine}`);
+  lines.push(`(since ${prettyDate(state.startedOn)})`);
+
+  if (note) lines.push(`Note: ${note}`);
+  return lines.join("\n");
+}
+
+function openShareModal() {
+  const text = buildShareText({ fromConfirmed: true });
+  document.getElementById("modalTitle").textContent = "Send this to the crew";
+  document.getElementById("modalDesc").textContent = "Pre-formatted for text/GroupMe. Tap Share to send via your phone, or Copy.";
+  const ta = document.getElementById("modalText");
+  ta.value = text;
+  document.getElementById("modalBackdrop").classList.add("show");
+}
+
+async function shareText() {
+  const text = document.getElementById("modalText").value;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Station 12 B-Shift", text });
+      return;
+    } catch (e) { /* user cancelled, fall through */ }
+  }
+  copyText();
+}
+
+async function copyText() {
+  const text = document.getElementById("modalText").value;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("Copied to clipboard");
+  } catch (e) {
+    const ta = document.getElementById("modalText");
+    ta.select();
+    document.execCommand("copy");
+    showToast("Copied");
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Crew add / export / import / reset
+// ────────────────────────────────────────────────────────────────────
+
+function addMember() {
+  const name = prompt("New crew member name:");
+  if (!name) return;
+  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "") || ("ff" + Date.now());
+  if (state.crew.some(m => m.id === id)) { alert("Name already in roster."); return; }
+  const maxSen = Math.max(0, ...state.crew.filter(m => !m.exempt).map(m => m.seniority));
+  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false, rig: "engine", isMedic: false, isCook: false });
+  for (const r of ROTATIONS) state.rotations[r.id].counts[id] = 0;
+  state.presence.push(id);
+  saveState();
+  render();
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Fill-ins (detail-in from another station, tonight only)
+// ────────────────────────────────────────────────────────────────────
+
+function openFillInForm() {
+  document.getElementById("fillInForm").hidden = false;
+  document.getElementById("addFillInBtn").hidden = true;
+  // Reset form state
+  document.getElementById("fillInName").value = "";
+  const rigBtn = document.getElementById("fillInRigBtn");
+  rigBtn.dataset.rig = "engine";
+  rigBtn.textContent = "E12";
+  document.getElementById("fillInMedicBtn").classList.remove("on");
+  setTimeout(() => document.getElementById("fillInName").focus(), 0);
+}
+
+function closeFillInForm() {
+  document.getElementById("fillInForm").hidden = true;
+  document.getElementById("addFillInBtn").hidden = false;
+}
+
+function toggleFillInRig() {
+  const btn = document.getElementById("fillInRigBtn");
+  const next = btn.dataset.rig === "engine" ? "rescue" : "engine";
+  btn.dataset.rig = next;
+  btn.textContent = next === "engine" ? "E12" : "R12";
+}
+
+function toggleFillInMedic() {
+  document.getElementById("fillInMedicBtn").classList.toggle("on");
+}
+
+function saveFillIn() {
+  const name = document.getElementById("fillInName").value.trim();
+  if (!name) { document.getElementById("fillInName").focus(); return; }
+  const rig = document.getElementById("fillInRigBtn").dataset.rig;
+  const isMedic = document.getElementById("fillInMedicBtn").classList.contains("on");
+  const id = `fillin_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+  state.fillIns.push({ id, name, rig, isMedic, isFillIn: true });
+  state.presence.push(id);
+  closeFillInForm();
+  saveState();
+  render();
+  showToast(`${name} added as fill-in`);
+}
+
+function removeFillIn(id) {
+  state.fillIns = state.fillIns.filter(f => f.id !== id);
+  state.presence = state.presence.filter(p => p !== id);
+  // Clear any pending override pointing at this fill-in
+  for (const r of ROTATIONS) {
+    if (state.pendingOverrides[r.id] === id) delete state.pendingOverrides[r.id];
+  }
+  saveState();
+  render();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `station12-bshift-${todayISO()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Data exported");
+}
+
+function importData() {
+  const ta = document.createElement("textarea");
+  const wrapper = document.createElement("div");
+  document.getElementById("modalTitle").textContent = "Paste exported data";
+  document.getElementById("modalDesc").textContent = "Paste a previously-exported JSON file to restore.";
+  document.getElementById("modalText").value = "";
+  document.getElementById("modalText").readOnly = false;
+  document.getElementById("modalBackdrop").classList.add("show");
+  // Repurpose Copy button as Import
+  const copyBtn = document.getElementById("modalCopyBtn");
+  const origLabel = copyBtn.textContent;
+  copyBtn.textContent = "Import";
+  const handler = () => {
+    try {
+      const parsed = JSON.parse(document.getElementById("modalText").value);
+      if (!parsed.crew || !parsed.rotations) throw new Error("Invalid file");
+      state = parsed;
+      saveState();
+      render();
+      closeModal();
+      showToast("Data imported");
+    } catch (e) {
+      alert("Invalid JSON: " + e.message);
+    }
+    copyBtn.textContent = origLabel;
+    copyBtn.removeEventListener("click", handler);
+    document.getElementById("modalText").readOnly = true;
+    copyBtn.addEventListener("click", copyText);
+  };
+  copyBtn.removeEventListener("click", copyText);
+  copyBtn.addEventListener("click", handler, { once: true });
+}
+
+function resetCounts() {
+  if (!confirm("Reset all rotation counts to zero? History will be kept.")) return;
+  for (const r of ROTATIONS) {
+    for (const id of Object.keys(state.rotations[r.id].counts)) {
+      state.rotations[r.id].counts[id] = 0;
+      state.rotations[r.id].lastDate[id] = null;
+    }
+  }
+  state.startedOn = todayISO();
+  saveState();
+  render();
+  showToast("Counts reset");
+}
+
+function factoryReset() {
+  if (!confirm("Wipe ALL data (crew, counts, history)? This cannot be undone.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = defaultState();
+  saveState();
+  render();
+  showToast("Reset complete");
+}
+
+function closeModal() {
+  document.getElementById("modalBackdrop").classList.remove("show");
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Wire up
+// ────────────────────────────────────────────────────────────────────
+
+document.getElementById("confirmBtn").addEventListener("click", confirmShift);
+document.getElementById("sgtBtn").addEventListener("click", sgtCoversWatch);
+document.getElementById("shareBtn").addEventListener("click", openShareModal);
+document.getElementById("addMemberBtn").addEventListener("click", addMember);
+document.getElementById("exportBtn").addEventListener("click", exportData);
+document.getElementById("importBtn").addEventListener("click", importData);
+document.getElementById("resetCountsBtn").addEventListener("click", resetCounts);
+document.getElementById("resetAllBtn").addEventListener("click", factoryReset);
+document.getElementById("modalCopyBtn").addEventListener("click", copyText);
+document.getElementById("modalShareBtn").addEventListener("click", shareText);
+document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+document.getElementById("modalBackdrop").addEventListener("click", e => {
+  if (e.target.id === "modalBackdrop") closeModal();
+});
+
+// Bay door reveal
+document.getElementById("bayDoor").addEventListener("click", openBayDoors);
+
+// Fill-in form
+document.getElementById("addFillInBtn").addEventListener("click", openFillInForm);
+document.getElementById("fillInCancelBtn").addEventListener("click", closeFillInForm);
+document.getElementById("fillInRigBtn").addEventListener("click", toggleFillInRig);
+document.getElementById("fillInMedicBtn").addEventListener("click", toggleFillInMedic);
+document.getElementById("fillInSaveBtn").addEventListener("click", saveFillIn);
+document.getElementById("fillInName").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); saveFillIn(); }
+  else if (e.key === "Escape") { closeFillInForm(); }
+});
+
+// Kelly days
+document.getElementById("kellyAddBtn").addEventListener("click", () => {
+  const date = document.getElementById("kellyDate").value;
+  const id = document.getElementById("kellyCrew").value;
+  if (!date) { alert("Pick a date"); return; }
+  const repeat = document.getElementById("kellyRepeatToggle").checked;
+  if (repeat) {
+    const interval = parseInt(document.getElementById("kellyRepeatInterval").value, 10) || 27;
+    const count = parseInt(document.getElementById("kellyRepeatCount").value, 10) || 12;
+    const added = addKellyRepeating(date, id, interval, count);
+    const name = getMember(id) ? getMember(id).name : id;
+    showToast(`Added ${added} Kelly day${added === 1 ? "" : "s"} for ${name}`);
+  } else {
+    addKelly(date, id);
+  }
+  document.getElementById("kellyDate").value = "";
+});
+
+// Behavior toggles
+document.getElementById("useRevealToggle").addEventListener("change", e => {
+  state.useReveal = e.target.checked;
+  if (!state.useReveal) revealedThisSession = true; // skip overlay entirely
+  saveState();
+  renderBayDoor();
+});
+document.getElementById("useIntroToggle").addEventListener("change", e => {
+  state.useIntro = e.target.checked;
+  saveState();
+});
+document.getElementById("rookieMult").addEventListener("change", e => {
+  const v = parseInt(e.target.value, 10);
+  state.rookieMultiplier = isNaN(v) || v < 1 ? 1 : Math.min(5, v);
+  e.target.value = state.rookieMultiplier;
+  saveState();
+  renderAssignments();
+  renderStandings();
+});
+
+// Emblem upload
+document.getElementById("emblemUploadBtn").addEventListener("click", () => {
+  document.getElementById("emblemFile").click();
+});
+document.getElementById("emblemFile").addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    alert("Image too large (max 2MB). Resize and try again.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    state.emblemUrl = ev.target.result;
+    saveState();
+    renderEmblem();
+    showToast("Emblem updated");
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById("emblemResetBtn").addEventListener("click", () => {
+  state.emblemUrl = null;
+  saveState();
+  renderEmblem();
+});
+
+applyKellyDaysIfNewDay();
+render();
+
+// Intro splash — plays once per browser session if enabled in settings
+(function bootIntro() {
+  const splash = document.getElementById("introSplash");
+  const video  = document.getElementById("introVideo");
+  const skip   = document.getElementById("introSkip");
+  const alreadyPlayed = sessionStorage.getItem("station12-intro-played") === "1";
+  if (!state.useIntro || alreadyPlayed) {
+    splash.classList.add("hidden");
+    return;
+  }
+  const dismiss = () => {
+    splash.classList.add("hidden");
+    sessionStorage.setItem("station12-intro-played", "1");
+    try { video.pause(); } catch (e) {}
+  };
+  skip.addEventListener("click", dismiss);
+  splash.addEventListener("click", e => { if (e.target === splash || e.target === video) dismiss(); });
+  video.addEventListener("ended", dismiss);
+  video.addEventListener("error", dismiss);
+  // Hold the helmet poster on screen for 2.5s, THEN start the video.
+  // Autoplay is intentionally not on the <video> tag — we control the play timing here.
+  const POSTER_HOLD_MS = 2500;
+  setTimeout(() => {
+    video.play().catch(() => { /* autoplay blocked — user can tap to dismiss */ });
+  }, POSTER_HOLD_MS);
+  // Failsafe: dismiss after 10s no matter what
+  setTimeout(() => { if (!splash.classList.contains("hidden")) dismiss(); }, 10000);
+})();
+</script>
+
+</body>
+</html>
