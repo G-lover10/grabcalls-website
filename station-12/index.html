@@ -909,7 +909,6 @@
     poster="assets/intro-poster.jpg"
     muted
     playsinline
-    autoplay
     preload="auto"
   ></video>
   <button class="intro-skip" id="introSkip">Skip ▶</button>
@@ -2417,10 +2416,14 @@ render();
   splash.addEventListener("click", e => { if (e.target === splash || e.target === video) dismiss(); });
   video.addEventListener("ended", dismiss);
   video.addEventListener("error", dismiss);
-  // Failsafe: dismiss after 8s no matter what (in case browser blocks autoplay silently)
-  setTimeout(() => { if (!splash.classList.contains("hidden")) dismiss(); }, 8000);
-  // Trigger autoplay (muted is allowed on iOS)
-  video.play().catch(() => { /* user gesture required — they can tap to dismiss */ });
+  // Hold the helmet poster on screen for 2.5s, THEN start the video.
+  // Autoplay is intentionally not on the <video> tag — we control the play timing here.
+  const POSTER_HOLD_MS = 2500;
+  setTimeout(() => {
+    video.play().catch(() => { /* autoplay blocked — user can tap to dismiss */ });
+  }, POSTER_HOLD_MS);
+  // Failsafe: dismiss after 10s no matter what
+  setTimeout(() => { if (!splash.classList.contains("hidden")) dismiss(); }, 10000);
 })();
 </script>
 
