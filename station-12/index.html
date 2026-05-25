@@ -7,7 +7,7 @@
 <title>Station 12 B-Shift · Watch Rotation</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E🚒%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="apple-touch-icon" href="assets/emblem.jpg" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Station 12" />
@@ -899,9 +899,252 @@
     backdrop-filter: blur(4px);
   }
   .intro-skip:hover { background: rgba(0,0,0,0.8); }
+
+  /* ─────────── Install-to-home-screen overlay ─────────── */
+  .install-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 18px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    animation: install-fade 0.3s ease-out;
+  }
+  .install-overlay.show { display: flex; }
+  @keyframes install-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .install-card {
+    max-width: 420px;
+    width: 100%;
+    background: linear-gradient(180deg, #1a1c20 0%, #0f1114 100%);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    margin-top: max(env(safe-area-inset-top), 12px);
+    margin-bottom: 24px;
+  }
+  .install-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .install-helmet {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: url("assets/helmet-icon-192.png") center/cover no-repeat;
+    border: 2px solid var(--red);
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(214,40,40,0.4);
+  }
+  .install-title {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: white;
+    margin: 0 0 2px;
+  }
+  .install-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .install-steps {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px 10px;
+    margin: 6px 0 14px;
+  }
+  .install-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .install-step:last-child { border-bottom: none; }
+  .install-step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .install-step-text {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text);
+    padding-top: 2px;
+    line-height: 1.35;
+  }
+  .install-step-text b {
+    color: white;
+    background: rgba(214,40,40,0.18);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .install-icon-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    vertical-align: -6px;
+    margin: 0 2px;
+    background: rgba(47,111,235,0.18);
+    border-radius: 5px;
+    color: #5b9dff;
+  }
+  .install-arrow {
+    text-align: center;
+    font-size: 36px;
+    color: var(--red);
+    margin: 8px 0 0;
+    animation: install-bounce 1.2s ease-in-out infinite;
+  }
+  @keyframes install-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+  .install-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .install-btn {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .install-btn-primary {
+    background: var(--red);
+    color: white;
+  }
+  .install-btn-primary:active { background: var(--red-soft); }
+  .install-btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .install-footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+  /* Reopen-install pill (shown once dismissed, in case they want to install later) */
+  .install-pill {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 12px);
+    right: 12px;
+    z-index: 50;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5), 0 0 0 2px rgba(214,40,40,0.25);
+    cursor: pointer;
+    display: none;
+  }
+  .install-pill.show { display: inline-flex; align-items: center; gap: 6px; }
 </style>
 </head>
 <body>
+
+<!-- Install-to-home-screen overlay -->
+<div class="install-overlay" id="installOverlay" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="install-card">
+    <div class="install-head">
+      <div class="install-helmet" aria-hidden="true"></div>
+      <div>
+        <p class="install-title" id="installTitle">Install Station 12</p>
+        <p class="install-sub">Put the helmet on your home screen</p>
+      </div>
+    </div>
+
+    <!-- iOS Safari instructions -->
+    <div class="install-steps" id="installStepsIOS" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-num">1</span>
+        <span class="install-step-text">
+          Tap the
+          <span class="install-icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l-4 4h3v8h2V6h3l-4-4zM5 12v8c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-8h-2v8H7v-8H5z"/></svg>
+          </span>
+          <b>Share</b> button at the bottom of Safari
+        </span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">2</span>
+        <span class="install-step-text">Scroll down and tap <b>Add to Home Screen</b></span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">3</span>
+        <span class="install-step-text">Tap <b>Add</b> — the helmet shows up on your home screen</span>
+      </div>
+      <p class="install-arrow" aria-hidden="true">↓</p>
+    </div>
+
+    <!-- Android Chrome instructions -->
+    <div class="install-steps" id="installStepsAndroid" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-num">1</span>
+        <span class="install-step-text">Tap the <b>⋮ menu</b> in the top-right of your browser</span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">2</span>
+        <span class="install-step-text">Tap <b>Install app</b> (or <b>Add to Home screen</b>)</span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">3</span>
+        <span class="install-step-text">Confirm — the helmet shows up on your home screen</span>
+      </div>
+    </div>
+
+    <!-- Generic fallback instructions -->
+    <div class="install-steps" id="installStepsGeneric" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-text">Open your browser menu and pick <b>Add to Home Screen</b> or <b>Install app</b>.</span>
+      </div>
+    </div>
+
+    <div class="install-actions">
+      <button class="install-btn install-btn-primary" id="installInstallBtn" style="display:none;">Install</button>
+      <button class="install-btn install-btn-ghost" id="installDismissBtn">Got it</button>
+    </div>
+    <p class="install-footer-note">You only have to do this once.</p>
+  </div>
+</div>
+
+<!-- Tiny reopen-install pill (shown after dismissal) -->
+<button class="install-pill" id="installPill" type="button" aria-label="Install Station 12 to home screen">
+  🚒 Install
+</button>
 
 <!-- Fixed app background photo -->
 <div class="app-bg" aria-hidden="true"></div>
@@ -2454,6 +2697,97 @@ render();
   }, POSTER_HOLD_MS);
   // Failsafe: dismiss after 10s no matter what
   setTimeout(() => { if (!splash.classList.contains("hidden")) dismiss(); }, 10000);
+})();
+
+// ────────────────────────────────────────────────────────────────────
+// Install-to-home-screen overlay
+// Shows phone-specific "Add to Home Screen" instructions until installed.
+// ────────────────────────────────────────────────────────────────────
+(function setupInstallPrompt(){
+  const INSTALL_DISMISS_KEY = "station12-install-dismissed-v1";
+
+  const overlay = document.getElementById("installOverlay");
+  const pill    = document.getElementById("installPill");
+  const dismissBtn = document.getElementById("installDismissBtn");
+  const installBtn = document.getElementById("installInstallBtn");
+  const stepsIOS     = document.getElementById("installStepsIOS");
+  const stepsAndroid = document.getElementById("installStepsAndroid");
+  const stepsGeneric = document.getElementById("installStepsGeneric");
+  if (!overlay || !pill) return;
+
+  // Detect already installed (iOS uses navigator.standalone, others use display-mode).
+  function isInstalled(){
+    if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+    if (window.navigator.standalone === true) return true;
+    return false;
+  }
+
+  // Detect platform.
+  const ua = (navigator.userAgent || "").toLowerCase();
+  const isIOS     = /iphone|ipad|ipod/.test(ua) || (ua.includes("mac") && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/.test(ua);
+
+  // Pick which instruction block to show.
+  if (isIOS)          stepsIOS.style.display = "block";
+  else if (isAndroid) stepsAndroid.style.display = "block";
+  else                stepsGeneric.style.display = "block";
+
+  // Cache the native install prompt (Chrome/Edge on Android & desktop).
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "inline-block";
+  });
+
+  function openOverlay(){
+    if (isInstalled()) return;
+    overlay.classList.add("show");
+    pill.classList.remove("show");
+  }
+  function closeOverlay(){
+    overlay.classList.remove("show");
+    if (!isInstalled()) pill.classList.add("show");
+  }
+  function markDismissed(){
+    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch(_) {}
+  }
+
+  dismissBtn.addEventListener("click", () => { markDismissed(); closeOverlay(); });
+  pill.addEventListener("click", openOverlay);
+
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch(_) {}
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+    closeOverlay();
+  });
+
+  // Hide the pill once the app is installed.
+  window.addEventListener("appinstalled", () => {
+    markDismissed();
+    overlay.classList.remove("show");
+    pill.classList.remove("show");
+  });
+
+  // First-run logic: wait until after the intro splash so we don't double-cover the screen.
+  function maybeShowOnFirstRun(){
+    if (isInstalled()) return;
+    let dismissed = null;
+    try { dismissed = localStorage.getItem(INSTALL_DISMISS_KEY); } catch(_) {}
+    if (dismissed) {
+      // They've seen it before — just leave the little pill so they can install later.
+      pill.classList.add("show");
+      return;
+    }
+    // Show after a short delay so the intro splash has a chance to finish.
+    setTimeout(() => {
+      if (!isInstalled()) openOverlay();
+    }, 3500);
+  }
+  maybeShowOnFirstRun();
 })();
 </script>
 
