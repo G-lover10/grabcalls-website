@@ -34,7 +34,9 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   header.app {
-    background: linear-gradient(180deg, var(--red) 0%, var(--red-soft) 100%);
+    background:
+      linear-gradient(180deg, rgba(198,40,40,0.92) 0%, rgba(155,28,28,0.92) 100%),
+      url("assets/helmet-12.jpg") center 30% / cover no-repeat;
     color: white;
     padding: 18px 18px 14px;
     box-shadow: var(--shadow);
@@ -196,15 +198,17 @@
   .bay-door.hidden { display: none; }
   .bay-door-panel {
     flex: 1;
-    background:
-      repeating-linear-gradient(0deg, #2a2a2a 0, #1a1a1a 2px, #2a2a2a 4px, #333 14px, #2a2a2a 16px),
-      linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.55) 100%),
+      url("assets/helmet-12.jpg");
+    background-size: cover, 200% 100%;
+    background-repeat: no-repeat, no-repeat;
     border-top: 4px solid #d62828;
     border-bottom: 4px solid #d62828;
     transition: transform 1.2s cubic-bezier(0.25, 1, 0.3, 1);
   }
-  .bay-door-panel.left  { border-right: 1px solid #000; }
-  .bay-door-panel.right { border-left:  1px solid #000; }
+  .bay-door-panel.left  { background-position: left center, left center;  border-right: 2px solid #000; }
+  .bay-door-panel.right { background-position: right center, right center; border-left:  2px solid #000; }
   .bay-door.opening .bay-door-panel.left  { transform: translateY(-110%); }
   .bay-door.opening .bay-door-panel.right { transform: translateY(-110%); }
   .bay-door.opening .bay-door-cta { opacity: 0; }
@@ -637,6 +641,40 @@
     color: var(--muted);
     font-size: 14px;
     text-align: center;
+  }
+  .empty-hero {
+    position: relative;
+    margin: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #000 url("assets/helmet-12.jpg") center 35% / cover no-repeat;
+    box-shadow: var(--shadow);
+  }
+  .empty-hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.92) 100%);
+  }
+  .empty-hero-text {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 14px 16px 16px;
+    color: #fff;
+    z-index: 1;
+    text-align: center;
+  }
+  .empty-hero-title {
+    font-size: 15px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  }
+  .empty-hero-sub {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 4px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
 
   /* Intro splash */
@@ -1399,7 +1437,13 @@ function renderStandings() {
 function renderHistory() {
   const list = document.getElementById("historyList");
   if (!state.history.length) {
-    list.innerHTML = `<div class="empty-state">No shifts logged yet. Confirm a shift to start tracking.</div>`;
+    list.innerHTML = `
+      <div class="empty-hero">
+        <div class="empty-hero-text">
+          <div class="empty-hero-title">Ready for Duty</div>
+          <div class="empty-hero-sub">Confirm tonight's watch above to start tracking Station 12's history.</div>
+        </div>
+      </div>`;
     return;
   }
   const recent = state.history.slice().reverse().slice(0, 14);
