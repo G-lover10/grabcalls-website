@@ -551,6 +551,40 @@
   .fillin-form .fillin-cancel { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
   .fillin-help { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4; }
 
+  /* Meal ideas */
+  .meal-intro, .meal-help {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 0 4px;
+    margin: 8px 0 12px;
+    line-height: 1.5;
+  }
+  .meal-help { margin-top: 16px; }
+  .meal-list { display: flex; flex-direction: column; gap: 8px; padding: 0 4px; }
+  .meal-item {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    padding: 12px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color 0.15s ease, transform 0.05s ease;
+  }
+  .meal-item:hover { border-color: var(--gold); }
+  .meal-item:active { transform: scale(0.99); }
+  .meal-item .meal-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--gold);
+  }
+  .meal-item .meal-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
   .emblem-settings {
     display: flex; gap: 14px; align-items: center;
     padding: 12px;
@@ -890,6 +924,74 @@
     <div class="body" style="padding:0 4px 4px;">
       <table class="standings" id="standingsTable"></table>
     </div>
+  </section>
+
+  <!-- Meal Ideas -->
+  <section>
+    <details>
+      <summary>🍳 Meal Ideas (lunch & dinner)</summary>
+      <div class="body">
+        <p class="meal-intro">Tried-and-true firehouse meals — hearty, one-pot, pause-friendly when the tones drop. Tap a card to open the recipe.</p>
+
+        <h3 class="settings-h3">Lunch · quick &amp; easy</h3>
+        <div class="meal-list">
+          <a href="https://www.allrecipes.com/recipe/9099/italian-sausage-with-peppers-and-onions/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥪 Sausage, Peppers &amp; Onions Subs</div>
+            <div class="meal-desc">One pan, ~30 min. Italian sausage + bell peppers + onions on hoagies w/ provolone. Cheap, fast, feeds 6 easy.</div>
+          </a>
+          <a href="https://www.tasteofhome.com/recipes/firehouse-chili/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🌶️ Firehouse Chili</div>
+            <div class="meal-desc">Hamburger + beans + chunky tomatoes + chili powder. Simmers while you run calls. Better the longer it sits.</div>
+          </a>
+          <a href="https://www.365daysofcrockpot.com/fire-station-casserole/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥘 Fire Station Casserole</div>
+            <div class="meal-desc">Ground beef + tater tots + cream of mushroom + cheddar. Slow-cooker classic. Doubles to feed 10.</div>
+          </a>
+          <a href="https://www.thepioneerwoman.com/food-cooking/recipes/a32522709/sheet-pan-chicken-fajitas-recipe/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🌯 Sheet Pan Fajitas</div>
+            <div class="meal-desc">Chicken or steak + peppers + onions, all on one tray at 425°F. Tortillas, salsa, sour cream on the side.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/15044/easy-slow-cooker-french-dip/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥩 Italian Beef Sandwiches (crockpot)</div>
+            <div class="meal-desc">Chuck roast + pepperoncini + Italian dressing mix. Start in the morning, slice and pile on hoagies for lunch.</div>
+          </a>
+          <a href="https://www.google.com/search?q=loaded+baked+potato+bar+firehouse" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🥔 Loaded Baked Potato Bar</div>
+            <div class="meal-desc">Bake russets in the oven, set out chili / cheese / bacon / scallions / sour cream. Cheap, customizable, no two plates alike.</div>
+          </a>
+        </div>
+
+        <h3 class="settings-h3">Dinner · hearty &amp; filling</h3>
+        <div class="meal-list">
+          <a href="https://www.simplyrecipes.com/recipes/classic_baked_lasagna/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍝 Classic Baked Lasagna</div>
+            <div class="meal-desc">Make-ahead friendly. Pull from the oven anytime — reheats great if a call drags. Garlic bread on the side.</div>
+          </a>
+          <a href="https://www.simplyrecipes.com/recipes/beef_stew/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍖 Beef Stew (or Guinness Stew)</div>
+            <div class="meal-desc">Chuck roast + potatoes + carrots + onion + stock. Slow simmer all afternoon — Guinness version is a Milwaukee firehouse staple.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/228823/pulled-pork-barbecue/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🐖 Pulled Pork</div>
+            <div class="meal-desc">Pork shoulder + dry rub overnight, low &amp; slow on smoker or crockpot. Buns, slaw, baked beans = full plate.</div>
+          </a>
+          <a href="https://www.allrecipes.com/recipe/14797/jambalaya/" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍤 Jambalaya</div>
+            <div class="meal-desc">One pot. Andouille + chicken + shrimp + rice + Cajun spice. Spicy, scales to 8 without breaking a sweat.</div>
+          </a>
+          <a href="https://www.foodnetwork.com/recipes/ree-drummond/spaghetti-and-meatballs-recipe-2120350" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🍝 Spaghetti &amp; Meatballs</div>
+            <div class="meal-desc">Eternal crew favorite. Big pot of sauce, frozen meatballs if you're short on time. Garlic bread is mandatory.</div>
+          </a>
+          <a href="https://www.foodnetwork.com/recipes/aaron-franklin/foolproof-smoked-brisket-3565829" class="meal-item" target="_blank" rel="noopener">
+            <div class="meal-name">🔥 Smoked Brisket</div>
+            <div class="meal-desc">Set on the smoker at sunrise, eat at dinner. Mac &amp; cheese, beans, white bread = Texas style.</div>
+          </a>
+        </div>
+
+        <p class="meal-help">💡 <strong>Firehouse rules:</strong> anything in a crockpot or smoker is gold — it can simmer while you run calls. One-pot &amp; sheet-pan meals minimize cleanup. Always cook for one or two extra in case of detail-ins.</p>
+      </div>
+    </details>
   </section>
 
   <!-- History -->
