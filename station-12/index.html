@@ -40,7 +40,14 @@
     box-shadow: var(--shadow);
     position: sticky; top: 0; z-index: 10;
   }
-  header.app .row { display: flex; align-items: center; gap: 10px; }
+  header.app .row { display: flex; align-items: center; gap: 12px; }
+  header.app .emblem-wrap { width: 56px; height: 56px; flex-shrink: 0; }
+  header.app .emblem-wrap svg, header.app .emblem-wrap img {
+    width: 100%; height: 100%; display: block;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.25);
+  }
+  header.app .emblem-wrap img { object-fit: cover; }
   header.app h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; }
   header.app .sub { font-size: 13px; opacity: 0.85; margin-top: 2px; }
   header.app .badge {
@@ -74,7 +81,63 @@
   section header.sec .hint { font-size: 12px; color: var(--muted); }
   section .body { padding: 4px 12px 14px; }
 
-  /* Presence chips */
+  /* Tonight's Lineup */
+  .lineup { display: flex; flex-direction: column; gap: 6px; }
+  .lineup-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    margin: 8px 4px 2px;
+    font-weight: 700;
+  }
+  .lineup-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .lineup-row.absent { opacity: 0.45; }
+  .lineup-row .name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+  .lineup-row .badges { display: inline-flex; gap: 4px; }
+  .lineup-row .badge-mini {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .lineup-row .badge-mini.medic { color: #b8f0c4; border-color: rgba(46,160,67,0.5); background: rgba(46,160,67,0.1); }
+  .lineup-row .badge-mini.cook  { color: var(--gold); border-color: rgba(245,197,24,0.4); background: rgba(245,197,24,0.08); }
+  .lineup-row .badge-mini.officer { color: #ffb3b3; border-color: rgba(214,40,40,0.45); background: rgba(214,40,40,0.1); }
+  .lineup-row .rig-pill, .lineup-row .presence-pill {
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .lineup-row .rig-pill.rig-engine { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
+  .lineup-row .rig-pill.rig-rescue { background: rgba(47,111,235,0.18); border-color: var(--blue); color: #bcd2ff; }
+  .lineup-row .rig-pill.hidden { visibility: hidden; }
+  .lineup-row .presence-pill.on  { background: rgba(46,160,67,0.18); border-color: var(--green); color: #b8f0c4; }
+  .lineup-row .presence-pill.off { color: var(--muted); }
+
+  /* Presence chips (legacy, no longer used but kept for safety) */
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
     display: inline-flex; align-items: center; gap: 8px;
@@ -111,11 +174,67 @@
   }
 
   /* Assignment cards */
+  .assign-stage { position: relative; }
   .assign-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
     padding: 0 12px 8px;
+  }
+
+  /* Bay door reveal */
+  .bay-door {
+    position: absolute;
+    inset: 0 12px 8px;
+    display: flex;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+  }
+  .bay-door.hidden { display: none; }
+  .bay-door-panel {
+    flex: 1;
+    background:
+      repeating-linear-gradient(0deg, #2a2a2a 0, #1a1a1a 2px, #2a2a2a 4px, #333 14px, #2a2a2a 16px),
+      linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+    border-top: 4px solid #d62828;
+    border-bottom: 4px solid #d62828;
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.3, 1);
+  }
+  .bay-door-panel.left  { border-right: 1px solid #000; }
+  .bay-door-panel.right { border-left:  1px solid #000; }
+  .bay-door.opening .bay-door-panel.left  { transform: translateY(-110%); }
+  .bay-door.opening .bay-door-panel.right { transform: translateY(-110%); }
+  .bay-door.opening .bay-door-cta { opacity: 0; }
+  .bay-door-cta {
+    position: absolute;
+    inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+    color: var(--gold);
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .bay-door-icon { font-size: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+  .bay-door-text {
+    font-size: 16px; font-weight: 900; letter-spacing: 2px;
+    line-height: 1.2;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  }
+  .bay-door-sub { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+  .assign.reveal-pop {
+    animation: revealPop 0.5s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+  }
+  .assign.reveal-pop:nth-child(1) { animation-delay: 0.4s; }
+  .assign.reveal-pop:nth-child(2) { animation-delay: 0.6s; }
+  .assign.reveal-pop:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes revealPop {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
   }
   .assign {
     background: var(--panel-2);
@@ -285,6 +404,128 @@
   .setup-row .rig-btn.rig-engine { background: rgba(214,40,40,0.15); border-color: var(--red); color: #ffb3b3; }
   .setup-row .rig-btn.rig-rescue { background: rgba(47,111,235,0.15); border-color: var(--blue); color: #bcd2ff; }
   .setup-row .rig-btn.rig-none   { color: var(--muted); }
+  .setup-row .flag-btn { opacity: 0.35; }
+  .setup-row .flag-btn.on { opacity: 1; border-color: var(--gold); background: rgba(245,197,24,0.1); }
+
+  .settings-h3 {
+    margin: 20px 4px 8px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 700;
+  }
+  .kelly-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .kelly-row .kd-date { color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .kelly-row .kd-name { font-weight: 600; }
+  .kelly-row button {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .kelly-row button:hover { color: var(--red); border-color: var(--red); }
+  .kelly-add {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+  .kelly-add input, .kelly-add select {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .kelly-add input { flex: 0 0 auto; min-width: 130px; }
+  .kelly-add select { flex: 1; }
+  .kelly-add button {
+    background: var(--green);
+    color: #0a0a0a;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  .lineup-row .badge-mini.kelly { color: #ffd28a; border-color: rgba(255,165,0,0.5); background: rgba(255,165,0,0.1); }
+
+  .emblem-settings {
+    display: flex; gap: 14px; align-items: center;
+    padding: 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .emblem-preview {
+    width: 90px; height: 90px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .emblem-preview svg, .emblem-preview img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+  }
+  .emblem-preview img { object-fit: cover; }
+  .emblem-controls { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .emblem-controls button {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .emblem-controls .btn-ghost-mini {
+    background: transparent;
+    font-weight: 500;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+
+  .behavior-grid { display: flex; flex-direction: column; gap: 6px; }
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .toggle-row input[type=checkbox] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--gold); }
+  .toggle-row input[type=number] {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+  }
   .setup-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 4px 0; }
   .setup-actions button {
     flex: 1; min-width: 130px; min-height: 44px;
@@ -403,7 +644,7 @@
 
 <header class="app">
   <div class="row">
-    <span style="font-size:26px">🚒</span>
+    <div class="emblem-wrap" id="emblemWrap"></div>
     <div>
       <h1>Station 12 · B-Shift</h1>
       <div class="sub" id="dateline">—</div>
@@ -414,14 +655,14 @@
 
 <main>
 
-  <!-- Presence -->
+  <!-- Tonight's Lineup -->
   <section>
     <header class="sec">
-      <h2>Who's on the floor tonight?</h2>
-      <span class="hint">Tap to toggle</span>
+      <h2>Tonight's Lineup</h2>
+      <span class="hint">Tap rig or presence to change</span>
     </header>
     <div class="body">
-      <div class="chips" id="presenceChips"></div>
+      <div class="lineup" id="lineupList"></div>
     </div>
   </section>
 
@@ -429,9 +670,20 @@
   <section>
     <header class="sec">
       <h2>Tonight's Assignments</h2>
-      <span class="hint">Newest takes ties</span>
+      <span class="hint">Newest takes ties · rookie weighted</span>
     </header>
-    <div class="assign-grid" id="assignGrid"></div>
+    <div class="assign-stage" id="assignStage">
+      <div class="assign-grid" id="assignGrid"></div>
+      <div class="bay-door" id="bayDoor">
+        <div class="bay-door-panel left"></div>
+        <div class="bay-door-panel right"></div>
+        <div class="bay-door-cta">
+          <div class="bay-door-icon">🚪</div>
+          <div class="bay-door-text">OPEN BAY DOORS<br/>TO REVEAL DUTY</div>
+          <div class="bay-door-sub">tap anywhere</div>
+        </div>
+      </div>
+    </div>
     <div class="confirm-row">
       <button class="btn btn-primary" id="confirmBtn">Confirm Shift</button>
       <button class="btn btn-sgt" id="sgtBtn" title="Sgt. covers watch — logs to history but does not change counts">Sgt. Covers Watch</button>
@@ -470,11 +722,50 @@
           <button id="importBtn">Import data</button>
           <button id="resetCountsBtn" class="btn-danger">Reset counts</button>
         </div>
+
+        <h3 class="settings-h3">Kelly Days (off-duty)</h3>
+        <div id="kellyList"></div>
+        <div class="kelly-add">
+          <input type="date" id="kellyDate" />
+          <select id="kellyCrew"></select>
+          <button id="kellyAddBtn">+ Add</button>
+        </div>
+
+        <h3 class="settings-h3">Station Emblem</h3>
+        <div class="emblem-settings">
+          <div class="emblem-preview" id="emblemPreview"></div>
+          <div class="emblem-controls">
+            <input type="file" id="emblemFile" accept="image/*" style="display:none" />
+            <button id="emblemUploadBtn">Upload custom emblem</button>
+            <button id="emblemResetBtn" class="btn-ghost-mini">Use default</button>
+            <p style="color:var(--muted); font-size:12px; margin:6px 0 0;">Make one on Grok / Midjourney / wherever, then upload here.</p>
+          </div>
+        </div>
+
+        <h3 class="settings-h3">Behavior</h3>
+        <div class="behavior-grid">
+          <label class="toggle-row">
+            <span>Use bay-door reveal animation</span>
+            <input type="checkbox" id="useRevealToggle" />
+          </label>
+          <label class="toggle-row">
+            <span>Rookie weight (Smart picks this many times more)</span>
+            <input type="number" id="rookieMult" min="1" max="5" step="1" style="width:60px;" />
+          </label>
+        </div>
         <p style="color:var(--muted); font-size:12px; margin-top:14px; padding: 0 4px;">
-          <strong>How fairness works:</strong> Each shift, the rotation picks whoever's present with the lowest count. Ties break by newest-first. Detailed-off members are skipped automatically (their count doesn't move, so they catch up naturally on return).
-          Lt. Martin and Sgt. Glover are marked <em>exempt</em> and stay out of the auto-pick.
+          <strong>How fairness works:</strong> Each shift, the rotation picks whoever's present with the lowest count. Detailed-off members are skipped automatically (count doesn't move → catches up naturally on return). Lt. Martin and Sgt. Glover are <em>exempt</em>.
           <br><br>
-          <strong>Backup Watch:</strong> Picked from the <em>opposite rig</em> of the primary watch holder — if primary is Engine 12, backup comes from Rescue 12 (and vice versa). Each crew member's rig is set with the red/blue button in the row above (tap to cycle Engine → Rescue → none). Backup watch tracks its own count.
+          <strong>Tiebreaker chain</strong> (when two crew are tied at lowest count):
+          <ol style="margin:6px 0 0 20px; padding:0; color:var(--muted);">
+            <li><strong>Detail break:</strong> if one of the tied crew was detailed off last shift, they lose the tie (give them a breather).</li>
+            <li><strong>Medic break (watch/backup only):</strong> medics on Rescue lose ties — they're acting officer, so the non-medic takes it.</li>
+            <li><strong>Newest first:</strong> if still tied, newest member takes it (Smart → Wilson → … → Andrews).</li>
+          </ol>
+          <br>
+          <strong>Backup Watch:</strong> Always from the <em>opposite rig</em> of primary. Uses today's lineup, so if you put Bentley on Engine for the night, the algorithm respects that.
+          <br><br>
+          <strong>Meals:</strong> Designated cook (Holt) auto-picks when present. When Holt's off, fair rotation among others.
         </p>
       </div>
     </details>
@@ -514,8 +805,7 @@ const STORAGE_KEY = "station12-bshift-rotation-v1";
 const ROTATIONS = [
   { id: "watch",       label: "Watch",        icon: "🛏️", desc: "Day room / doors / phone / intercom" },
   { id: "backupWatch", label: "Backup Watch", icon: "🛟", desc: "Opposite-rig cover when primary's truck rolls out", dependsOnWatch: true },
-  { id: "meals",       label: "Meals",        icon: "🍳", desc: "Cook / grocery lead" },
-  { id: "cleaning",    label: "Cleaning",     icon: "🧹", desc: "Bay / kitchen / dorm lead" },
+  { id: "meals",       label: "Meals",        icon: "🍳", desc: "Cook for the shift (Holt by default)" },
 ];
 
 const RIGS = {
@@ -525,15 +815,17 @@ const RIGS = {
 
 function defaultState() {
   // Seniority: 1 = most senior, higher number = newer. Newer takes ties first.
-  // Rig: "engine" or "rescue" — used by Backup Watch (always picked from opposite rig of primary).
+  // Rig: default rig (Engine 12 or Rescue 12). Can be overridden per shift via dailyRigs.
+  // isMedic: medics (paramedics). They take watch like anyone else but lose tiebreakers.
+  // isCook: designated cook — auto-picked for meals when present.
   const crew = [
-    { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine" },
-    { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine" },
-    { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "engine" },
-    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue" },
-    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "rescue" },
-    { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine" },
-    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "rescue" },
+    { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
+    { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine", isMedic: false, isCook: true,  isRookie: false },
+    { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
+    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
+    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
+    { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine", isMedic: false, isCook: false, isRookie: false },
+    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "engine", isMedic: true,  isCook: false, isRookie: false },
   ];
   const rotations = {};
   for (const r of ROTATIONS) {
@@ -544,9 +836,19 @@ function defaultState() {
     startedOn: todayISO(),
     crew,
     rotations,
-    presence: crew.filter(m => !m.exempt).map(m => m.id), // default: all FFs present
-    pendingOverrides: {}, // rotationId -> crewId (for tonight, before confirm)
-    history: [], // { date, assignments: {watch, meals, cleaning}, present: [ids], note }
+    presence: crew.map(m => m.id),
+    dailyRigs: {},
+    pendingOverrides: {},
+    history: [],
+    kellyDays: {
+      "2026-06-09": ["smart"],
+      "2026-06-12": ["wilson"],
+      "2026-06-24": ["glover"],
+    },
+    lastKellyApplied: null,
+    rookieMultiplier: 2,
+    useReveal: true,
+    emblemUrl: null,
   };
 }
 
@@ -557,11 +859,38 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    // Migrate: every crew member needs a rig field (default by exemption guess)
+    // Migrate: rig field
     for (const m of parsed.crew) {
-      if (!("rig" in m)) m.rig = /sgt|rescue/i.test(m.name) ? "rescue" : "engine";
+      if (!("rig" in m)) m.rig = /sgt|martin|engine/i.test(m.name) ? "engine" : "engine";
     }
-    // Migrate: ensure all crew have count entries for all rotations (including new backupWatch)
+    // Migrate: isMedic + isCook (one-time apply of Station 12 defaults if absent)
+    const needsMedicSeed = parsed.crew.every(m => !("isMedic" in m));
+    if (needsMedicSeed) {
+      for (const m of parsed.crew) {
+        m.isMedic = false;
+        m.isCook = false;
+      }
+      const bentley = parsed.crew.find(m => m.id === "bentley");
+      const wilson  = parsed.crew.find(m => m.id === "wilson");
+      const glover  = parsed.crew.find(m => m.id === "glover");
+      const holt    = parsed.crew.find(m => m.id === "holt");
+      if (bentley) { bentley.isMedic = true; bentley.rig = "rescue"; }
+      if (wilson)  { wilson.isMedic  = true; wilson.rig  = "rescue"; }
+      if (glover)  { glover.isMedic  = true; glover.rig  = "engine"; }
+      if (holt)    { holt.isCook = true; }
+    }
+    for (const m of parsed.crew) {
+      if (!("isMedic" in m)) m.isMedic = false;
+      if (!("isCook" in m))  m.isCook  = false;
+      if (!("isRookie" in m)) m.isRookie = m.id === "smart";
+    }
+    if (!parsed.kellyDays)        parsed.kellyDays = {};
+    if (!("lastKellyApplied" in parsed)) parsed.lastKellyApplied = null;
+    if (!("rookieMultiplier" in parsed)) parsed.rookieMultiplier = 2;
+    if (!("useReveal" in parsed))        parsed.useReveal = true;
+    if (!("emblemUrl" in parsed))        parsed.emblemUrl = null;
+    // Remove deprecated rotations (cleaning) and ensure all current rotations exist
+    if (parsed.rotations && parsed.rotations.cleaning) delete parsed.rotations.cleaning;
     for (const r of ROTATIONS) {
       if (!parsed.rotations[r.id]) parsed.rotations[r.id] = { counts: {}, lastDate: {} };
       for (const m of parsed.crew) {
@@ -569,6 +898,11 @@ function loadState() {
       }
     }
     if (!parsed.pendingOverrides) parsed.pendingOverrides = {};
+    if (!parsed.dailyRigs)        parsed.dailyRigs = {};
+    // Include officers in presence by default if missing
+    for (const m of parsed.crew) {
+      if (m.exempt && !parsed.presence.includes(m.id)) parsed.presence.push(m.id);
+    }
     return parsed;
   } catch (e) {
     console.warn("Bad saved state, resetting", e);
@@ -608,20 +942,66 @@ function getMember(id) {
   return state.crew.find(m => m.id === id);
 }
 
+function dailyRig(m) {
+  return state.dailyRigs[m.id] ?? m.rig;
+}
+
+function effectiveCount(m, rotationId, counts) {
+  const raw = counts[m.id] ?? 0;
+  // Rookie weighting applies to primary watch only — rookie should take more.
+  if (rotationId === "watch" && m.isRookie && state.rookieMultiplier > 1) {
+    return Math.floor(raw / state.rookieMultiplier);
+  }
+  return raw;
+}
+
+function applyKellyDaysIfNewDay() {
+  const today = todayISO();
+  if (state.lastKellyApplied === today) return;
+  const offToday = state.kellyDays[today] || [];
+  for (const id of offToday) {
+    state.presence = state.presence.filter(p => p !== id);
+  }
+  state.lastKellyApplied = today;
+  saveState();
+}
+
 function eligibleForRotation() {
   // crew that participates in auto-pick: not exempt, present today
   return state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
 }
 
 function eligibleForBackup(primaryHolder) {
-  // Backup watch comes from the opposite rig of whoever holds primary watch.
-  if (!primaryHolder || !primaryHolder.rig) return [];
-  const oppositeRig = primaryHolder.rig === "engine" ? "rescue" : "engine";
+  // Backup watch comes from the opposite rig of whoever holds primary watch (today's rig).
+  if (!primaryHolder) return [];
+  const pRig = dailyRig(primaryHolder);
+  if (!pRig) return [];
+  const oppositeRig = pRig === "engine" ? "rescue" : "engine";
   return state.crew.filter(m =>
     !m.exempt &&
     state.presence.includes(m.id) &&
-    m.rig === oppositeRig
+    dailyRig(m) === oppositeRig
   );
+}
+
+function applyTiebreakers(tied, rotationId) {
+  if (tied.length <= 1) return tied;
+  // 1. Detail-as-tiebreaker: anyone absent from the most recent prior shift loses ties.
+  const lastShift = state.history[state.history.length - 1];
+  if (lastShift) {
+    const notDetailedLast = tied.filter(m => lastShift.present.includes(m.id));
+    if (notDetailedLast.length && notDetailedLast.length < tied.length) {
+      tied = notDetailedLast;
+    }
+  }
+  // 2. Medic-as-tiebreaker (watch/backup only): medics on Rescue have a "leg up", they lose ties.
+  if (tied.length > 1 && (rotationId === "watch" || rotationId === "backupWatch")) {
+    const nonMedics = tied.filter(m => !m.isMedic);
+    if (nonMedics.length && nonMedics.length < tied.length) {
+      tied = nonMedics;
+    }
+  }
+  return tied;
 }
 
 function pickFor(rotationId, opts = {}) {
@@ -630,17 +1010,26 @@ function pickFor(rotationId, opts = {}) {
     const m = getMember(override);
     if (m && state.presence.includes(m.id)) return m;
   }
+  // Meals: designated cook auto-picks when present.
+  if (rotationId === "meals") {
+    const cook = state.crew.find(m => m.isCook && !m.exempt);
+    if (cook && state.presence.includes(cook.id)) return cook;
+  }
   let eligible;
   if (rotationId === "backupWatch") {
     const primary = opts.primaryHolder || pickFor("watch");
     eligible = eligibleForBackup(primary);
+  } else if (rotationId === "meals") {
+    eligible = eligibleForRotation().filter(m => !m.isCook); // cook absent — pick from others
   } else {
     eligible = eligibleForRotation();
   }
   if (eligible.length === 0) return null;
   const counts = state.rotations[rotationId].counts;
-  const minCount = Math.min(...eligible.map(m => counts[m.id] ?? 0));
-  const tied = eligible.filter(m => (counts[m.id] ?? 0) === minCount);
+  const eff = m => effectiveCount(m, rotationId, counts);
+  const minCount = Math.min(...eligible.map(eff));
+  let tied = eligible.filter(m => eff(m) === minCount);
+  tied = applyTiebreakers(tied, rotationId);
   // Newest first (highest seniority number)
   tied.sort((a, b) => b.seniority - a.seniority);
   return tied[0];
@@ -658,13 +1047,133 @@ function showToast(msg) {
 // Render
 // ────────────────────────────────────────────────────────────────────
 
+const DEFAULT_EMBLEM_SVG = `
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg12" cx="50%" cy="35%" r="80%">
+      <stop offset="0%" stop-color="#3a1212"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#bg12)" stroke="#d62828" stroke-width="6"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#f5c518" stroke-width="1.5"/>
+  <text x="100" y="48" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#d62828">STATION</text>
+  <text x="100" y="130" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="92" font-weight="900" fill="#f5c518">12</text>
+  <text x="100" y="162" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="4" fill="#fff">B SHIFT</text>
+  <text x="100" y="178" text-anchor="middle" font-family="-apple-system, Arial, sans-serif" font-size="8" font-weight="500" letter-spacing="2" fill="#9aa0a6">BFRS</text>
+</svg>`;
+
+let revealedThisSession = false;
+
 function render() {
+  renderEmblem();
   renderDateline();
-  renderPresence();
+  renderLineup();
   renderAssignments();
   renderStandings();
   renderHistory();
   renderCrewEditor();
+  renderKellyDays();
+  renderBehaviorSettings();
+  renderBayDoor();
+}
+
+function renderEmblem() {
+  const wrap = document.getElementById("emblemWrap");
+  const preview = document.getElementById("emblemPreview");
+  const inner = state.emblemUrl
+    ? `<img src="${state.emblemUrl}" alt="Station 12 emblem" />`
+    : DEFAULT_EMBLEM_SVG;
+  wrap.innerHTML = inner;
+  if (preview) preview.innerHTML = inner;
+}
+
+function renderBayDoor() {
+  const door = document.getElementById("bayDoor");
+  if (!state.useReveal) {
+    door.classList.add("hidden");
+    return;
+  }
+  if (revealedThisSession) {
+    door.classList.add("hidden");
+  } else {
+    door.classList.remove("hidden", "opening");
+  }
+}
+
+function openBayDoors() {
+  if (!state.useReveal || revealedThisSession) return;
+  const door = document.getElementById("bayDoor");
+  door.classList.add("opening");
+  // Re-render assignments with pop animation
+  document.querySelectorAll("#assignGrid .assign").forEach(el => {
+    el.classList.add("reveal-pop");
+  });
+  setTimeout(() => {
+    door.classList.add("hidden");
+    revealedThisSession = true;
+  }, 1300);
+}
+
+function renderKellyDays() {
+  const list = document.getElementById("kellyList");
+  if (!list) return;
+  const entries = Object.entries(state.kellyDays || {}).flatMap(([date, ids]) =>
+    ids.map(id => ({ date, id }))
+  );
+  entries.sort((a, b) => a.date.localeCompare(b.date));
+  list.innerHTML = "";
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty-state">No Kelly days set. Add upcoming off-duty dates below.</div>`;
+  }
+  for (const e of entries) {
+    const m = getMember(e.id);
+    const row = document.createElement("div");
+    row.className = "kelly-row";
+    row.innerHTML = `
+      <span class="kd-date">${shortDate(e.date)}</span>
+      <span class="kd-name">${m ? m.name : e.id}</span>
+      <button data-date="${e.date}" data-id="${e.id}">Remove</button>
+    `;
+    row.querySelector("button").addEventListener("click", () => removeKelly(e.date, e.id));
+    list.appendChild(row);
+  }
+  // Populate crew dropdown
+  const sel = document.getElementById("kellyCrew");
+  if (sel) {
+    sel.innerHTML = state.crew
+      .slice()
+      .sort((a, b) => (a.exempt ? 1 : 0) - (b.exempt ? 1 : 0) || a.seniority - b.seniority)
+      .map(m => `<option value="${m.id}">${m.name}</option>`)
+      .join("");
+  }
+}
+
+function renderBehaviorSettings() {
+  const r = document.getElementById("useRevealToggle");
+  if (r) r.checked = !!state.useReveal;
+  const m = document.getElementById("rookieMult");
+  if (m) m.value = state.rookieMultiplier;
+}
+
+function addKelly(date, id) {
+  if (!date || !id) return;
+  if (!state.kellyDays[date]) state.kellyDays[date] = [];
+  if (!state.kellyDays[date].includes(id)) state.kellyDays[date].push(id);
+  // If it's today, apply immediately
+  if (date === todayISO()) {
+    state.presence = state.presence.filter(p => p !== id);
+  }
+  saveState();
+  render();
+}
+
+function removeKelly(date, id) {
+  if (!state.kellyDays[date]) return;
+  state.kellyDays[date] = state.kellyDays[date].filter(x => x !== id);
+  if (!state.kellyDays[date].length) delete state.kellyDays[date];
+  saveState();
+  render();
 }
 
 function renderDateline() {
@@ -672,34 +1181,81 @@ function renderDateline() {
   document.getElementById("sinceLabel").textContent = "since " + (state.startedOn ? prettyDate(state.startedOn) : "—");
 }
 
-function renderPresence() {
-  const container = document.getElementById("presenceChips");
+function renderLineup() {
+  const container = document.getElementById("lineupList");
   container.innerHTML = "";
-  // Only show non-exempt members in presence toggles (FFs only)
+
   const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
-  for (const m of ffs) {
+  const officers = state.crew.filter(m => m.exempt);
+
+  const renderRow = (m) => {
     const present = state.presence.includes(m.id);
-    const chip = document.createElement("button");
-    chip.className = "chip";
-    chip.setAttribute("aria-pressed", String(present));
-    chip.innerHTML = `<span class="dot"></span><span>${m.name}</span><span class="sen">#${m.seniority}</span>`;
-    chip.addEventListener("click", () => {
-      if (present) {
-        state.presence = state.presence.filter(id => id !== m.id);
-      } else {
-        state.presence = [...state.presence, m.id];
-      }
-      // Clear stale overrides for people who left
-      for (const r of ROTATIONS) {
-        const ov = state.pendingOverrides[r.id];
-        if (ov && !state.presence.includes(ov)) delete state.pendingOverrides[r.id];
+    const rig = dailyRig(m);
+    const row = document.createElement("div");
+    row.className = "lineup-row" + (present ? "" : " absent");
+
+    const isKellyToday = (state.kellyDays[todayISO()] || []).includes(m.id);
+    const badges = [];
+    if (m.exempt) badges.push(`<span class="badge-mini officer">${/sgt/i.test(m.name) ? "SGT" : "LT"}</span>`);
+    if (m.isMedic)  badges.push(`<span class="badge-mini medic">⚕ MEDIC</span>`);
+    if (m.isCook)   badges.push(`<span class="badge-mini cook">👨‍🍳 COOK</span>`);
+    if (m.isRookie) badges.push(`<span class="badge-mini cook">🎓 ROOKIE</span>`);
+    if (isKellyToday) badges.push(`<span class="badge-mini kelly">📅 KELLY</span>`);
+
+    row.innerHTML = `
+      <div class="name">
+        <span>${m.name}${m.exempt ? "" : ` <span style="color:var(--muted);font-weight:500;font-size:12px;">#${m.seniority}</span>`}</span>
+        <span class="badges">${badges.join("")}</span>
+      </div>
+      <button class="rig-pill rig-${rig || "none"} ${present ? "" : "hidden"}" data-act="rig" data-id="${m.id}">${rig ? RIGS[rig].short : "—"}</button>
+      <button class="presence-pill ${present ? "on" : "off"}" data-act="presence" data-id="${m.id}">${present ? "ON DUTY" : "OFF"}</button>
+    `;
+    return row;
+  };
+
+  // FFs first
+  for (const m of ffs) container.appendChild(renderRow(m));
+
+  // Officers
+  if (officers.length) {
+    const label = document.createElement("div");
+    label.className = "lineup-section-label";
+    label.textContent = "Officers (exempt from auto-pick)";
+    container.appendChild(label);
+    for (const m of officers) container.appendChild(renderRow(m));
+  }
+
+  // Wire up clicks
+  container.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      const m = getMember(id);
+      if (!m) return;
+      if (act === "presence") {
+        if (state.presence.includes(id)) {
+          state.presence = state.presence.filter(x => x !== id);
+          // Clear stale overrides for this person
+          for (const r of ROTATIONS) {
+            if (state.pendingOverrides[r.id] === id) delete state.pendingOverrides[r.id];
+          }
+        } else {
+          state.presence = [...state.presence, id];
+        }
+      } else if (act === "rig") {
+        const current = dailyRig(m);
+        const next = current === "engine" ? "rescue" : "engine";
+        if (next === m.rig) {
+          delete state.dailyRigs[id]; // back to default, clear override
+        } else {
+          state.dailyRigs[id] = next;
+        }
       }
       saveState();
-      renderPresence();
+      renderLineup();
       renderAssignments();
     });
-    container.appendChild(chip);
-  }
+  });
 }
 
 function renderAssignments() {
@@ -712,7 +1268,7 @@ function renderAssignments() {
     cell.className = "assign";
     const counts = state.rotations[r.id].counts;
     const lastDate = pick ? state.rotations[r.id].lastDate[pick.id] : null;
-    const rigTag = pick && pick.rig ? `<span class="rig-tag">${RIGS[pick.rig].short}</span>` : "";
+    const rigTag = pick && dailyRig(pick) ? `<span class="rig-tag">${RIGS[dailyRig(pick)].short}</span>` : "";
     const emptyText = r.id === "backupWatch"
       ? (watchPick ? "no eligible on opposite rig" : "set primary watch first")
       : "no eligible crew present";
@@ -732,7 +1288,7 @@ function renderAssignments() {
         eligible
           .slice()
           .sort((a, b) => a.seniority - b.seniority)
-          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${m.rig ? " (" + RIGS[m.rig].short + ")" : ""}</option>`)
+          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}${dailyRig(m) ? " (" + RIGS[dailyRig(m)].short + ")" : ""}</option>`)
           .join("");
       sel.addEventListener("change", e => {
         if (e.target.value) state.pendingOverrides[r.id] = e.target.value;
@@ -819,12 +1375,14 @@ function renderCrewEditor() {
   for (const m of sorted) {
     const row = document.createElement("div");
     row.className = "setup-row";
-    const rigBtn = `<button data-act="toggle-rig" data-id="${m.id}" class="rig-btn rig-${m.rig || "none"}" title="Tap to switch rig">${m.rig ? RIGS[m.rig].short : "—"}</button>`;
+    const rigBtn   = `<button data-act="toggle-rig"   data-id="${m.id}" class="rig-btn rig-${m.rig || "none"}" title="Default rig (tap to cycle)">${m.rig ? RIGS[m.rig].short : "—"}</button>`;
+    const medicBtn = `<button data-act="toggle-medic" data-id="${m.id}" class="flag-btn ${m.isMedic ? "on" : ""}" title="Toggle medic">⚕</button>`;
+    const cookBtn  = `<button data-act="toggle-cook"  data-id="${m.id}" class="flag-btn ${m.isCook  ? "on" : ""}" title="Toggle designated cook">👨‍🍳</button>`;
     row.innerHTML = `
       <span class="sen-label">${m.exempt ? "Exempt" : "#" + m.seniority}</span>
       <input type="text" value="${m.name.replace(/"/g, "&quot;")}" data-id="${m.id}" />
       <div class="row-actions">
-        ${rigBtn}
+        ${rigBtn}${medicBtn}${cookBtn}
         ${m.exempt ? "" : `<button data-act="up" data-id="${m.id}" title="More senior">↑</button>`}
         ${m.exempt ? "" : `<button data-act="down" data-id="${m.id}" title="Less senior">↓</button>`}
         <button data-act="toggle-exempt" data-id="${m.id}" title="${m.exempt ? "Add to rotation" : "Mark exempt"}">${m.exempt ? "+" : "★"}</button>
@@ -864,6 +1422,15 @@ function renderCrewEditor() {
       } else if (act === "toggle-rig") {
         const m = getMember(id);
         m.rig = m.rig === "engine" ? "rescue" : m.rig === "rescue" ? null : "engine";
+        delete state.dailyRigs[id]; // editing default clears any daily override
+      } else if (act === "toggle-medic") {
+        getMember(id).isMedic = !getMember(id).isMedic;
+      } else if (act === "toggle-cook") {
+        // Only one designated cook at a time; toggle off others first
+        const m = getMember(id);
+        const turningOn = !m.isCook;
+        if (turningOn) for (const x of state.crew) x.isCook = false;
+        m.isCook = turningOn;
       }
       saveState();
       render();
@@ -902,13 +1469,19 @@ function confirmShift() {
     state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
     state.rotations[r.id].lastDate[p.id] = date;
   }
+  // Snapshot rigs for this shift (for history record)
+  const rigsSnapshot = {};
+  for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
   state.history.push({
     date,
     assignments,
     present: state.presence.slice(),
+    rigs: rigsSnapshot,
     note: ""
   });
   state.pendingOverrides = {};
+  state.dailyRigs = {}; // shift over — rigs snap back to defaults for next time
+  revealedThisSession = false; // re-arm reveal for next shift
   saveState();
   render();
   showToast("Shift confirmed");
@@ -938,13 +1511,18 @@ function sgtCoversWatch() {
       state.rotations[r.id].lastDate[p.id] = date;
     }
   }
+  const rigsSnapshot = {};
+  for (const m of state.crew) rigsSnapshot[m.id] = dailyRig(m);
   state.history.push({
     date,
     assignments,
     present: state.presence.slice(),
+    rigs: rigsSnapshot,
     note: "Sgt. covered watch"
   });
   state.pendingOverrides = {};
+  state.dailyRigs = {};
+  revealedThisSession = false;
   saveState();
   render();
   showToast("Sgt. on watch — counts unchanged");
@@ -977,44 +1555,51 @@ function buildShareText({ fromConfirmed = false } = {}) {
   lines.push(`🚒 Station 12 B-Shift — ${prettyDate(date)}`);
   lines.push("━━━━━━━━━━━━━━━━━━━");
 
-  // Determine what to show: if a shift is just confirmed, pull from history's last entry;
-  // otherwise show the live picks.
+  // Use confirmed history if available for today; else live picks + live rigs
   let assigns = {};
   let note = "";
+  let rigsOfRecord = null;
   if (fromConfirmed && state.history.length && state.history[state.history.length - 1].date === date) {
-    assigns = state.history[state.history.length - 1].assignments;
-    note = state.history[state.history.length - 1].note;
+    const last = state.history[state.history.length - 1];
+    assigns = last.assignments;
+    note = last.note;
+    rigsOfRecord = last.rigs || null;
   } else {
     for (const r of ROTATIONS) {
       const p = pickFor(r.id);
       if (p) assigns[r.id] = p.id;
     }
   }
+  const rigFor = (m) => rigsOfRecord ? rigsOfRecord[m.id] : dailyRig(m);
 
+  // Lineup
+  const onDuty = state.crew.filter(m => state.presence.includes(m.id));
+  const engine = onDuty.filter(m => rigFor(m) === "engine");
+  const rescue = onDuty.filter(m => rigFor(m) === "rescue");
+  const off = state.crew.filter(m => !m.exempt && !state.presence.includes(m.id));
+  const namify = m => `${m.name}${m.isMedic ? " ⚕" : ""}${m.isCook ? " 👨‍🍳" : ""}`;
+  if (engine.length) lines.push(`🚒 Engine 12: ${engine.map(namify).join(", ")}`);
+  if (rescue.length) lines.push(`🚑 Rescue 12: ${rescue.map(namify).join(", ")}`);
+  if (off.length)    lines.push(`Detailed off: ${off.map(m => m.name).join(", ")}`);
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  // Assignments
   for (const r of ROTATIONS) {
     const id = assigns[r.id];
     const m = id ? getMember(id) : null;
-    const rigTxt = m && m.rig ? ` (${RIGS[m.rig].short})` : "";
+    const rigTxt = m && rigFor(m) ? ` (${RIGS[rigFor(m)].short})` : "";
     lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name + rigTxt : "—"}`);
   }
   lines.push("━━━━━━━━━━━━━━━━━━━");
 
-  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
-  const on = ffs.filter(m => state.presence.includes(m.id)).map(m => `${m.name}${m.rig ? " " + RIGS[m.rig].short : ""}`);
-  const out = ffs.filter(m => !state.presence.includes(m.id)).map(m => m.name);
-  lines.push(`On duty: ${on.length ? on.join(", ") : "—"}`);
-  if (out.length) lines.push(`Detailed off: ${out.join(", ")}`);
-
   // Watch + Backup standings — what the crew cares about
-  lines.push("━━━━━━━━━━━━━━━━━━━");
-  const watchLine = ffs
-    .slice()
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const watchLine = ffs.slice()
     .sort((a, b) => (state.rotations.watch.counts[a.id] ?? 0) - (state.rotations.watch.counts[b.id] ?? 0))
     .map(m => `${m.name} ${state.rotations.watch.counts[m.id] ?? 0}`)
     .join(" · ");
   lines.push(`Watch counts: ${watchLine}`);
-  const backupLine = ffs
-    .slice()
+  const backupLine = ffs.slice()
     .sort((a, b) => (state.rotations.backupWatch.counts[a.id] ?? 0) - (state.rotations.backupWatch.counts[b.id] ?? 0))
     .map(m => `${m.name} ${state.rotations.backupWatch.counts[m.id] ?? 0}`)
     .join(" · ");
@@ -1068,7 +1653,7 @@ function addMember() {
   const id = name.toLowerCase().replace(/[^a-z0-9]/g, "") || ("ff" + Date.now());
   if (state.crew.some(m => m.id === id)) { alert("Name already in roster."); return; }
   const maxSen = Math.max(0, ...state.crew.filter(m => !m.exempt).map(m => m.seniority));
-  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false, rig: "engine" });
+  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false, rig: "engine", isMedic: false, isCook: false });
   for (const r of ROTATIONS) state.rotations[r.id].counts[id] = 0;
   state.presence.push(id);
   saveState();
@@ -1165,6 +1750,61 @@ document.getElementById("modalBackdrop").addEventListener("click", e => {
   if (e.target.id === "modalBackdrop") closeModal();
 });
 
+// Bay door reveal
+document.getElementById("bayDoor").addEventListener("click", openBayDoors);
+
+// Kelly days
+document.getElementById("kellyAddBtn").addEventListener("click", () => {
+  const date = document.getElementById("kellyDate").value;
+  const id = document.getElementById("kellyCrew").value;
+  if (!date) { alert("Pick a date"); return; }
+  addKelly(date, id);
+  document.getElementById("kellyDate").value = "";
+});
+
+// Behavior toggles
+document.getElementById("useRevealToggle").addEventListener("change", e => {
+  state.useReveal = e.target.checked;
+  if (!state.useReveal) revealedThisSession = true; // skip overlay entirely
+  saveState();
+  renderBayDoor();
+});
+document.getElementById("rookieMult").addEventListener("change", e => {
+  const v = parseInt(e.target.value, 10);
+  state.rookieMultiplier = isNaN(v) || v < 1 ? 1 : Math.min(5, v);
+  e.target.value = state.rookieMultiplier;
+  saveState();
+  renderAssignments();
+  renderStandings();
+});
+
+// Emblem upload
+document.getElementById("emblemUploadBtn").addEventListener("click", () => {
+  document.getElementById("emblemFile").click();
+});
+document.getElementById("emblemFile").addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    alert("Image too large (max 2MB). Resize and try again.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    state.emblemUrl = ev.target.result;
+    saveState();
+    renderEmblem();
+    showToast("Emblem updated");
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById("emblemResetBtn").addEventListener("click", () => {
+  state.emblemUrl = null;
+  saveState();
+  renderEmblem();
+});
+
+applyKellyDaysIfNewDay();
 render();
 </script>
 
