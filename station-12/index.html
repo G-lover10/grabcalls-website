@@ -470,6 +470,44 @@
     padding: 6px 14px;
     cursor: pointer;
   }
+  .kelly-repeat {
+    margin-top: 6px;
+    padding: 10px 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .kelly-repeat-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text);
+    flex-wrap: wrap;
+    cursor: pointer;
+  }
+  .kelly-repeat-toggle input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+  }
+  .kelly-repeat-toggle input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 50px;
+    text-align: center;
+  }
+  .kelly-repeat-help {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.4;
+  }
+  .kelly-repeat-help strong { color: var(--gold); }
   .lineup-row .badge-mini.kelly { color: #ffd28a; border-color: rgba(255,165,0,0.5); background: rgba(255,165,0,0.1); }
   .lineup-row .badge-mini.fillin { color: #d2b3ff; border-color: rgba(160,99,255,0.5); background: rgba(160,99,255,0.12); }
   .lineup-row .fillin-remove {
@@ -1022,6 +1060,17 @@
           <select id="kellyCrew"></select>
           <button id="kellyAddBtn">+ Add</button>
         </div>
+        <div class="kelly-repeat">
+          <label class="kelly-repeat-toggle">
+            <input type="checkbox" id="kellyRepeatToggle" />
+            <span>Repeats every</span>
+            <input type="number" id="kellyRepeatInterval" value="27" min="1" max="90" />
+            <span>days · generate</span>
+            <input type="number" id="kellyRepeatCount" value="12" min="1" max="60" />
+            <span>dates</span>
+          </label>
+          <p class="kelly-repeat-help">Birmingham FD 24/48 with 9 positions = <strong>27 days</strong> between same-person Kelly days. 12 occurrences ≈ one year.</p>
+        </div>
 
         <h3 class="settings-h3">Station Emblem</h3>
         <div class="emblem-settings">
@@ -1490,6 +1539,29 @@ function addKelly(date, id) {
   }
   saveState();
   render();
+}
+
+// Add a series of repeating Kelly days for one person.
+// Used for fixed-interval rotations like Birmingham FD's 9-position cycle (27-day repeat).
+function addKellyRepeating(startISO, id, intervalDays, count) {
+  if (!startISO || !id || intervalDays < 1 || count < 1) return 0;
+  const start = new Date(startISO + "T12:00:00");
+  let added = 0;
+  for (let i = 0; i < count; i++) {
+    const d = new Date(start.getTime() + i * intervalDays * 24 * 60 * 60 * 1000);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    if (!state.kellyDays[iso]) state.kellyDays[iso] = [];
+    if (!state.kellyDays[iso].includes(id)) {
+      state.kellyDays[iso].push(id);
+      added++;
+    }
+    if (iso === todayISO()) {
+      state.presence = state.presence.filter(p => p !== id);
+    }
+  }
+  saveState();
+  render();
+  return added;
 }
 
 function removeKelly(date, id) {
@@ -2220,7 +2292,16 @@ document.getElementById("kellyAddBtn").addEventListener("click", () => {
   const date = document.getElementById("kellyDate").value;
   const id = document.getElementById("kellyCrew").value;
   if (!date) { alert("Pick a date"); return; }
-  addKelly(date, id);
+  const repeat = document.getElementById("kellyRepeatToggle").checked;
+  if (repeat) {
+    const interval = parseInt(document.getElementById("kellyRepeatInterval").value, 10) || 27;
+    const count = parseInt(document.getElementById("kellyRepeatCount").value, 10) || 12;
+    const added = addKellyRepeating(date, id, interval, count);
+    const name = getMember(id) ? getMember(id).name : id;
+    showToast(`Added ${added} Kelly day${added === 1 ? "" : "s"} for ${name}`);
+  } else {
+    addKelly(date, id);
+  }
   document.getElementById("kellyDate").value = "";
 });
 
