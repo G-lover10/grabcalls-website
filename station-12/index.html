@@ -1191,7 +1191,7 @@ function defaultState() {
   // isMedic: medics (paramedics). They take watch like anyone else but lose tiebreakers.
   // isCook: designated cook — auto-picked for meals when present.
   const crew = [
-    { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
+    { id: "andrews",  name: "Cam Andrews", seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
     { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine", isMedic: false, isCook: true,  isRookie: false },
     { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
     { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
@@ -1260,6 +1260,7 @@ function loadState() {
       if (!("isMedic" in m)) m.isMedic = false;
       if (!("isCook" in m))  m.isCook  = false;
       if (!("isRookie" in m)) m.isRookie = m.id === "smart";
+      if (m.id === "andrews" && m.name === "Andrews") m.name = "Cam Andrews";
     }
     if (!parsed.kellyDays)        parsed.kellyDays = {};
     // One-time migration: drop placeholder Kelly days that were on non-B-shift dates,
