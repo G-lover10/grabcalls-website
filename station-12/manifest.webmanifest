@@ -1,0 +1,25 @@
+{
+  "name": "Station 12 B-Shift Watch Rotation",
+  "short_name": "Station 12",
+  "description": "Birmingham Fire & Rescue Station 12 B-shift watch rotation tracker",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#d62828",
+  "icons": [
+    {
+      "src": "assets/emblem.jpg",
+      "sizes": "500x500",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/emblem.jpg",
+      "sizes": "500x500",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}
