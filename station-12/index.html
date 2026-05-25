@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0a" />
+<title>Station 12 B-Shift · Watch Rotation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E🚒%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #16181c;
+    --panel-2: #1f2227;
+    --line: #2a2e35;
+    --text: #f5f5f5;
+    --muted: #9aa0a6;
+    --red: #d62828;
+    --red-soft: #8b1c1c;
+    --gold: #f5c518;
+    --green: #2ea043;
+    --blue: #2f6feb;
+    --radius: 14px;
+    --shadow: 0 6px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header.app {
+    background: linear-gradient(180deg, var(--red) 0%, var(--red-soft) 100%);
+    color: white;
+    padding: 18px 18px 14px;
+    box-shadow: var(--shadow);
+    position: sticky; top: 0; z-index: 10;
+  }
+  header.app .row { display: flex; align-items: center; gap: 10px; }
+  header.app h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; }
+  header.app .sub { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  header.app .badge {
+    margin-left: auto;
+    background: rgba(0,0,0,0.25);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  main { padding: 16px 14px 80px; max-width: 720px; margin: 0 auto; }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  section header.sec {
+    padding: 12px 16px 8px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 8px;
+  }
+  section header.sec h2 {
+    margin: 0; font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+  }
+  section header.sec .hint { font-size: 12px; color: var(--muted); }
+  section .body { padding: 4px 12px 14px; }
+
+  /* Presence chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--panel-2);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+  .chip[aria-pressed="true"] {
+    background: rgba(46,160,67,0.15);
+    border-color: var(--green);
+    color: #b8f0c4;
+  }
+  .chip[aria-pressed="false"] {
+    opacity: 0.55;
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+  }
+  .chip .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+  }
+  .chip[aria-pressed="false"] .dot { background: #666; }
+  .chip .sen {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* Assignment cards */
+  .assign-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 12px 8px;
+  }
+  @media (min-width: 560px) {
+    .assign-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .assign {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    position: relative;
+  }
+  .assign .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .assign .pick {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 6px 0 2px;
+    color: var(--gold);
+    letter-spacing: 0.3px;
+  }
+  .assign .pick.empty { color: var(--muted); font-size: 18px; font-weight: 600; }
+  .assign .meta { font-size: 12px; color: var(--muted); }
+  .assign select {
+    margin-top: 10px;
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  /* Big confirm button */
+  .confirm-row { padding: 4px 12px 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+  button.btn {
+    flex: 1 1 auto;
+    min-height: 52px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 18px;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+  }
+  button.btn:active { transform: scale(0.98); }
+  button.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--green); color: #0a0a0a; }
+  .btn-share { background: var(--blue); color: white; }
+  .btn-sgt { background: var(--gold); color: #1a1a1a; flex: 0 0 auto; min-width: 140px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+
+  /* Standings table */
+  table.standings {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.standings th, table.standings td {
+    padding: 9px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+  }
+  table.standings th:first-child, table.standings td:first-child { text-align: left; }
+  table.standings th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  table.standings tr:last-child td { border-bottom: none; }
+  table.standings td.name { font-weight: 600; }
+  table.standings td.count { color: var(--gold); font-variant-numeric: tabular-nums; }
+  table.standings tr.lowest td.count { color: var(--green); font-weight: 700; }
+
+  /* History */
+  .history-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px 14px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-item .date {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 64px;
+  }
+  .history-item .assignments { color: var(--text); }
+  .history-item .assignments b { color: var(--gold); }
+  .history-item .undo {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .history-item .undo:hover { color: var(--red); border-color: var(--red); }
+
+  /* Setup */
+  .setup-grid { display: grid; gap: 8px; padding: 0 4px; }
+  .setup-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+    background: var(--panel-2);
+    border-radius: 10px;
+  }
+  .setup-row input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 15px;
+  }
+  .setup-row .sen-label { font-size: 11px; color: var(--muted); min-width: 70px; }
+  .setup-row .row-actions { display: flex; gap: 4px; }
+  .setup-row button {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .setup-row button:hover { border-color: var(--gold); }
+  .setup-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 4px 0; }
+  .setup-actions button {
+    flex: 1; min-width: 130px; min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  /* Collapsible */
+  details > summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    list-style: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    user-select: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after { content: " ▾"; }
+  details[open] > summary::after { content: " ▴"; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: flex-end; justify-content: center;
+    z-index: 50;
+  }
+  .modal-backdrop.show { display: flex; }
+  @media (min-width: 560px) { .modal-backdrop.show { align-items: center; } }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-width: 520px;
+    padding: 20px;
+    max-height: 86vh;
+    overflow-y: auto;
+  }
+  @media (min-width: 560px) { .modal { border-radius: 16px; } }
+  .modal h3 { margin: 0 0 10px; font-size: 18px; }
+  .modal textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px;
+    resize: vertical;
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .modal-actions button {
+    flex: 1; min-height: 44px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  footer.app {
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 18px 16px 30px;
+  }
+  footer.app .reset {
+    background: none;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 11px;
+  }
+  .empty-state {
+    padding: 16px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="row">
+    <span style="font-size:26px">🚒</span>
+    <div>
+      <h1>Station 12 · B-Shift</h1>
+      <div class="sub" id="dateline">—</div>
+    </div>
+    <span class="badge" id="shiftBadge">B</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Presence -->
+  <section>
+    <header class="sec">
+      <h2>Who's on the floor tonight?</h2>
+      <span class="hint">Tap to toggle</span>
+    </header>
+    <div class="body">
+      <div class="chips" id="presenceChips"></div>
+    </div>
+  </section>
+
+  <!-- Assignments -->
+  <section>
+    <header class="sec">
+      <h2>Tonight's Assignments</h2>
+      <span class="hint">Newest takes ties</span>
+    </header>
+    <div class="assign-grid" id="assignGrid"></div>
+    <div class="confirm-row">
+      <button class="btn btn-primary" id="confirmBtn">Confirm Shift</button>
+      <button class="btn btn-sgt" id="sgtBtn" title="Sgt. covers watch — logs to history but does not change counts">Sgt. Covers Watch</button>
+      <button class="btn btn-share" id="shareBtn">Share</button>
+    </div>
+  </section>
+
+  <!-- Standings -->
+  <section>
+    <header class="sec">
+      <h2>Standings</h2>
+      <span class="hint" id="sinceLabel">since —</span>
+    </header>
+    <div class="body" style="padding:0 4px 4px;">
+      <table class="standings" id="standingsTable"></table>
+    </div>
+  </section>
+
+  <!-- History -->
+  <section>
+    <details>
+      <summary>Recent Shifts (history)</summary>
+      <div id="historyList"></div>
+    </details>
+  </section>
+
+  <!-- Setup -->
+  <section>
+    <details>
+      <summary>Crew & Settings</summary>
+      <div class="body">
+        <div class="setup-grid" id="crewEditor"></div>
+        <div class="setup-actions">
+          <button id="addMemberBtn">+ Add member</button>
+          <button id="exportBtn">Export data</button>
+          <button id="importBtn">Import data</button>
+          <button id="resetCountsBtn" class="btn-danger">Reset counts</button>
+        </div>
+        <p style="color:var(--muted); font-size:12px; margin-top:14px; padding: 0 4px;">
+          <strong>How fairness works:</strong> Each shift, the rotation picks whoever's present with the lowest count. Ties break by newest-first. Detailed-off members are skipped automatically (their count doesn't move, so they catch up naturally on return).
+          Lt. Martin and Sgt. Glover are marked <em>exempt</em> and stay out of the auto-pick.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <footer class="app">
+    Station 12 B-Shift Watch Rotation · saves to this device only ·
+    <button class="reset" id="resetAllBtn">factory reset</button>
+  </footer>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Share tonight's roster</h3>
+    <p style="color:var(--muted); font-size:13px; margin: 0 0 10px;" id="modalDesc">Copy and text this to the crew:</p>
+    <textarea id="modalText" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-primary" id="modalCopyBtn" style="background:var(--green); color:#0a0a0a;">Copy</button>
+      <button class="btn-share" id="modalShareBtn" style="background:var(--blue); color:white;">Share…</button>
+      <button id="modalCloseBtn" style="background:var(--panel-2); color:var(--text); border:1px solid var(--line);">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ────────────────────────────────────────────────────────────────────
+// Data model
+// ────────────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = "station12-bshift-rotation-v1";
+
+const ROTATIONS = [
+  { id: "watch",    label: "Watch",    icon: "🛏️", desc: "Day room / doors / phone / intercom" },
+  { id: "meals",    label: "Meals",    icon: "🍳", desc: "Cook / grocery lead" },
+  { id: "cleaning", label: "Cleaning", icon: "🧹", desc: "Bay / kitchen / dorm lead" },
+];
+
+function defaultState() {
+  // Seniority: 1 = most senior, higher number = newer. Newer takes ties first.
+  const crew = [
+    { id: "andrews",  name: "Andrews",  seniority: 1, exempt: false },
+    { id: "holt",     name: "Holt",     seniority: 2, exempt: false },
+    { id: "bentley",  name: "Bentley",  seniority: 3, exempt: false },
+    { id: "wilson",   name: "Wilson",   seniority: 4, exempt: false },
+    { id: "smart",    name: "Smart",    seniority: 5, exempt: false },
+    { id: "martin",   name: "Lt. Martin", seniority: 0, exempt: true },
+    { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true },
+  ];
+  const rotations = {};
+  for (const r of ROTATIONS) {
+    rotations[r.id] = { counts: {}, lastDate: {} };
+    for (const m of crew) rotations[r.id].counts[m.id] = 0;
+  }
+  return {
+    startedOn: todayISO(),
+    crew,
+    rotations,
+    presence: crew.filter(m => !m.exempt).map(m => m.id), // default: all FFs present
+    pendingOverrides: {}, // rotationId -> crewId (for tonight, before confirm)
+    history: [], // { date, assignments: {watch, meals, cleaning}, present: [ids], note }
+  };
+}
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    // Migrate: ensure all crew have count entries for all rotations
+    for (const r of ROTATIONS) {
+      if (!parsed.rotations[r.id]) parsed.rotations[r.id] = { counts: {}, lastDate: {} };
+      for (const m of parsed.crew) {
+        if (!(m.id in parsed.rotations[r.id].counts)) parsed.rotations[r.id].counts[m.id] = 0;
+      }
+    }
+    if (!parsed.pendingOverrides) parsed.pendingOverrides = {};
+    return parsed;
+  } catch (e) {
+    console.warn("Bad saved state, resetting", e);
+    return defaultState();
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────────────────────────────
+
+function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function prettyDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+}
+
+function shortDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
+}
+
+function getMember(id) {
+  return state.crew.find(m => m.id === id);
+}
+
+function eligibleForRotation() {
+  // crew that participates in auto-pick: not exempt, present today
+  return state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
+}
+
+function pickFor(rotationId) {
+  const override = state.pendingOverrides[rotationId];
+  if (override) {
+    const m = getMember(override);
+    if (m && state.presence.includes(m.id)) return m;
+  }
+  const eligible = eligibleForRotation();
+  if (eligible.length === 0) return null;
+  const counts = state.rotations[rotationId].counts;
+  const minCount = Math.min(...eligible.map(m => counts[m.id] ?? 0));
+  const tied = eligible.filter(m => (counts[m.id] ?? 0) === minCount);
+  // Newest first (highest seniority number)
+  tied.sort((a, b) => b.seniority - a.seniority);
+  return tied[0];
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Render
+// ────────────────────────────────────────────────────────────────────
+
+function render() {
+  renderDateline();
+  renderPresence();
+  renderAssignments();
+  renderStandings();
+  renderHistory();
+  renderCrewEditor();
+}
+
+function renderDateline() {
+  document.getElementById("dateline").textContent = prettyDate(todayISO());
+  document.getElementById("sinceLabel").textContent = "since " + (state.startedOn ? prettyDate(state.startedOn) : "—");
+}
+
+function renderPresence() {
+  const container = document.getElementById("presenceChips");
+  container.innerHTML = "";
+  // Only show non-exempt members in presence toggles (FFs only)
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  for (const m of ffs) {
+    const present = state.presence.includes(m.id);
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.setAttribute("aria-pressed", String(present));
+    chip.innerHTML = `<span class="dot"></span><span>${m.name}</span><span class="sen">#${m.seniority}</span>`;
+    chip.addEventListener("click", () => {
+      if (present) {
+        state.presence = state.presence.filter(id => id !== m.id);
+      } else {
+        state.presence = [...state.presence, m.id];
+      }
+      // Clear stale overrides for people who left
+      for (const r of ROTATIONS) {
+        const ov = state.pendingOverrides[r.id];
+        if (ov && !state.presence.includes(ov)) delete state.pendingOverrides[r.id];
+      }
+      saveState();
+      renderPresence();
+      renderAssignments();
+    });
+    container.appendChild(chip);
+  }
+}
+
+function renderAssignments() {
+  const grid = document.getElementById("assignGrid");
+  grid.innerHTML = "";
+  for (const r of ROTATIONS) {
+    const pick = pickFor(r.id);
+    const cell = document.createElement("div");
+    cell.className = "assign";
+    const counts = state.rotations[r.id].counts;
+    const lastDate = pick ? state.rotations[r.id].lastDate[pick.id] : null;
+    cell.innerHTML = `
+      <div class="label"><span>${r.icon}</span><span>${r.label}</span></div>
+      <div class="pick ${pick ? "" : "empty"}">${pick ? pick.name : "—"}</div>
+      <div class="meta">
+        ${pick ? `count: <strong>${counts[pick.id] ?? 0}</strong>` : "no eligible crew present"}
+        ${pick && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
+      </div>
+    `;
+    // Override dropdown — only show present members
+    const eligible = eligibleForRotation();
+    if (eligible.length > 1) {
+      const sel = document.createElement("select");
+      sel.innerHTML = `<option value="">— auto (recommended) —</option>` +
+        eligible
+          .slice()
+          .sort((a, b) => a.seniority - b.seniority)
+          .map(m => `<option value="${m.id}" ${state.pendingOverrides[r.id] === m.id ? "selected" : ""}>${m.name}</option>`)
+          .join("");
+      sel.addEventListener("change", e => {
+        if (e.target.value) state.pendingOverrides[r.id] = e.target.value;
+        else delete state.pendingOverrides[r.id];
+        saveState();
+        renderAssignments();
+      });
+      cell.appendChild(sel);
+    }
+    grid.appendChild(cell);
+  }
+  // Disable buttons if no one eligible
+  const noOne = eligibleForRotation().length === 0;
+  document.getElementById("confirmBtn").disabled = noOne;
+  document.getElementById("shareBtn").disabled = noOne;
+}
+
+function renderStandings() {
+  const table = document.getElementById("standingsTable");
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  let html = `<thead><tr><th>Name</th>`;
+  for (const r of ROTATIONS) html += `<th title="${r.label}">${r.icon}</th>`;
+  html += `<th>Total</th></tr></thead><tbody>`;
+  // figure out the lowest watch count for highlighting
+  const watchCounts = ffs.map(m => state.rotations.watch.counts[m.id] ?? 0);
+  const minWatch = watchCounts.length ? Math.min(...watchCounts) : 0;
+  for (const m of ffs) {
+    let total = 0;
+    let row = `<tr class="${(state.rotations.watch.counts[m.id] ?? 0) === minWatch ? "lowest" : ""}"><td class="name">${m.name}</td>`;
+    for (const r of ROTATIONS) {
+      const c = state.rotations[r.id].counts[m.id] ?? 0;
+      total += c;
+      row += `<td class="count">${c}</td>`;
+    }
+    row += `<td class="count" style="font-weight:700">${total}</td></tr>`;
+    html += row;
+  }
+  html += `</tbody>`;
+  table.innerHTML = html;
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  if (!state.history.length) {
+    list.innerHTML = `<div class="empty-state">No shifts logged yet. Confirm a shift to start tracking.</div>`;
+    return;
+  }
+  const recent = state.history.slice().reverse().slice(0, 14);
+  list.innerHTML = "";
+  for (let i = 0; i < recent.length; i++) {
+    const h = recent[i];
+    const a = h.assignments || {};
+    const parts = ROTATIONS.map(r => {
+      const id = a[r.id];
+      const m = id ? getMember(id) : null;
+      return m ? `${r.icon} <b>${m.name}</b>` : "";
+    }).filter(Boolean);
+    const row = document.createElement("div");
+    row.className = "history-item";
+    row.innerHTML = `
+      <div class="date">${shortDate(h.date)}</div>
+      <div class="assignments">${parts.join(" · ")} ${h.note ? `<span style='color:var(--muted)'>· ${h.note}</span>` : ""}</div>
+      <div></div>
+    `;
+    if (i === 0) {
+      const undo = document.createElement("button");
+      undo.className = "undo";
+      undo.textContent = "Undo";
+      undo.title = "Reverse the most recent shift";
+      undo.addEventListener("click", undoLastShift);
+      row.lastElementChild.appendChild(undo);
+    }
+    list.appendChild(row);
+  }
+}
+
+function renderCrewEditor() {
+  const ed = document.getElementById("crewEditor");
+  ed.innerHTML = "";
+  const sorted = state.crew.slice().sort((a, b) => {
+    if (a.exempt !== b.exempt) return a.exempt ? 1 : -1;
+    return a.seniority - b.seniority;
+  });
+  for (const m of sorted) {
+    const row = document.createElement("div");
+    row.className = "setup-row";
+    row.innerHTML = `
+      <span class="sen-label">${m.exempt ? "Exempt" : "#" + m.seniority}</span>
+      <input type="text" value="${m.name.replace(/"/g, "&quot;")}" data-id="${m.id}" />
+      <div class="row-actions">
+        ${m.exempt ? "" : `<button data-act="up" data-id="${m.id}" title="More senior">↑</button>`}
+        ${m.exempt ? "" : `<button data-act="down" data-id="${m.id}" title="Less senior">↓</button>`}
+        <button data-act="toggle-exempt" data-id="${m.id}" title="${m.exempt ? "Add to rotation" : "Mark exempt"}">${m.exempt ? "+" : "★"}</button>
+        <button data-act="remove" data-id="${m.id}" title="Remove">✕</button>
+      </div>
+    `;
+    ed.appendChild(row);
+  }
+  ed.querySelectorAll("input[type=text]").forEach(inp => {
+    inp.addEventListener("change", e => {
+      const m = getMember(e.target.dataset.id);
+      if (m) { m.name = e.target.value.trim() || m.name; saveState(); render(); }
+    });
+  });
+  ed.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      if (act === "remove") {
+        if (!confirm(`Remove ${getMember(id).name}? Their history stays in the log.`)) return;
+        state.crew = state.crew.filter(m => m.id !== id);
+        state.presence = state.presence.filter(p => p !== id);
+        resequenceSeniority();
+      } else if (act === "toggle-exempt") {
+        const m = getMember(id);
+        m.exempt = !m.exempt;
+        if (m.exempt) {
+          state.presence = state.presence.filter(p => p !== id);
+        } else {
+          // assign a seniority at the bottom (newest)
+          const maxSen = Math.max(0, ...state.crew.filter(x => !x.exempt && x.id !== id).map(x => x.seniority));
+          m.seniority = maxSen + 1;
+          if (!state.presence.includes(id)) state.presence.push(id);
+        }
+      } else if (act === "up" || act === "down") {
+        moveSeniority(id, act === "up" ? -1 : 1);
+      }
+      saveState();
+      render();
+    });
+  });
+}
+
+function resequenceSeniority() {
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  ffs.forEach((m, i) => m.seniority = i + 1);
+}
+
+function moveSeniority(id, dir) {
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const idx = ffs.findIndex(m => m.id === id);
+  const swap = idx + dir;
+  if (idx < 0 || swap < 0 || swap >= ffs.length) return;
+  const a = ffs[idx], b = ffs[swap];
+  const t = a.seniority; a.seniority = b.seniority; b.seniority = t;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Shift actions
+// ────────────────────────────────────────────────────────────────────
+
+function confirmShift() {
+  const date = todayISO();
+  if (state.history.some(h => h.date === date)) {
+    if (!confirm("A shift is already logged for today. Add a second entry?")) return;
+  }
+  const assignments = {};
+  for (const r of ROTATIONS) {
+    const p = pickFor(r.id);
+    if (!p) continue;
+    assignments[r.id] = p.id;
+    state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+    state.rotations[r.id].lastDate[p.id] = date;
+  }
+  state.history.push({
+    date,
+    assignments,
+    present: state.presence.slice(),
+    note: ""
+  });
+  state.pendingOverrides = {};
+  saveState();
+  render();
+  showToast("Shift confirmed");
+  openShareModal();
+}
+
+function sgtCoversWatch() {
+  const date = todayISO();
+  if (state.history.some(h => h.date === date)) {
+    if (!confirm("A shift is already logged for today. Add a second entry?")) return;
+  }
+  const sgt = state.crew.find(m => m.exempt && /sgt/i.test(m.name));
+  const sgtId = sgt ? sgt.id : null;
+  const assignments = {};
+  for (const r of ROTATIONS) {
+    if (r.id === "watch") {
+      assignments[r.id] = sgtId; // logged but not incremented
+      continue;
+    }
+    const p = pickFor(r.id);
+    if (p) {
+      assignments[r.id] = p.id;
+      state.rotations[r.id].counts[p.id] = (state.rotations[r.id].counts[p.id] ?? 0) + 1;
+      state.rotations[r.id].lastDate[p.id] = date;
+    }
+  }
+  state.history.push({
+    date,
+    assignments,
+    present: state.presence.slice(),
+    note: "Sgt. covered watch"
+  });
+  state.pendingOverrides = {};
+  saveState();
+  render();
+  showToast("Sgt. on watch — counts unchanged");
+  openShareModal();
+}
+
+function undoLastShift() {
+  if (!state.history.length) return;
+  if (!confirm("Undo the most recent shift?")) return;
+  const last = state.history.pop();
+  for (const r of ROTATIONS) {
+    const id = last.assignments[r.id];
+    if (!id) continue;
+    const member = getMember(id);
+    if (!member || member.exempt) continue; // Sgt covers doesn't increment, skip
+    state.rotations[r.id].counts[id] = Math.max(0, (state.rotations[r.id].counts[id] ?? 1) - 1);
+  }
+  saveState();
+  render();
+  showToast("Last shift undone");
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Share
+// ────────────────────────────────────────────────────────────────────
+
+function buildShareText({ fromConfirmed = false } = {}) {
+  const date = todayISO();
+  const lines = [];
+  lines.push(`🚒 Station 12 B-Shift — ${prettyDate(date)}`);
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  // Determine what to show: if a shift is just confirmed, pull from history's last entry;
+  // otherwise show the live picks.
+  let assigns = {};
+  let note = "";
+  if (fromConfirmed && state.history.length && state.history[state.history.length - 1].date === date) {
+    assigns = state.history[state.history.length - 1].assignments;
+    note = state.history[state.history.length - 1].note;
+  } else {
+    for (const r of ROTATIONS) {
+      const p = pickFor(r.id);
+      if (p) assigns[r.id] = p.id;
+    }
+  }
+
+  for (const r of ROTATIONS) {
+    const id = assigns[r.id];
+    const m = id ? getMember(id) : null;
+    lines.push(`${r.icon} ${r.label.toUpperCase()}: ${m ? m.name : "—"}`);
+  }
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+
+  const ffs = state.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority);
+  const on = ffs.filter(m => state.presence.includes(m.id)).map(m => m.name);
+  const out = ffs.filter(m => !state.presence.includes(m.id)).map(m => m.name);
+  lines.push(`On duty: ${on.length ? on.join(", ") : "—"}`);
+  if (out.length) lines.push(`Detailed off: ${out.join(", ")}`);
+
+  // Watch standings only — that's what the crew cares about
+  lines.push("━━━━━━━━━━━━━━━━━━━");
+  const watchLine = ffs
+    .slice()
+    .sort((a, b) => (state.rotations.watch.counts[a.id] ?? 0) - (state.rotations.watch.counts[b.id] ?? 0))
+    .map(m => `${m.name} ${state.rotations.watch.counts[m.id] ?? 0}`)
+    .join(" · ");
+  lines.push(`Watch counts: ${watchLine}`);
+  lines.push(`(since ${prettyDate(state.startedOn)})`);
+
+  if (note) lines.push(`Note: ${note}`);
+  return lines.join("\n");
+}
+
+function openShareModal() {
+  const text = buildShareText({ fromConfirmed: true });
+  document.getElementById("modalTitle").textContent = "Send this to the crew";
+  document.getElementById("modalDesc").textContent = "Pre-formatted for text/GroupMe. Tap Share to send via your phone, or Copy.";
+  const ta = document.getElementById("modalText");
+  ta.value = text;
+  document.getElementById("modalBackdrop").classList.add("show");
+}
+
+async function shareText() {
+  const text = document.getElementById("modalText").value;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Station 12 B-Shift", text });
+      return;
+    } catch (e) { /* user cancelled, fall through */ }
+  }
+  copyText();
+}
+
+async function copyText() {
+  const text = document.getElementById("modalText").value;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("Copied to clipboard");
+  } catch (e) {
+    const ta = document.getElementById("modalText");
+    ta.select();
+    document.execCommand("copy");
+    showToast("Copied");
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Crew add / export / import / reset
+// ────────────────────────────────────────────────────────────────────
+
+function addMember() {
+  const name = prompt("New crew member name:");
+  if (!name) return;
+  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "") || ("ff" + Date.now());
+  if (state.crew.some(m => m.id === id)) { alert("Name already in roster."); return; }
+  const maxSen = Math.max(0, ...state.crew.filter(m => !m.exempt).map(m => m.seniority));
+  state.crew.push({ id, name: name.trim(), seniority: maxSen + 1, exempt: false });
+  for (const r of ROTATIONS) state.rotations[r.id].counts[id] = 0;
+  state.presence.push(id);
+  saveState();
+  render();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `station12-bshift-${todayISO()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Data exported");
+}
+
+function importData() {
+  const ta = document.createElement("textarea");
+  const wrapper = document.createElement("div");
+  document.getElementById("modalTitle").textContent = "Paste exported data";
+  document.getElementById("modalDesc").textContent = "Paste a previously-exported JSON file to restore.";
+  document.getElementById("modalText").value = "";
+  document.getElementById("modalText").readOnly = false;
+  document.getElementById("modalBackdrop").classList.add("show");
+  // Repurpose Copy button as Import
+  const copyBtn = document.getElementById("modalCopyBtn");
+  const origLabel = copyBtn.textContent;
+  copyBtn.textContent = "Import";
+  const handler = () => {
+    try {
+      const parsed = JSON.parse(document.getElementById("modalText").value);
+      if (!parsed.crew || !parsed.rotations) throw new Error("Invalid file");
+      state = parsed;
+      saveState();
+      render();
+      closeModal();
+      showToast("Data imported");
+    } catch (e) {
+      alert("Invalid JSON: " + e.message);
+    }
+    copyBtn.textContent = origLabel;
+    copyBtn.removeEventListener("click", handler);
+    document.getElementById("modalText").readOnly = true;
+    copyBtn.addEventListener("click", copyText);
+  };
+  copyBtn.removeEventListener("click", copyText);
+  copyBtn.addEventListener("click", handler, { once: true });
+}
+
+function resetCounts() {
+  if (!confirm("Reset all rotation counts to zero? History will be kept.")) return;
+  for (const r of ROTATIONS) {
+    for (const id of Object.keys(state.rotations[r.id].counts)) {
+      state.rotations[r.id].counts[id] = 0;
+      state.rotations[r.id].lastDate[id] = null;
+    }
+  }
+  state.startedOn = todayISO();
+  saveState();
+  render();
+  showToast("Counts reset");
+}
+
+function factoryReset() {
+  if (!confirm("Wipe ALL data (crew, counts, history)? This cannot be undone.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = defaultState();
+  saveState();
+  render();
+  showToast("Reset complete");
+}
+
+function closeModal() {
+  document.getElementById("modalBackdrop").classList.remove("show");
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Wire up
+// ────────────────────────────────────────────────────────────────────
+
+document.getElementById("confirmBtn").addEventListener("click", confirmShift);
+document.getElementById("sgtBtn").addEventListener("click", sgtCoversWatch);
+document.getElementById("shareBtn").addEventListener("click", openShareModal);
+document.getElementById("addMemberBtn").addEventListener("click", addMember);
+document.getElementById("exportBtn").addEventListener("click", exportData);
+document.getElementById("importBtn").addEventListener("click", importData);
+document.getElementById("resetCountsBtn").addEventListener("click", resetCounts);
+document.getElementById("resetAllBtn").addEventListener("click", factoryReset);
+document.getElementById("modalCopyBtn").addEventListener("click", copyText);
+document.getElementById("modalShareBtn").addEventListener("click", shareText);
+document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+document.getElementById("modalBackdrop").addEventListener("click", e => {
+  if (e.target.id === "modalBackdrop") closeModal();
+});
+
+render();
+</script>
+
+</body>
+</html>
