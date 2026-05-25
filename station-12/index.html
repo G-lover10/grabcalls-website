@@ -288,6 +288,21 @@
     padding: 8px 10px;
     font-size: 14px;
   }
+  .meal-ideas-link {
+    margin-top: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+  .meal-ideas-link:hover { border-color: var(--gold); background: rgba(245,197,24,0.08); }
+  .meal-ideas-link:active { transform: scale(0.99); }
 
   /* Big confirm button */
   .confirm-row { padding: 4px 12px 14px; display: flex; gap: 10px; flex-wrap: wrap; }
@@ -965,8 +980,8 @@
   </section>
 
   <!-- Meal Ideas -->
-  <section>
-    <details>
+  <section id="mealIdeasSection">
+    <details id="mealIdeasDetails">
       <summary>🍳 Meal Ideas (lunch & dinner)</summary>
       <div class="body">
         <p class="meal-intro">Tried-and-true firehouse meals — hearty, one-pot, pause-friendly when the tones drop. Tap a card to open the recipe.</p>
@@ -1404,6 +1419,13 @@ function pickFor(rotationId, opts = {}) {
   return tied[0];
 }
 
+function openMealIdeas() {
+  const details = document.getElementById("mealIdeasDetails");
+  if (!details) return;
+  details.open = true;
+  details.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -1705,6 +1727,15 @@ function renderAssignments() {
         ${pick && !pick.isFillIn && lastDate ? ` · last: ${shortDate(lastDate)}` : ""}
       </div>
     `;
+    // Meals slot gets a tap-to-recipes shortcut
+    if (r.id === "meals") {
+      const ideasBtn = document.createElement("button");
+      ideasBtn.className = "meal-ideas-link";
+      ideasBtn.type = "button";
+      ideasBtn.textContent = "🍳 See recipe ideas →";
+      ideasBtn.addEventListener("click", openMealIdeas);
+      cell.appendChild(ideasBtn);
+    }
     // Override dropdown — show eligible pool for this rotation
     const eligible = r.id === "backupWatch" ? eligibleForBackup(watchPick) : eligibleForRotation();
     if (eligible.length > 1) {
