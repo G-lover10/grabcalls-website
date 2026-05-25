@@ -703,7 +703,7 @@
     <div class="emblem-wrap" id="emblemWrap"></div>
     <div>
       <h1>Station 12 · B-Shift</h1>
-      <div class="sub" id="dateline">—</div>
+      <div class="sub"><span style="opacity:0.75;">Battalion 5 · Special Ops · </span><span id="dateline">—</span></div>
     </div>
     <span class="badge" id="shiftBadge">B</span>
   </div>
@@ -1140,12 +1140,14 @@ function render() {
   renderBayDoor();
 }
 
+const DEFAULT_EMBLEM_IMG = `<img src="assets/emblem.jpg" alt="Battalion 5 Station 12 Special Ops" />`;
+
 function renderEmblem() {
   const wrap = document.getElementById("emblemWrap");
   const preview = document.getElementById("emblemPreview");
   const inner = state.emblemUrl
     ? `<img src="${state.emblemUrl}" alt="Station 12 emblem" />`
-    : DEFAULT_EMBLEM_SVG;
+    : DEFAULT_EMBLEM_IMG;
   wrap.innerHTML = inner;
   if (preview) preview.innerHTML = inner;
 }
@@ -1616,7 +1618,7 @@ function undoLastShift() {
 function buildShareText({ fromConfirmed = false } = {}) {
   const date = todayISO();
   const lines = [];
-  lines.push(`🚒 Station 12 B-Shift — ${prettyDate(date)}`);
+  lines.push(`🚒 Station 12 · B-Shift · Battalion 5 — ${prettyDate(date)}`);
   lines.push("━━━━━━━━━━━━━━━━━━━");
 
   // Use confirmed history if available for today; else live picks + live rigs
