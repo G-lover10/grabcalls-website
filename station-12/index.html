@@ -1213,9 +1213,12 @@ function defaultState() {
     pendingOverrides: {},
     history: [],
     kellyDays: {
-      "2026-06-09": ["smart"],
-      "2026-06-12": ["wilson"],
-      "2026-06-24": ["glover"],
+      // Birmingham Fire & Rescue special-events schedule, Station 12 B-shift.
+      // B-shift cycle: every 3rd day starting (confirmed) Sun 2026-05-24.
+      // Extracted from the BFRS May/June 2026 calendar photo.
+      "2026-06-05": ["wilson"], // Fri
+      "2026-06-08": ["holt"],   // Mon
+      "2026-06-29": ["smart"],  // Mon
     },
     fillIns: [],
     lastKellyApplied: null,
@@ -1259,6 +1262,26 @@ function loadState() {
       if (!("isRookie" in m)) m.isRookie = m.id === "smart";
     }
     if (!parsed.kellyDays)        parsed.kellyDays = {};
+    // One-time migration: drop placeholder Kelly days that were on non-B-shift dates,
+    // then merge in the real BFRS schedule from defaults. Anything the user added via
+    // the Settings UI is preserved.
+    if (!parsed.kellyDaysSeed) {
+      const DEPRECATED = { "2026-06-09": "smart", "2026-06-12": "wilson", "2026-06-24": "glover" };
+      for (const [date, id] of Object.entries(DEPRECATED)) {
+        if (parsed.kellyDays[date]) {
+          parsed.kellyDays[date] = parsed.kellyDays[date].filter(x => x !== id);
+          if (!parsed.kellyDays[date].length) delete parsed.kellyDays[date];
+        }
+      }
+      const seed = defaultState().kellyDays;
+      for (const [date, ids] of Object.entries(seed)) {
+        if (!parsed.kellyDays[date]) parsed.kellyDays[date] = [];
+        for (const id of ids) {
+          if (!parsed.kellyDays[date].includes(id)) parsed.kellyDays[date].push(id);
+        }
+      }
+      parsed.kellyDaysSeed = "bfrs-may-jun-2026";
+    }
     if (!Array.isArray(parsed.fillIns)) parsed.fillIns = [];
     if (!("lastKellyApplied" in parsed)) parsed.lastKellyApplied = null;
     if (!("rookieMultiplier" in parsed)) parsed.rookieMultiplier = 2;
