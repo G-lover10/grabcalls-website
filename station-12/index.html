@@ -7,7 +7,7 @@
 <title>Station 12 B-Shift · Watch Rotation</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E🚒%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="apple-touch-icon" href="assets/emblem.jpg" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Station 12" />
@@ -642,6 +642,19 @@
   }
   .meal-item:hover { border-color: var(--gold); }
   .meal-item:active { transform: scale(0.99); }
+  details.meal-item { cursor: pointer; }
+  details.meal-item > summary { display: block; list-style: none; }
+  details.meal-item > summary::-webkit-details-marker { display: none; }
+  details.meal-item > summary::after {
+    content: "▼ Tap to see recipe";
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  details.meal-item[open] > summary::after { content: "▲ Collapse"; }
   .meal-item .meal-name {
     font-weight: 700;
     font-size: 15px;
@@ -653,6 +666,92 @@
     color: var(--muted);
     line-height: 1.4;
   }
+  .recipe-body {
+    border-top: 1px solid var(--line);
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  .recipe-body h4 {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 10px 0 4px;
+  }
+  .recipe-body h4:first-child { margin-top: 0; }
+  .recipe-body ul, .recipe-body ol {
+    margin: 0 0 6px;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .recipe-body li { margin-bottom: 2px; }
+  .recipe-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 6px 0 0;
+    font-style: italic;
+  }
+  /* Detail-out badge */
+  .lineup-row .badge-mini.detail-out {
+    color: #ffb347;
+    border-color: rgba(255,179,71,0.5);
+    background: rgba(255,179,71,0.12);
+  }
+  /* Detail-out form (mirrors fill-in form styles) */
+  .detail-out-controls { margin-top: 6px; }
+  .detail-out-add-btn {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px dashed rgba(255,179,71,0.4);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .detail-out-add-btn:hover { color: #ffb347; border-color: #ffb347; }
+  .detail-out-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    margin-top: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .detail-out-form[hidden] { display: none; }
+  .detail-out-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .detail-out-form select,
+  .detail-out-form input[type="text"] {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 8px 10px;
+    min-width: 0;
+  }
+  .detail-out-save {
+    padding: 8px 16px; border-radius: 8px; border: none;
+    background: #ffb347; color: #0a0a0a;
+    font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
+  }
+  .detail-out-cancel {
+    padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--text);
+    font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer;
+  }
+  .detail-out-help { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4; }
 
   .emblem-settings {
     display: flex; gap: 14px; align-items: center;
@@ -899,9 +998,252 @@
     backdrop-filter: blur(4px);
   }
   .intro-skip:hover { background: rgba(0,0,0,0.8); }
+
+  /* ─────────── Install-to-home-screen overlay ─────────── */
+  .install-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 18px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    animation: install-fade 0.3s ease-out;
+  }
+  .install-overlay.show { display: flex; }
+  @keyframes install-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .install-card {
+    max-width: 420px;
+    width: 100%;
+    background: linear-gradient(180deg, #1a1c20 0%, #0f1114 100%);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    margin-top: max(env(safe-area-inset-top), 12px);
+    margin-bottom: 24px;
+  }
+  .install-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .install-helmet {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: url("assets/helmet-icon-192.png") center/cover no-repeat;
+    border: 2px solid var(--red);
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(214,40,40,0.4);
+  }
+  .install-title {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: white;
+    margin: 0 0 2px;
+  }
+  .install-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .install-steps {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px 10px;
+    margin: 6px 0 14px;
+  }
+  .install-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .install-step:last-child { border-bottom: none; }
+  .install-step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .install-step-text {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text);
+    padding-top: 2px;
+    line-height: 1.35;
+  }
+  .install-step-text b {
+    color: white;
+    background: rgba(214,40,40,0.18);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .install-icon-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    vertical-align: -6px;
+    margin: 0 2px;
+    background: rgba(47,111,235,0.18);
+    border-radius: 5px;
+    color: #5b9dff;
+  }
+  .install-arrow {
+    text-align: center;
+    font-size: 36px;
+    color: var(--red);
+    margin: 8px 0 0;
+    animation: install-bounce 1.2s ease-in-out infinite;
+  }
+  @keyframes install-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+  .install-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .install-btn {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .install-btn-primary {
+    background: var(--red);
+    color: white;
+  }
+  .install-btn-primary:active { background: var(--red-soft); }
+  .install-btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .install-footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+  /* Reopen-install pill (shown once dismissed, in case they want to install later) */
+  .install-pill {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 12px);
+    right: 12px;
+    z-index: 50;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5), 0 0 0 2px rgba(214,40,40,0.25);
+    cursor: pointer;
+    display: none;
+  }
+  .install-pill.show { display: inline-flex; align-items: center; gap: 6px; }
 </style>
 </head>
 <body>
+
+<!-- Install-to-home-screen overlay -->
+<div class="install-overlay" id="installOverlay" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="install-card">
+    <div class="install-head">
+      <div class="install-helmet" aria-hidden="true"></div>
+      <div>
+        <p class="install-title" id="installTitle">Install Station 12</p>
+        <p class="install-sub">Put the helmet on your home screen</p>
+      </div>
+    </div>
+
+    <!-- iOS Safari instructions -->
+    <div class="install-steps" id="installStepsIOS" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-num">1</span>
+        <span class="install-step-text">
+          Tap the
+          <span class="install-icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l-4 4h3v8h2V6h3l-4-4zM5 12v8c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-8h-2v8H7v-8H5z"/></svg>
+          </span>
+          <b>Share</b> button at the bottom of Safari
+        </span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">2</span>
+        <span class="install-step-text">Scroll down and tap <b>Add to Home Screen</b></span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">3</span>
+        <span class="install-step-text">Tap <b>Add</b> — the helmet shows up on your home screen</span>
+      </div>
+      <p class="install-arrow" aria-hidden="true">↓</p>
+    </div>
+
+    <!-- Android Chrome instructions -->
+    <div class="install-steps" id="installStepsAndroid" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-num">1</span>
+        <span class="install-step-text">Tap the <b>⋮ menu</b> in the top-right of your browser</span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">2</span>
+        <span class="install-step-text">Tap <b>Install app</b> (or <b>Add to Home screen</b>)</span>
+      </div>
+      <div class="install-step">
+        <span class="install-step-num">3</span>
+        <span class="install-step-text">Confirm — the helmet shows up on your home screen</span>
+      </div>
+    </div>
+
+    <!-- Generic fallback instructions -->
+    <div class="install-steps" id="installStepsGeneric" style="display:none;">
+      <div class="install-step">
+        <span class="install-step-text">Open your browser menu and pick <b>Add to Home Screen</b> or <b>Install app</b>.</span>
+      </div>
+    </div>
+
+    <div class="install-actions">
+      <button class="install-btn install-btn-primary" id="installInstallBtn" style="display:none;">Install</button>
+      <button class="install-btn install-btn-ghost" id="installDismissBtn">Got it</button>
+    </div>
+    <p class="install-footer-note">You only have to do this once.</p>
+  </div>
+</div>
+
+<!-- Tiny reopen-install pill (shown after dismissal) -->
+<button class="install-pill" id="installPill" type="button" aria-label="Install Station 12 to home screen">
+  🚒 Install
+</button>
 
 <!-- Fixed app background photo -->
 <div class="app-bg" aria-hidden="true"></div>
@@ -957,6 +1299,22 @@
           </div>
           <p class="fillin-help">Eligible to take watch tonight (gives your guys a break). Doesn't affect counts. Auto-removed after Confirm Shift.</p>
         </div>
+        <div class="detail-out-controls">
+          <button class="detail-out-add-btn" id="addDetailOutBtn">→ Detail out (sent to another station)</button>
+          <div class="detail-out-form" id="detailOutForm" hidden>
+            <div class="detail-out-form-row">
+              <select id="detailOutCrew"></select>
+            </div>
+            <div class="detail-out-form-row">
+              <input type="text" id="detailOutStation" placeholder="Station # (optional)" autocomplete="off" />
+            </div>
+            <div class="detail-out-form-row">
+              <button class="detail-out-save" id="detailOutSaveBtn" type="button">Mark detailed out</button>
+              <button class="detail-out-cancel" id="detailOutCancelBtn" type="button">Cancel</button>
+            </div>
+            <p class="detail-out-help">Skipped from rotation tonight. Does not affect counts. Cleared after Confirm Shift.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1002,62 +1360,328 @@
     <details id="mealIdeasDetails">
       <summary>🍳 Meal Ideas (lunch & dinner)</summary>
       <div class="body">
-        <p class="meal-intro">Tried-and-true firehouse meals — hearty, one-pot, pause-friendly when the tones drop. Tap a card to open the recipe.</p>
+        <p class="meal-intro">Tried-and-true firehouse meals — hearty, one-pot, pause-friendly when the tones drop. Tap a card for the full recipe.</p>
 
         <h3 class="settings-h3">Lunch · quick &amp; easy</h3>
         <div class="meal-list">
-          <a href="https://www.allrecipes.com/recipe/9099/italian-sausage-with-peppers-and-onions/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🥪 Sausage, Peppers &amp; Onions Subs</div>
-            <div class="meal-desc">One pan, ~30 min. Italian sausage + bell peppers + onions on hoagies w/ provolone. Cheap, fast, feeds 6 easy.</div>
-          </a>
-          <a href="https://www.tasteofhome.com/recipes/firehouse-chili/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🌶️ Firehouse Chili</div>
-            <div class="meal-desc">Hamburger + beans + chunky tomatoes + chili powder. Simmers while you run calls. Better the longer it sits.</div>
-          </a>
-          <a href="https://www.365daysofcrockpot.com/fire-station-casserole/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🥘 Fire Station Casserole</div>
-            <div class="meal-desc">Ground beef + tater tots + cream of mushroom + cheddar. Slow-cooker classic. Doubles to feed 10.</div>
-          </a>
-          <a href="https://www.thepioneerwoman.com/food-cooking/recipes/a32522709/sheet-pan-chicken-fajitas-recipe/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🌯 Sheet Pan Fajitas</div>
-            <div class="meal-desc">Chicken or steak + peppers + onions, all on one tray at 425°F. Tortillas, salsa, sour cream on the side.</div>
-          </a>
-          <a href="https://www.allrecipes.com/recipe/15044/easy-slow-cooker-french-dip/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🥩 Italian Beef Sandwiches (crockpot)</div>
-            <div class="meal-desc">Chuck roast + pepperoncini + Italian dressing mix. Start in the morning, slice and pile on hoagies for lunch.</div>
-          </a>
-          <a href="https://www.google.com/search?q=loaded+baked+potato+bar+firehouse" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🥔 Loaded Baked Potato Bar</div>
-            <div class="meal-desc">Bake russets in the oven, set out chili / cheese / bacon / scallions / sour cream. Cheap, customizable, no two plates alike.</div>
-          </a>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🥪 Sausage, Peppers &amp; Onions Subs</div>
+              <div class="meal-desc">One pan, ~30 min. Italian sausage + bell peppers + onions on hoagies w/ provolone. Cheap, fast, feeds 6.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 6)</h4>
+              <ul>
+                <li>2 lbs Italian sausage links (sweet or hot)</li>
+                <li>3 bell peppers (red, green, yellow), sliced</li>
+                <li>2 large onions, sliced</li>
+                <li>4 cloves garlic, minced</li>
+                <li>2 tbsp olive oil · salt, pepper, Italian seasoning</li>
+                <li>6 hoagie rolls · 12 slices provolone</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Brown sausage links in a large skillet over medium-high. Remove and slice into chunks.</li>
+                <li>Same pan, add oil. Cook peppers and onions 8–10 min until soft.</li>
+                <li>Add garlic, cook 1 min. Return sausage, toss together. Season to taste.</li>
+                <li>Toast rolls. Load with sausage mix, top with provolone. Broil 2 min until cheese melts.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🌶️ Firehouse Chili</div>
+              <div class="meal-desc">Hamburger + beans + chunky tomatoes + chili powder. Simmers while you run calls. Better the longer it sits.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>2 lbs ground beef</li>
+                <li>2 cans kidney beans, drained</li>
+                <li>2 cans (28 oz) diced tomatoes</li>
+                <li>1 can (6 oz) tomato paste</li>
+                <li>1 large onion, diced · 4 cloves garlic, minced</li>
+                <li>3 tbsp chili powder · 1 tbsp cumin · 1 tsp cayenne · salt, pepper</li>
+                <li>Toppings: shredded cheddar, sour cream, cornbread, jalapeños</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Brown beef in large pot. Drain fat.</li>
+                <li>Add onion and garlic — cook 5 min.</li>
+                <li>Stir in tomato paste, cook 2 min.</li>
+                <li>Add diced tomatoes, beans, and all spices.</li>
+                <li>Simmer uncovered at least 1 hour, stirring occasionally. Season to taste.</li>
+              </ol>
+              <p class="recipe-note">Better the longer it simmers. Start it early and let it ride.</p>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🥘 Tater Tot Casserole</div>
+              <div class="meal-desc">Ground beef + tater tots + cream of mushroom + cheddar. Oven classic. Doubles to feed 10, minimal cleanup.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>2 lbs ground beef</li>
+                <li>1 can cream of mushroom soup (condensed)</li>
+                <li>1 can cream of chicken soup (condensed)</li>
+                <li>1 cup sour cream</li>
+                <li>2 cups shredded cheddar, divided</li>
+                <li>1 bag (32 oz) frozen tater tots</li>
+                <li>Salt, pepper, garlic powder, onion powder</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Preheat oven to 375°F. Brown beef, season, drain fat.</li>
+                <li>Mix soups + sour cream. Stir in beef and 1 cup of the cheese.</li>
+                <li>Pour into a greased 9×13 baking dish.</li>
+                <li>Cover with a single layer of frozen tater tots.</li>
+                <li>Top with remaining cheese.</li>
+                <li>Bake 45–50 min until tots are golden and casserole is bubbling.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🌯 Sheet Pan Fajitas</div>
+              <div class="meal-desc">Chicken or steak + peppers + onions, all on one tray at 425°F. Tortillas, salsa, sour cream on the side.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 6)</h4>
+              <ul>
+                <li>2 lbs chicken breast or skirt steak, sliced thin</li>
+                <li>3 bell peppers, sliced · 2 onions, sliced</li>
+                <li>3 tbsp olive oil</li>
+                <li>Seasoning: 1 tbsp cumin, 1 tsp chili powder, 1 tsp garlic powder, salt, pepper</li>
+                <li>Flour tortillas · salsa · sour cream · guacamole</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Preheat oven to 425°F.</li>
+                <li>Toss meat, peppers, and onions with oil and all seasoning.</li>
+                <li>Spread in a single layer on 2 sheet pans — don't crowd or it steams instead of roasting.</li>
+                <li>Roast 20–25 min. Broil last 3–4 min to char the edges.</li>
+                <li>Serve in warm tortillas with sides.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🥩 Italian Beef Sandwiches (crockpot)</div>
+              <div class="meal-desc">Chuck roast + pepperoncini + Italian dressing mix. Start in the morning, shred and pile on hoagies.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>3–4 lb chuck roast</li>
+                <li>1 packet Italian dressing mix (Good Seasons or similar)</li>
+                <li>1 jar (16 oz) pepperoncini peppers with juice</li>
+                <li>1 cup beef broth</li>
+                <li>8 hoagie rolls · provolone slices</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Place roast in slow cooker. Pour broth around it.</li>
+                <li>Dump entire pepperoncini jar (peppers + juice) on top.</li>
+                <li>Sprinkle Italian dressing packet over everything.</li>
+                <li>Cook LOW 8 hours or HIGH 5–6 hours.</li>
+                <li>Shred beef with forks in the juices.</li>
+                <li>Load into rolls, top with provolone. Dip roll in the drippings or pour it on.</li>
+              </ol>
+              <p class="recipe-note">Start it at roll call — it's done by lunch. The juice is the secret.</p>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🥔 Loaded Baked Potato Bar</div>
+              <div class="meal-desc">Bake russets, set out toppings, let crew build their own plate. Cheap, zero cleanup, feeds as many as you need.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (per person)</h4>
+              <ul>
+                <li>1–2 large russet potatoes</li>
+                <li>Olive oil · kosher salt</li>
+                <li>Toppings bar: shredded cheddar, leftover chili, sour cream, crumbled bacon, green onions, butter, broccoli, jalapeños</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Preheat oven to 400°F.</li>
+                <li>Scrub potatoes and prick all over with a fork.</li>
+                <li>Rub with olive oil and coat in kosher salt.</li>
+                <li>Bake directly on the oven rack 60 min. Skin should be crispy — if not, give it another 10–15.</li>
+                <li>Set out all toppings in serving bowls. Everyone builds their own — nothing to plate, nothing to clean.</li>
+              </ol>
+              <p class="recipe-note">If you have leftover chili from the night before, this is the move.</p>
+            </div>
+          </details>
+
         </div>
 
         <h3 class="settings-h3">Dinner · hearty &amp; filling</h3>
         <div class="meal-list">
-          <a href="https://www.simplyrecipes.com/recipes/classic_baked_lasagna/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🍝 Classic Baked Lasagna</div>
-            <div class="meal-desc">Make-ahead friendly. Pull from the oven anytime — reheats great if a call drags. Garlic bread on the side.</div>
-          </a>
-          <a href="https://www.simplyrecipes.com/recipes/beef_stew/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🍖 Beef Stew (or Guinness Stew)</div>
-            <div class="meal-desc">Chuck roast + potatoes + carrots + onion + stock. Slow simmer all afternoon — Guinness version is a Milwaukee firehouse staple.</div>
-          </a>
-          <a href="https://www.allrecipes.com/recipe/228823/pulled-pork-barbecue/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🐖 Pulled Pork</div>
-            <div class="meal-desc">Pork shoulder + dry rub overnight, low &amp; slow on smoker or crockpot. Buns, slaw, baked beans = full plate.</div>
-          </a>
-          <a href="https://www.allrecipes.com/recipe/14797/jambalaya/" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🍤 Jambalaya</div>
-            <div class="meal-desc">One pot. Andouille + chicken + shrimp + rice + Cajun spice. Spicy, scales to 8 without breaking a sweat.</div>
-          </a>
-          <a href="https://www.foodnetwork.com/recipes/ree-drummond/spaghetti-and-meatballs-recipe-2120350" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🍝 Spaghetti &amp; Meatballs</div>
-            <div class="meal-desc">Eternal crew favorite. Big pot of sauce, frozen meatballs if you're short on time. Garlic bread is mandatory.</div>
-          </a>
-          <a href="https://www.foodnetwork.com/recipes/aaron-franklin/foolproof-smoked-brisket-3565829" class="meal-item" target="_blank" rel="noopener">
-            <div class="meal-name">🔥 Smoked Brisket</div>
-            <div class="meal-desc">Set on the smoker at sunrise, eat at dinner. Mac &amp; cheese, beans, white bread = Texas style.</div>
-          </a>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🍝 Classic Baked Lasagna</div>
+              <div class="meal-desc">Make-ahead friendly. Reheats great if a call drags. Garlic bread on the side.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 10)</h4>
+              <ul>
+                <li>2 lbs ground beef (or half beef / half Italian sausage)</li>
+                <li>2 jars (24 oz each) marinara sauce</li>
+                <li>1 box lasagna noodles (no-boil preferred)</li>
+                <li>32 oz ricotta · 1 egg</li>
+                <li>3 cups shredded mozzarella · 1 cup Parmesan</li>
+                <li>Italian seasoning, garlic powder</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Preheat oven to 375°F. Brown meat, drain fat, stir in sauce.</li>
+                <li>Mix ricotta + egg + 1 cup mozzarella + seasoning in a bowl.</li>
+                <li>In a 9×13 pan: ladle sauce → noodles → ricotta mix → sauce. Repeat layers.</li>
+                <li>Top layer: sauce → mozzarella → Parmesan.</li>
+                <li>Cover tight with foil. Bake 45 min. Uncover, bake 15 more.</li>
+                <li>Rest 15 min before cutting — it'll hold its shape.</li>
+              </ol>
+              <p class="recipe-note">Assemble it earlier in the shift and refrigerate. Just bake when ready.</p>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🍖 Beef Stew</div>
+              <div class="meal-desc">Chuck roast + potatoes + carrots + onion + stock. Low simmer all afternoon. Serve with bread.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>3 lbs chuck roast, cut in 1-inch cubes</li>
+                <li>4 russet potatoes, cubed · 4 carrots, sliced thick</li>
+                <li>2 onions, quartered · 4 cloves garlic</li>
+                <li>2 cups beef broth · 1 cup red wine (or more broth)</li>
+                <li>2 tbsp tomato paste · 2 tbsp flour</li>
+                <li>Salt, pepper, thyme, 2 bay leaves, Worcestershire sauce</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Season beef and brown in batches in a Dutch oven. Don't crowd the pot. Set aside.</li>
+                <li>Sauté onions and garlic in the same pot. Stir in tomato paste and flour, cook 2 min.</li>
+                <li>Add broth and wine, scrape up the brown bits. Return beef.</li>
+                <li>Add thyme, bay leaves, Worcestershire. Bring to a simmer.</li>
+                <li>Cover, low heat 1.5 hours. Add potatoes and carrots for the last 45 min.</li>
+                <li>Remove bay leaves. Season to taste. Serve with bread.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🐖 Pulled Pork</div>
+              <div class="meal-desc">Pork shoulder + dry rub overnight, low &amp; slow on smoker or crockpot. Buns, slaw, baked beans = full plate.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 10)</h4>
+              <ul>
+                <li>6–8 lb bone-in pork shoulder (butt)</li>
+                <li>Dry rub: 3 tbsp brown sugar, 2 tbsp paprika, 1 tbsp each garlic powder, onion powder, salt, 1 tsp each cumin and black pepper, ½ tsp cayenne</li>
+                <li>BBQ sauce for serving · burger buns · coleslaw</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Night before: coat pork all over with dry rub. Wrap and refrigerate.</li>
+                <li><strong>Smoker:</strong> 225°F, hickory or oak, 10–14 hours until internal temp hits 200°F.</li>
+                <li><strong>Crockpot:</strong> LOW 10–12 hours. Add ½ cup apple cider vinegar to the bottom.</li>
+                <li>Rest 30–60 min wrapped in foil.</li>
+                <li>Shred with two forks — it basically falls apart. Mix in a little BBQ sauce.</li>
+              </ol>
+              <p class="recipe-note">Start it on the smoker at roll call — it'll be ready for dinner.</p>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🍤 Jambalaya</div>
+              <div class="meal-desc">One pot. Andouille + chicken + shrimp + rice + Cajun spice. Spicy, scales to 8 without breaking a sweat.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>1 lb Andouille sausage, sliced · 1 lb chicken thighs, cubed</li>
+                <li>1 lb medium shrimp, peeled (optional)</li>
+                <li>2 cups long-grain white rice · 3 cups chicken broth</li>
+                <li>1 can (14 oz) diced tomatoes</li>
+                <li>1 onion, diced · 3 celery stalks, diced · 1 bell pepper, diced · 4 cloves garlic</li>
+                <li>Cajun seasoning (generous), thyme, 2 bay leaves, hot sauce</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Brown sausage in large heavy pot. Remove. Brown chicken in same pot. Remove.</li>
+                <li>Sauté onion, celery, pepper until soft. Add garlic, cook 1 min.</li>
+                <li>Add tomatoes, broth, Cajun seasoning, thyme, bay leaves. Return sausage and chicken.</li>
+                <li>Bring to a boil. Stir in rice. Cover, reduce to low, cook 20–25 min.</li>
+                <li>Stir in shrimp last 5 min until pink. Remove bay leaves. Hit it with hot sauce.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🍝 Spaghetti &amp; Meatballs</div>
+              <div class="meal-desc">Eternal crew favorite. Big pot of sauce, frozen meatballs if you're short on time. Garlic bread is mandatory.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 8)</h4>
+              <ul>
+                <li>2 lbs spaghetti</li>
+                <li>2–3 jars (24 oz each) marinara sauce</li>
+                <li>2 lbs frozen meatballs (thaw in sauce)</li>
+                <li>Parmesan · garlic bread (French bread + butter + garlic powder)</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Simmer meatballs in sauce in large pot on low, 20–30 min.</li>
+                <li>Boil pasta in heavily salted water until al dente. Drain.</li>
+                <li>Serve sauce + meatballs over pasta. Parmesan on top.</li>
+                <li>Garlic bread: butter + garlic powder on halved French bread. Broil 3–4 min.</li>
+              </ol>
+              <p class="recipe-note">Homemade meatballs: 2 lbs ground beef/pork, 2 eggs, ½ cup breadcrumbs, ¼ cup Parmesan, garlic, Italian seasoning. Roll, bake 400°F 20 min, then into sauce.</p>
+            </div>
+          </details>
+
+          <details class="meal-item">
+            <summary>
+              <div class="meal-name">🔥 Smoked Brisket</div>
+              <div class="meal-desc">Set on the smoker at sunrise, eat at dinner. Mac &amp; cheese, beans, white bread = Texas style.</div>
+            </summary>
+            <div class="recipe-body">
+              <h4>Ingredients (serves 10–12)</h4>
+              <ul>
+                <li>10–12 lb whole packer brisket (flat + point)</li>
+                <li>Rub: equal parts kosher salt + coarse black pepper (Texas style — nothing else needed)</li>
+                <li>Oak or pecan wood</li>
+                <li>Sides: mac &amp; cheese, pinto beans, white bread, pickles, onion</li>
+              </ul>
+              <h4>Steps</h4>
+              <ol>
+                <li>Night before: trim hard fat cap to ¼ inch. Cover all sides with salt + pepper.</li>
+                <li>Smoker at 225–250°F. Place fat side up. Start at sunrise.</li>
+                <li>Smoke until internal temp hits 165°F (~8–10 hours).</li>
+                <li>Wrap in butcher paper or foil. Continue until 200–205°F (~4–6 more hours).</li>
+                <li>Rest at least 1 hour wrapped in towels inside a cooler.</li>
+                <li>Slice against the grain. Flat = lean slices. Point = fatty, for burnt ends.</li>
+              </ol>
+              <p class="recipe-note">The stall (around 165°F) is normal — just wait it out or wrap to push through.</p>
+            </div>
+          </details>
+
         </div>
 
         <p class="meal-help">💡 <strong>Firehouse rules:</strong> anything in a crockpot or smoker is gold — it can simmer while you run calls. One-pot &amp; sheet-pan meals minimize cleanup. Always cook for one or two extra in case of detail-ins.</p>
@@ -1227,6 +1851,7 @@ function defaultState() {
       "2026-06-29": ["smart"],  // Mon
     },
     fillIns: [],
+    detailOuts: [],
     lastKellyApplied: null,
     rookieMultiplier: 2,
     useReveal: true,
@@ -1289,7 +1914,8 @@ function loadState() {
       }
       parsed.kellyDaysSeed = "bfrs-may-jun-2026";
     }
-    if (!Array.isArray(parsed.fillIns)) parsed.fillIns = [];
+    if (!Array.isArray(parsed.fillIns))    parsed.fillIns = [];
+    if (!Array.isArray(parsed.detailOuts)) parsed.detailOuts = [];
     if (!("lastKellyApplied" in parsed)) parsed.lastKellyApplied = null;
     if (!("rookieMultiplier" in parsed)) parsed.rookieMultiplier = 2;
     if (!("useReveal" in parsed))        parsed.useReveal = true;
@@ -1393,9 +2019,13 @@ function applyKellyDaysIfNewDay() {
   saveState();
 }
 
+function isDetailedOut(id) {
+  return state.detailOuts.some(d => d.id === id);
+}
+
 function eligibleForRotation() {
-  // crew + fill-ins that participate in auto-pick: not exempt, present today
-  const regulars = state.crew.filter(m => !m.exempt && state.presence.includes(m.id));
+  // crew + fill-ins that participate in auto-pick: not exempt, present today, not detailed out
+  const regulars = state.crew.filter(m => !m.exempt && state.presence.includes(m.id) && !isDetailedOut(m.id));
   const fillins = state.fillIns.filter(f => state.presence.includes(f.id));
   return [...regulars, ...fillins];
 }
@@ -1655,6 +2285,7 @@ function renderLineup() {
     row.className = "lineup-row" + (present ? "" : " absent");
 
     const isKellyToday = (state.kellyDays[todayISO()] || []).includes(m.id);
+    const detailOut = state.detailOuts.find(d => d.id === m.id);
     const badges = [];
     if (m.exempt) badges.push(`<span class="badge-mini officer">${/sgt/i.test(m.name) ? "SGT" : "LT"}</span>`);
     if (m.isFillIn) badges.push(`<span class="badge-mini fillin">🤝 FILL-IN</span>`);
@@ -1662,6 +2293,7 @@ function renderLineup() {
     if (m.isCook)   badges.push(`<span class="badge-mini cook">👨‍🍳 COOK</span>`);
     if (m.isRookie) badges.push(`<span class="badge-mini cook">🎓 ROOKIE</span>`);
     if (isKellyToday) badges.push(`<span class="badge-mini kelly">📅 KELLY</span>`);
+    if (detailOut) badges.push(`<span class="badge-mini detail-out" style="cursor:pointer;" data-act="detail-out-remove" data-id="${m.id}" title="Tap to bring back">→ ${detailOut.station || "DETAILED OUT"} ✕</span>`);
 
     const senLabel = m.exempt
       ? ""
@@ -2000,8 +2632,9 @@ function confirmShift() {
   // Build the share text BEFORE clearing fill-ins so the modal shows the actual roster.
   showToast("Shift confirmed");
   openShareModal();
-  // Now clear fill-ins — guest mode: they don't persist beyond tonight.
+  // Now clear fill-ins and detail-outs — they don't persist beyond tonight.
   state.fillIns = [];
+  state.detailOuts = [];
   state.presence = state.presence.filter(id => !isFillIn(id));
   saveState();
   render();
@@ -2054,6 +2687,7 @@ function sgtCoversWatch() {
   showToast("Sgt. on watch — counts unchanged");
   openShareModal();
   state.fillIns = [];
+  state.detailOuts = [];
   state.presence = state.presence.filter(id => !isFillIn(id));
   saveState();
   render();
@@ -2349,6 +2983,86 @@ document.getElementById("modalBackdrop").addEventListener("click", e => {
 // Bay door reveal
 document.getElementById("bayDoor").addEventListener("click", openBayDoors);
 
+// Detail-out form
+(function setupDetailOutForm(){
+  const addBtn    = document.getElementById("addDetailOutBtn");
+  const form      = document.getElementById("detailOutForm");
+  const crewSel   = document.getElementById("detailOutCrew");
+  const stationIn = document.getElementById("detailOutStation");
+  const saveBtn   = document.getElementById("detailOutSaveBtn");
+  const cancelBtn = document.getElementById("detailOutCancelBtn");
+
+  function populateCrewSelect(){
+    crewSel.innerHTML = "";
+    const eligible = state.crew.filter(m => !m.exempt && !isDetailedOut(m.id));
+    if (!eligible.length) {
+      const opt = document.createElement("option");
+      opt.textContent = "(everyone's here)";
+      opt.disabled = true;
+      crewSel.appendChild(opt);
+      return;
+    }
+    for (const m of eligible) {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.name;
+      crewSel.appendChild(opt);
+    }
+  }
+
+  function openForm(){
+    populateCrewSelect();
+    stationIn.value = "";
+    form.removeAttribute("hidden");
+    addBtn.style.display = "none";
+    stationIn.focus();
+  }
+  function closeForm(){
+    form.setAttribute("hidden", "");
+    addBtn.style.display = "";
+  }
+  function save(){
+    const id = crewSel.value;
+    if (!id) return;
+    const station = stationIn.value.trim() || "";
+    if (!state.detailOuts.some(d => d.id === id)) {
+      state.detailOuts.push({ id, station });
+      // Mark them absent from Station 12 tonight
+      state.presence = state.presence.filter(p => p !== id);
+      // Clear any pending override for this person
+      for (const r of ROTATIONS) {
+        if (state.pendingOverrides[r.id] === id) delete state.pendingOverrides[r.id];
+      }
+      saveState();
+      render();
+      showToast(`${getMember(id)?.name || id} marked as detailed out`);
+    }
+    closeForm();
+  }
+
+  addBtn.addEventListener("click", openForm);
+  cancelBtn.addEventListener("click", closeForm);
+  saveBtn.addEventListener("click", save);
+  stationIn.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); save(); }
+    else if (e.key === "Escape") { closeForm(); }
+  });
+
+  // Remove detail-out via badge tap (wire via delegation on lineup container)
+  document.getElementById("lineupList").addEventListener("click", e => {
+    const btn = e.target.closest("[data-act='detail-out-remove']");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    state.detailOuts = state.detailOuts.filter(d => d.id !== id);
+    // Restore presence if they're actually a crew member
+    if (state.crew.find(m => m.id === id) && !state.presence.includes(id)) {
+      state.presence.push(id);
+    }
+    saveState();
+    render();
+  });
+})();
+
 // Fill-in form
 document.getElementById("addFillInBtn").addEventListener("click", openFillInForm);
 document.getElementById("fillInCancelBtn").addEventListener("click", closeFillInForm);
@@ -2454,6 +3168,97 @@ render();
   }, POSTER_HOLD_MS);
   // Failsafe: dismiss after 10s no matter what
   setTimeout(() => { if (!splash.classList.contains("hidden")) dismiss(); }, 10000);
+})();
+
+// ────────────────────────────────────────────────────────────────────
+// Install-to-home-screen overlay
+// Shows phone-specific "Add to Home Screen" instructions until installed.
+// ────────────────────────────────────────────────────────────────────
+(function setupInstallPrompt(){
+  const INSTALL_DISMISS_KEY = "station12-install-dismissed-v1";
+
+  const overlay = document.getElementById("installOverlay");
+  const pill    = document.getElementById("installPill");
+  const dismissBtn = document.getElementById("installDismissBtn");
+  const installBtn = document.getElementById("installInstallBtn");
+  const stepsIOS     = document.getElementById("installStepsIOS");
+  const stepsAndroid = document.getElementById("installStepsAndroid");
+  const stepsGeneric = document.getElementById("installStepsGeneric");
+  if (!overlay || !pill) return;
+
+  // Detect already installed (iOS uses navigator.standalone, others use display-mode).
+  function isInstalled(){
+    if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+    if (window.navigator.standalone === true) return true;
+    return false;
+  }
+
+  // Detect platform.
+  const ua = (navigator.userAgent || "").toLowerCase();
+  const isIOS     = /iphone|ipad|ipod/.test(ua) || (ua.includes("mac") && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/.test(ua);
+
+  // Pick which instruction block to show.
+  if (isIOS)          stepsIOS.style.display = "block";
+  else if (isAndroid) stepsAndroid.style.display = "block";
+  else                stepsGeneric.style.display = "block";
+
+  // Cache the native install prompt (Chrome/Edge on Android & desktop).
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "inline-block";
+  });
+
+  function openOverlay(){
+    if (isInstalled()) return;
+    overlay.classList.add("show");
+    pill.classList.remove("show");
+  }
+  function closeOverlay(){
+    overlay.classList.remove("show");
+    if (!isInstalled()) pill.classList.add("show");
+  }
+  function markDismissed(){
+    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch(_) {}
+  }
+
+  dismissBtn.addEventListener("click", () => { markDismissed(); closeOverlay(); });
+  pill.addEventListener("click", openOverlay);
+
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch(_) {}
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+    closeOverlay();
+  });
+
+  // Hide the pill once the app is installed.
+  window.addEventListener("appinstalled", () => {
+    markDismissed();
+    overlay.classList.remove("show");
+    pill.classList.remove("show");
+  });
+
+  // First-run logic: wait until after the intro splash so we don't double-cover the screen.
+  function maybeShowOnFirstRun(){
+    if (isInstalled()) return;
+    let dismissed = null;
+    try { dismissed = localStorage.getItem(INSTALL_DISMISS_KEY); } catch(_) {}
+    if (dismissed) {
+      // They've seen it before — just leave the little pill so they can install later.
+      pill.classList.add("show");
+      return;
+    }
+    // Show after a short delay so the intro splash has a chance to finish.
+    setTimeout(() => {
+      if (!isInstalled()) openOverlay();
+    }, 3500);
+  }
+  maybeShowOnFirstRun();
 })();
 </script>
 
