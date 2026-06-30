@@ -12,20 +12,20 @@
 <meta name="apple-mobile-web-app-title" content="Station 12" />
 <style>
   :root {
-    --bg: #0a0a0a;
-    --panel: #16181c;
-    --panel-2: #1f2227;
-    --line: #2a2e35;
-    --text: #f5f5f5;
-    --muted: #9aa0a6;
+    --bg: #f2f4f7;
+    --panel: #ffffff;
+    --panel-2: #f2f4f7;
+    --line: #dde1e7;
+    --text: #1a1c1e;
+    --muted: #6b7280;
     --red: #d62828;
     --red-soft: #8b1c1c;
-    --gold: #f5c518;
-    --green: #2ea043;
-    --blue: #2f6feb;
-    --orange: #f0883e;
+    --gold: #b45309;
+    --green: #166534;
+    --blue: #1d4ed8;
+    --orange: #c2410c;
     --radius: 12px;
-    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow: 0 2px 12px rgba(0,0,0,0.1);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -154,8 +154,8 @@
   .section.collapsed .section-body { display: none; }
 
   /* Warn section (gold border) */
-  .section.warn { border-color: rgba(245,197,24,0.5); }
-  .section.warn .section-header { background: rgba(245,197,24,0.06); }
+  .section.warn { border-color: rgba(180,83,9,0.4); }
+  .section.warn .section-header { background: rgba(180,83,9,0.05); }
   .section.warn .section-label { color: var(--gold); }
 
   /* ── Checklist items ── */
@@ -172,8 +172,8 @@
   }
   .item:last-child { border-bottom: none; }
   .item:active { background: var(--panel-2); }
-  .item.checked { background: rgba(46,160,67,0.06); }
-  .item.skipped { background: rgba(47,111,235,0.06); }
+  .item.checked { background: rgba(22,101,52,0.06); }
+  .item.skipped { background: rgba(29,78,216,0.06); }
 
   .item-check {
     width: 58px;
@@ -195,12 +195,14 @@
     flex-shrink: 0;
   }
   .item.checked .check-box {
-    background: var(--green);
-    border-color: var(--green);
+    background: #16a34a;
+    border-color: #16a34a;
+    color: white;
   }
   .item.skipped .check-box {
-    background: var(--blue);
-    border-color: var(--blue);
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
   }
 
   .item-text {
@@ -233,8 +235,8 @@
     white-space: nowrap;
     line-height: 1.2;
   }
-  .skip-btn:active { background: rgba(47,111,235,0.15); border-color: var(--blue); color: #8ab4ff; }
-  .item.skipped .skip-btn { background: rgba(47,111,235,0.15); border-color: var(--blue); color: #8ab4ff; }
+  .skip-btn:active { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
+  .item.skipped .skip-btn { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
 
   /* Warn items */
   .section.warn .item-text { font-weight: 600; }
@@ -265,7 +267,7 @@
     min-height: 80px;
     line-height: 1.5;
   }
-  .notes-input:focus { outline: 1px solid var(--red); border-color: var(--red); }
+  .notes-input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 2px rgba(214,40,40,0.15); }
   .notes-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
   /* ── Complete bar ── */
@@ -290,32 +292,39 @@
     cursor: pointer;
     transition: background 0.15s;
   }
-  .complete-btn.inactive { background: var(--panel-2); color: var(--muted); }
-  .complete-btn.active { background: var(--green); color: #0a0a0a; }
-  .complete-btn.active:active { background: #238636; }
+  .complete-btn.inactive { background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
+  .complete-btn.active { background: #16a34a; color: white; }
+  .complete-btn.active:active { background: #15803d; }
 
   /* ── Done overlay ── */
   .done-overlay {
     display: none;
     position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.6);
     align-items: center; justify-content: center;
     flex-direction: column;
     padding: 32px;
     text-align: center;
   }
   .done-overlay.show { display: flex; }
+  .done-inner {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 24px;
+    width: 100%; max-width: 340px;
+    display: flex; flex-direction: column; align-items: center;
+  }
   .done-emoji { font-size: 72px; margin-bottom: 16px; }
-  .done-title { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
-  .done-sub { font-size: 15px; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
+  .done-title { font-size: 28px; font-weight: 900; color: #166534; margin-bottom: 8px; }
+  .done-sub { font-size: 15px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
   .done-time { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-  .done-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 280px; }
+  .done-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .done-btn {
     padding: 14px; border-radius: 10px; border: none;
     font-size: 15px; font-weight: 700; font-family: inherit;
     cursor: pointer;
   }
-  .done-btn-primary { background: var(--green); color: #0a0a0a; }
+  .done-btn-primary { background: #16a34a; color: white; }
   .done-btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
 </style>
 </head>
@@ -353,14 +362,16 @@
 </div>
 
 <div class="done-overlay" id="doneOverlay">
-  <div class="done-emoji">🚒</div>
-  <div class="done-title">Swap Complete</div>
-  <div class="done-sub">E12 equipment transferred to reserve.<br>Reserve is ready to roll.</div>
-  <div class="done-time" id="doneTime"></div>
-  <div class="done-actions">
-    <button class="done-btn done-btn-share" id="doneShareBtn">📤 Share with Incoming Crew</button>
-    <button class="done-btn done-btn-primary" id="doneBackBtn">Back to Station 12</button>
-    <button class="done-btn done-btn-ghost" id="doneStayBtn">View Checklist</button>
+  <div class="done-inner">
+    <div class="done-emoji">🚒</div>
+    <div class="done-title">Swap Complete</div>
+    <div class="done-sub">E12 equipment transferred to reserve.<br>Reserve is ready to roll.</div>
+    <div class="done-time" id="doneTime"></div>
+    <div class="done-actions">
+      <button class="done-btn done-btn-share" id="doneShareBtn">📤 Share with Incoming Crew</button>
+      <button class="done-btn done-btn-primary" id="doneBackBtn">Back to Station 12</button>
+      <button class="done-btn done-btn-ghost" id="doneStayBtn">View Checklist</button>
+    </div>
   </div>
 </div>
 
