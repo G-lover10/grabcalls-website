@@ -78,6 +78,16 @@
     flex-shrink: 0;
   }
   .reset-btn:active { background: rgba(0,0,0,0.5); }
+  .share-btn {
+    background: rgba(255,255,255,0.15);
+    border: none; border-radius: 8px;
+    color: white; font-size: 13px;
+    padding: 6px 12px; cursor: pointer;
+    font-family: inherit; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .share-btn:active { background: rgba(255,255,255,0.3); }
+  .done-btn-share { background: var(--blue); color: white; }
 
   /* Progress bar */
   .progress-wrap {
@@ -318,6 +328,7 @@
       Truck Swap
       <div class="header-sub">E12 → Reserve</div>
     </div>
+    <button class="share-btn" id="shareBtn">📤 Share</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
   </div>
   <div class="progress-wrap">
@@ -347,6 +358,7 @@
   <div class="done-sub">E12 equipment transferred to reserve.<br>Reserve is ready to roll.</div>
   <div class="done-time" id="doneTime"></div>
   <div class="done-actions">
+    <button class="done-btn done-btn-share" id="doneShareBtn">📤 Share with Incoming Crew</button>
     <button class="done-btn done-btn-primary" id="doneBackBtn">Back to Station 12</button>
     <button class="done-btn done-btn-ghost" id="doneStayBtn">View Checklist</button>
   </div>
@@ -716,6 +728,56 @@ document.getElementById("doneBackBtn").addEventListener("click", () => {
 document.getElementById("doneStayBtn").addEventListener("click", () => {
   document.getElementById("doneOverlay").classList.remove("show");
 });
+
+// ── Share ────────────────────────────────────────────────────────
+function buildShareText() {
+  const now = new Date();
+  const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+
+  const moved = [], hadIt = [], pending = [];
+  SECTIONS.forEach(sec => {
+    sec.items.forEach((text, idx) => {
+      const k = itemKey(sec.id, idx);
+      if (state.checked.includes(k)) moved.push(text);
+      else if (state.skipped.includes(k)) hadIt.push(text);
+      else pending.push(text);
+    });
+  });
+
+  let msg = `🚒 E12 → Reserve Swap | Station 12\n${dateStr}\n\n`;
+  msg += `✓ Moved from E12: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
+  msg += `↷ Reserve already had: ${hadIt.length} item${hadIt.length !== 1 ? "s" : ""}\n`;
+
+  if (pending.length > 0) {
+    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n`;
+    msg += pending.map(i => `  • ${i}`).join("\n") + "\n";
+  } else {
+    msg += `\n✅ Reserve fully equipped.\n`;
+  }
+
+  if (state.notes && state.notes.trim()) {
+    msg += `\nNotes: ${state.notes.trim()}\n`;
+  }
+
+  msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
+  return msg;
+}
+
+function shareSwap() {
+  const text = buildShareText();
+  if (navigator.share) {
+    navigator.share({ title: "E12 Truck Swap — Station 12", text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Swap summary copied to clipboard!");
+    }).catch(() => {
+      prompt("Copy this swap summary:", text);
+    });
+  }
+}
+
+document.getElementById("shareBtn").addEventListener("click", shareSwap);
+document.getElementById("doneShareBtn").addEventListener("click", shareSwap);
 
 // ── Reset ────────────────────────────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
