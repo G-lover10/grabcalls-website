@@ -13,6 +13,7 @@ on:
         type: choice
         options:
           - daily-brief
+          - outreach-pipeline
           - research
           - campaign-analysis
           - test

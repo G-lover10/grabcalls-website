@@ -1,0 +1,35 @@
+name: GrabCalls Outreach Pipeline
+
+on:
+  schedule:
+    # Mon, Wed, Fri at 9:00am CT (14:00 UTC)
+    - cron: '0 14 * * 1,3,5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run outreach pipeline
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        run: node agents/index.js outreach-pipeline
+
+      - name: Save pipeline log
+        run: |
+          git config user.email "agent@grabcalls.com"
+          git config user.name "GrabCalls Agent"
+          git add agents/leads/pipeline-log.json
+          git diff --staged --quiet || git commit -m "chore: outreach pipeline run $(date +%Y-%m-%d)"
+          git push || echo "Nothing to push"
