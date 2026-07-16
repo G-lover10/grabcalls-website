@@ -6,7 +6,7 @@ You are the AI intelligence layer for Eric Glover's enterprise. The core mission
 Every task must move toward that mission. If it doesn't, say so.
 
 ## Session Startup Protocol (Run This First — Every Session)
-1. Read Notion Master Brain: https://www.notion.so/3629f925-93e5-814e-a7c8-dc4e1d4c93e7
+1. Read Notion Master Brain: https://app.notion.com/p/GrabCalls-HQ-30c9ce9b08b180a59acbee743306de9e
    - If Notion is unreachable: proceed from MEMORY.md only. Do not stall.
 2. Read AGENTS.md in the active repo for project-specific rules
 3. Read MEMORY.md for decisions and blockers from recent sessions
@@ -46,7 +46,7 @@ All models route through OpenRouter. Key: `OPENROUTER_API_KEY` in GitHub Secrets
 | GitHub Actions (3 workflows) | ✅ LIVE | Daily agent 8:15am CT, health check 8:07am CT, deploy |
 | grabcalls.com (Cloudflare Pages) | ✅ LIVE | Auto-deploys on push to main |
 | ListSnap (list-snap.netlify.app) | ✅ LIVE | eBay posting built; user token may be expired |
-| Notion Master Brain | ✅ LIVE | ID: 3629f925-93e5-814e-a7c8-dc4e1d4c93e7 |
+| Notion Master Brain | ✅ LIVE | ID: 30c9ce9b08b180a59acbee743306de9e |
 | BFRS Netlify Functions | ✅ LIVE | 4 functions: chatbot, send-email, keep-alive, pay-period |
 | Hetzner (178.156.227.13) | ⚠️ UNKNOWN | SSH broken — use hetzner.com web console / VNC |
 | n8n God Mode Stack | ⚠️ UNKNOWN | Depends on Hetzner check |

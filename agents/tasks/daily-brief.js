@@ -5,7 +5,7 @@
 const { callModel } = require('../models');
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
-const BRAIN_PAGE_ID = '3629f925-93e5-814e-a7c8-dc4e1d4c93e7';
+const BRAIN_PAGE_ID = '30c9ce9b08b180a59acbee743306de9e';
 
 async function appendToNotion(pageId, content) {
   const blocks = content.split('\n').filter(l => l.trim()).map(line => ({
