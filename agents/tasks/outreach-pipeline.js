@@ -202,7 +202,7 @@ End with ONE call to action: call (205) 605-9842 to hear the AI in action.`;
 async function sendViaResend(to, subject, body) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
-  const from = process.env.FROM_EMAIL || 'Eric Glover <eric@grabcalls.com>';
+  const from = process.env.FROM_EMAIL || 'Eric Glover <onboarding@resend.dev>';
   try {
     const resp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
