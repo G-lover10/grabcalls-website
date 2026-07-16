@@ -1,22 +1,11 @@
 // Daily Brief Task
-// Reads Gmail via Notion context, extracts ideas, writes to Master Brain
-// Uses Ling-1T for bulk extraction (cheap) + Fable 5 for synthesis (smart)
+// Ling-1T (free) extracts ideas from emails
+// Sonnet synthesizes priority actions — Fable 5 only for deep-research task
 
 const { callModel } = require('../models');
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const BRAIN_PAGE_ID = '3629f925-93e5-814e-a7c8-dc4e1d4c93e7';
-
-async function fetchNotionPage(pageId) {
-  const resp = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children?page_size=100`, {
-    headers: {
-      'Authorization': `Bearer ${NOTION_TOKEN}`,
-      'Notion-Version': '2022-06-28',
-    },
-  });
-  if (!resp.ok) throw new Error(`Notion fetch failed: ${resp.status}`);
-  return resp.json();
-}
 
 async function appendToNotion(pageId, content) {
   const blocks = content.split('\n').filter(l => l.trim()).map(line => ({
@@ -43,7 +32,7 @@ async function runDailyBrief(emailSummaries) {
   const today = new Date().toISOString().split('T')[0];
   console.log(`[daily-brief] Running for ${today}`);
 
-  // Step 1: Use Ling-1T (cheap) to extract ideas from email summaries
+  // Step 1: Ling-1T (free) — bulk extraction
   const extractionPrompt = [
     {
       role: 'user',
@@ -65,10 +54,10 @@ Output ONLY the bullet list, nothing else.`,
     },
   ];
 
-  console.log('[daily-brief] Extracting ideas with Ling-1T...');
+  console.log('[daily-brief] Extracting ideas with Ling-1T (free)...');
   const rawIdeas = await callModel('ling1T', extractionPrompt, { maxTokens: 1000 });
 
-  // Step 2: Use Fable 5 to synthesize + prioritize for GrabCalls specifically
+  // Step 2: Sonnet — synthesis (replaces Fable 5; good enough for this task at 5x lower cost)
   const synthesisPrompt = [
     {
       role: 'user',
@@ -84,18 +73,23 @@ Keep total output under 200 words.`,
     },
   ];
 
-  console.log('[daily-brief] Synthesizing with Fable 5...');
-  const synthesis = await callModel('fable5', synthesisPrompt, { maxTokens: 400 });
+  console.log('[daily-brief] Synthesizing with Sonnet...');
+  const synthesis = await callModel('sonnet', synthesisPrompt, { maxTokens: 400 });
 
-  // Build the Notion entry
   const entry = `\n**[${today}] — Auto Heartbeat**\n${rawIdeas}\n\n🎯 Priority for GrabCalls:\n${synthesis}`;
 
-  console.log('[daily-brief] Writing to Notion Brain...');
-  // In production this uses the Notion API directly
-  // For now, output to stdout for GitHub Actions logs
+  console.log('[daily-brief] Output:');
   console.log('=== NOTION ENTRY ===');
   console.log(entry);
   console.log('===================');
+
+  if (NOTION_TOKEN) {
+    console.log('[daily-brief] Writing to Notion Brain...');
+    await appendToNotion(BRAIN_PAGE_ID, entry);
+    console.log('[daily-brief] Notion write complete.');
+  } else {
+    console.log('[daily-brief] NOTION_TOKEN not set — skipping Notion write.');
+  }
 
   return { date: today, ideas: rawIdeas, priority: synthesis };
 }

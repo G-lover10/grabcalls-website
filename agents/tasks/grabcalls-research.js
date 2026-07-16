@@ -1,11 +1,12 @@
-// GrabCalls Research Task
-// Uses Fable 5 to research prospects, competitors, and sales angles
-// Runs weekly — output saved to Notion
+// GrabCalls Research Tasks
+// Standard research: Sonnet (cost-efficient)
+// Deep research: Fable 5 (explicit trigger only — expensive)
 
 const { callModel } = require('../models');
 
+// Standard prospect research — Sonnet handles this well at 5x lower cost than Fable 5
 async function researchProspects(businessType, location = 'Alabama') {
-  console.log(`[grabcalls-research] Researching ${businessType} prospects in ${location}`);
+  console.log(`[grabcalls-research] Researching ${businessType} in ${location} (Sonnet)`);
 
   const prompt = [
     {
@@ -28,13 +29,42 @@ Be specific, practical, and conversational — not corporate.`,
     },
   ];
 
-  const result = await callModel('fable5', prompt, { maxTokens: 2000 });
+  const result = await callModel('sonnet', prompt, { maxTokens: 2000 });
   console.log(`[grabcalls-research] Research complete for ${businessType}`);
   return result;
 }
 
+// Deep research — Fable 5 only when you need long-horizon strategy (run manually, not on cron)
+async function deepResearch(topic) {
+  console.log(`[grabcalls-research] Deep research on: ${topic} (Fable 5)`);
+
+  const prompt = [
+    {
+      role: 'user',
+      content: `You are a senior growth strategist for GrabCalls — an AI voice agent company targeting SMBs in Alabama.
+GrabCalls has 0 paying clients. Goal: first paying client within 30 days.
+
+Deep research topic: ${topic}
+
+Provide a comprehensive, multi-angle analysis. Think step by step. Consider:
+- Market dynamics and timing
+- Competitive positioning
+- Specific Alabama market nuances
+- Realistic 30-day action plan with milestones
+- Risk factors and how to mitigate them
+
+Be thorough — this is a strategic brief, not a quick answer.`,
+    },
+  ];
+
+  const result = await callModel('fable5', prompt, { maxTokens: 4000 });
+  console.log(`[grabcalls-research] Deep research complete`);
+  return result;
+}
+
+// Outreach email — Laguna M.1 (free)
 async function writeOutreachEmail(businessName, businessType, ownerName = '') {
-  console.log(`[grabcalls-research] Writing outreach for ${businessName}`);
+  console.log(`[grabcalls-research] Writing outreach for ${businessName} (Laguna free)`);
 
   const prompt = [
     {
@@ -55,15 +85,14 @@ End with a soft CTA to call (205) 605-9842 to hear the AI in action.`,
     },
   ];
 
-  // Use Laguna M.1 for copywriting — it's free and handles this well
   const result = await callModel('lagunaMid', prompt, { maxTokens: 500 });
   return result;
 }
 
+// Campaign channel scoring — Ling-1T (free)
 async function analyzeCampaignIdeas() {
-  console.log('[grabcalls-research] Analyzing campaign ideas with Ling-1T...');
+  console.log('[grabcalls-research] Analyzing campaign ideas (Ling-1T free)...');
 
-  // Use cheap Ling-1T for bulk classification
   const prompt = [
     {
       role: 'user',
@@ -89,4 +118,4 @@ For each: score (1-10), one sentence why, and what the first action is.`,
   return result;
 }
 
-module.exports = { researchProspects, writeOutreachEmail, analyzeCampaignIdeas };
+module.exports = { researchProspects, deepResearch, writeOutreachEmail, analyzeCampaignIdeas };
