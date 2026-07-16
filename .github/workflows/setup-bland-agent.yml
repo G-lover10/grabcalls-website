@@ -1,0 +1,34 @@
+name: GrabCalls — Setup Bland.ai Voice Agent
+
+# Run this ONCE to migrate (205) 605-9842 from Hetzner/n8n → Bland.ai cloud.
+# After this runs, the voice agent is live on Bland and Hetzner is no longer needed.
+#
+# Required secrets (add at github.com/G-lover10/grabcalls-website → Settings → Secrets):
+#   BLAND_API_KEY         — bland.ai dashboard → Settings → API Keys
+#   TWILIO_ACCOUNT_SID    — twilio.com console → Account Info
+#   TWILIO_AUTH_TOKEN     — twilio.com console → Account Info
+#   TWILIO_PHONE_SID      — twilio.com → Phone Numbers → (205) 605-9842 → SID (starts with PN)
+#
+# After run: copy the printed BLAND_INBOUND_URL and add it as BLAND_INBOUND_URL secret.
+# The voice-watchdog will then auto-recover Bland if it ever goes down.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure Bland.ai inbound agent + point Twilio to it
+        env:
+          BLAND_API_KEY: ${{ secrets.BLAND_API_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_SID: ${{ secrets.TWILIO_PHONE_SID }}
+        run: node agents/tasks/setup-bland-agent.js

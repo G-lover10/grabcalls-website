@@ -13,6 +13,36 @@ Rolling session log across all Claude sessions. Read at session start (step 3 of
 
 ---
 
+## Session: Jul 16, 2026 — night (continued)
+
+### Key Diagnosis
+- **Voice agent root cause FOUND**: n8n CLOUD trial expired Feb 22, 2026. Workflows have been dead for 4+ months, not just today. The self-hosted n8n on Hetzner may also be down (server was locked for non-payment July 9–14, paid July 14, but services may not have restarted automatically). Either way, n8n is no longer viable. Moving permanently to Bland.ai.
+- Eric has active Bland.ai account (signed up March 30, 2026) and active VAPI account — both cloud-hosted, no Hetzner dependency.
+
+### Built & Deployed
+- **`agents/tasks/setup-bland-agent.js`** — one-shot script that: (1) creates GrabCalls inbound agent "Ava" on Bland.ai for (205) 605-9842, (2) updates Twilio VoiceUrl to point to Bland. Agent prompt: GrabCalls receptionist, collects callback info from interested business owners.
+- **`.github/workflows/setup-bland-agent.yml`** — workflow_dispatch-only GitHub Action. Eric runs it once with the right secrets and the voice agent is live on Bland forever.
+
+### Secrets Needed to Run Setup Bland Agent
+| Secret | Where to get it |
+|--------|----------------|
+| `BLAND_API_KEY` | app.bland.ai → Settings → API Keys |
+| `TWILIO_ACCOUNT_SID` | twilio.com console → Account Info |
+| `TWILIO_AUTH_TOKEN` | twilio.com console → Account Info |
+| `TWILIO_PHONE_SID` | twilio.com → Phone Numbers → (205) 605-9842 → SID (starts with PN) |
+
+### After Setup
+- Add `BLAND_INBOUND_URL` = printed by the workflow to GitHub Secrets — enables voice-watchdog to auto-recover if Bland goes down
+- Voice watchdog already built and running every 2 hours — it will auto-switch to Bland if n8n is ever checked again
+- Hetzner can be canceled (RealOrAI is the only remaining dependency — still blocked on SSH)
+
+### Next 3 Priority Actions
+1. **Add 4 secrets above → run "Setup Bland.ai Voice Agent" workflow** → (205) 605-9842 is live again
+2. **Add RESEND_API_KEY + FROM_EMAIL to GitHub Secrets** → 5 pre-seeded leads auto-send on next pipeline run
+3. **Manually trigger outreach-pipeline from GitHub Actions** → don't wait for the 9am CT cron
+
+---
+
 ## Session: Jul 16, 2026 — late evening
 
 ### Built & Deployed
