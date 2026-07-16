@@ -13,6 +13,44 @@ Rolling session log across all Claude sessions. Read at session start (step 3 of
 
 ---
 
+## Session: Jul 16, 2026 — late evening
+
+### Built & Deployed
+- **Outreach Pipeline** (`agents/tasks/outreach-pipeline.js`) — fully built, committed to main. Scrapes YellowPages → Ling-1T scoring → Laguna M.1 cold email → Resend send → logs to `agents/leads/pipeline-log.json`. Fires Mon/Wed/Fri 9am CT via `.github/workflows/outreach-pipeline.yml`.
+- **pipeline-log.json** seeded with 5 real verified Alabama leads via Vibe Prospecting MCP:
+  1. Robert Cramer — Birmingham Dental — `robert@birminghamdental.com` ✅ valid — software background, high-dollar implants
+  2. Kimberly Alston — Quality Car Care LLC — `kim@qualitycarcare.autos` ✅ valid
+  3. Scott Sprayberry — Sprayberry Orthodontics — `scottsprayberry@sprayberryortho.com` ✅ valid — $5-10M revenue
+  4. Dylan Devall — Next Level Automotive — `dani@nl-autodetail.com` (catch-all)
+  5. Sunny Chung — Inverness Smiles — `chung@invernesssmiles.com` (catch-all)
+  - All have personalized cold emails written and ready to send. `sent: false` — waiting on RESEND_API_KEY.
+- **Reverted bad Notion Brain ID commit** — prior session had wrong ID `30c9ce9b...`. Real Brain ID confirmed: `3629f925-93e5-814e-a7c8-dc4e1d4c93e7`. Reverted with `git revert`.
+- **CLAUDE.md** corrected — Brain URL now points to correct ID.
+
+### Decisions Made & Why
+| Decision | Why |
+|----------|-----|
+| OpenClaw = session launcher only, not infra | It ran in a runaway loop and burned OpenRouter credits. Spawning sessions = OK. Autonomous loops = retired. |
+| Vibe Prospecting MCP for lead enrichment | YellowPages rarely has email. Vibe finds verified owner emails + LinkedIn + revenue estimates. Only available in claude.ai sessions, not GitHub Actions. |
+| Seed pipeline-log.json manually via MCP | Can't trigger GitHub Actions via MCP (403 — no actions:write scope). Worked around by pulling leads in-session. |
+| Robert Cramer = #1 outreach priority | Valid email, software background (understands AI immediately), high-dollar procedures ($1,500-3K each), so missed calls cost most. |
+| FROM_EMAIL = `Eric Glover <eric@grabcalls.com>` | Warm name+email combo. Domain must be verified in Resend or emails bounce. |
+
+### Open Blockers
+1. **RESEND_API_KEY not in GitHub Secrets** — pipeline runs but logs only, does not send. Fix: resend.com → API key (already created per screenshot) → github.com → repo → Settings → Secrets → Actions → `RESEND_API_KEY`
+2. **FROM_EMAIL not in GitHub Secrets** — same path, add `FROM_EMAIL` = `Eric Glover <eric@grabcalls.com>`
+3. **grabcalls.com not verified in Resend** — without this, emails from eric@grabcalls.com are rejected. Fix: Resend → Domains → Add Domain → grabcalls.com → copy DNS records → add to Cloudflare
+4. **NOTION_TOKEN not in GitHub Secrets** — daily agent can't write to Brain. Low priority vs sending emails.
+5. **Hetzner SSH broken** — n8n/RealOrAI status unknown. Fix: hetzner.com → web console → VNC → `docker ps`
+6. **GrabCalls MRR = $0** — 5 emails ready to send, blocked only on RESEND_API_KEY + domain verify
+
+### Next 3 Priority Actions
+1. Add RESEND_API_KEY + FROM_EMAIL to GitHub Secrets (Resend account already created — key is on screen)
+2. Verify grabcalls.com in Resend → add DNS records in Cloudflare → pipeline starts auto-sending Monday
+3. Manually trigger pipeline at github.com/G-lover10/grabcalls-website/actions to send the 5 seeded leads immediately (don't wait for Monday)
+
+---
+
 ## Session: Jul 16, 2026 — evening
 
 ### Built & Deployed
