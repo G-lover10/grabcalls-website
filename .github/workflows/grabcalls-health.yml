@@ -1,0 +1,63 @@
+name: GrabCalls Daily Health Check
+
+on:
+  schedule:
+    - cron: '7 13 * * *'  # 8:07 AM Central (UTC-5) every day
+  workflow_dispatch:        # Allow manual trigger anytime
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check grabcalls.com is live
+        id: site_check
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://grabcalls.com" 2>/dev/null || echo "000")
+          echo "site_status=$STATUS" >> $GITHUB_OUTPUT
+          if [ "$STATUS" != "200" ]; then
+            echo "SITE_DOWN=true" >> $GITHUB_ENV
+            echo "❌ grabcalls.com DOWN — HTTP $STATUS"
+          else
+            echo "✅ grabcalls.com live — HTTP $STATUS"
+          fi
+
+      - name: Check GitHub Pages deployment
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://g-lover10.github.io/grabcalls-website/" 2>/dev/null || echo "000")
+          if [ "$STATUS" != "200" ]; then
+            echo "PAGES_DOWN=true" >> $GITHUB_ENV
+            echo "❌ GitHub Pages DOWN — HTTP $STATUS"
+          else
+            echo "✅ GitHub Pages live — HTTP $STATUS"
+          fi
+
+      - name: Check Station 12 app
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://g-lover10.github.io/grabcalls-website/station-12/" 2>/dev/null || echo "000")
+          if [ "$STATUS" != "200" ]; then
+            echo "STATION12_DOWN=true" >> $GITHUB_ENV
+            echo "❌ Station 12 app DOWN — HTTP $STATUS"
+          else
+            echo "✅ Station 12 app live — HTTP $STATUS"
+          fi
+
+      - name: Log results — no issues
+        if: env.SITE_DOWN != 'true' && env.PAGES_DOWN != 'true' && env.STATION12_DOWN != 'true'
+        run: |
+          echo "================================"
+          echo "✅ All GrabCalls systems healthy"
+          echo "$(date)"
+          echo "================================"
+
+      - name: Log results — issues found
+        if: env.SITE_DOWN == 'true' || env.PAGES_DOWN == 'true' || env.STATION12_DOWN == 'true'
+        run: |
+          echo "================================"
+          echo "⚠️  GrabCalls Health Issues Found"
+          echo "================================"
+          [ "$SITE_DOWN" == "true" ] && echo "❌ grabcalls.com is DOWN"
+          [ "$PAGES_DOWN" == "true" ] && echo "❌ GitHub Pages is DOWN"
+          [ "$STATION12_DOWN" == "true" ] && echo "❌ Station 12 app is DOWN"
+          echo "Check: https://github.com/G-lover10/grabcalls-website/actions"
+          echo "================================"
+          exit 1

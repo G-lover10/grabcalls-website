@@ -1,0 +1,16 @@
+{
+  "name": "glover-enterprise-agent",
+  "version": "1.0.0",
+  "description": "Multi-model agent system for GrabCalls — Fable 5, Laguna, Ling-1T via OpenRouter",
+  "main": "index.js",
+  "scripts": {
+    "daily-brief": "node index.js daily-brief",
+    "research": "node index.js research",
+    "outreach": "node index.js outreach",
+    "campaign-analysis": "node index.js campaign-analysis",
+    "test": "node index.js test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
