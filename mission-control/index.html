@@ -3,1122 +3,788 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GrabCalls Mission Control v5</title>
+<title>Glover Enterprise — Mission Control v6</title>
 <style>
-  :root {
-    --bg: #06060b;
-    --panel: #0d0d14;
-    --panel2: #12121c;
-    --border: #1a1a2e;
-    --accent: #7c6cff;
-    --accent2: #00d4aa;
-    --accent3: #ff6b6b;
-    --accent4: #ffd93d;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --online: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --discord: #5865F2;
-    --glow: rgba(124,108,255,.15);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Inter','Segoe UI',system-ui,sans-serif; min-height:100vh; overflow-x:hidden; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070C17;--s1:#0D1625;--s2:#132030;--s3:#1A2E44;
+  --border:#1E3348;--border2:#253F5A;
+  --green:#00D68F;--amber:#F5A623;--red:#FF4757;--blue:#2E86FF;
+  --cyan:#00C5B5;--orange:#FF8C42;--purple:#7C6CFF;
+  --text:#DCE8F8;--muted:#4E7090;--dim:#2A4560;
+  --green-bg:rgba(0,214,143,.1);--amber-bg:rgba(245,166,35,.1);
+  --red-bg:rgba(255,71,87,.1);--blue-bg:rgba(46,134,255,.1);
+  --cyan-bg:rgba(0,197,181,.1);
+}
+html{font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
 
-  /* TOPBAR */
-  .topbar { display:flex; align-items:center; justify-content:space-between; padding:8px 20px; background:var(--panel); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
-  .logo { display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; }
-  .logo-icon { width:32px; height:32px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 2px 12px rgba(124,108,255,.3); }
-  .version { font-size:10px; color:var(--accent); background:rgba(124,108,255,.12); padding:2px 8px; border-radius:10px; font-weight:600; letter-spacing:.5px; }
-  .nav-tabs { display:flex; gap:1px; background:var(--panel2); border-radius:8px; padding:3px; }
-  .nav-tab { background:none; border:none; color:var(--muted); padding:6px 13px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; transition:all .2s; white-space:nowrap; }
-  .nav-tab:hover { color:var(--text); background:rgba(255,255,255,.04); }
-  .nav-tab.active { background:var(--accent); color:white; box-shadow:0 2px 8px rgba(124,108,255,.3); }
-  .topbar-right { display:flex; align-items:center; gap:12px; }
-  .pulse-dot { width:8px; height:8px; border-radius:50%; background:var(--online); box-shadow:0 0 8px var(--online); animation:pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--online)}50%{opacity:.6;box-shadow:0 0 16px var(--online)} }
-  @keyframes glow-pulse { 0%,100%{box-shadow:0 0 4px currentColor}50%{box-shadow:0 0 12px currentColor} }
-  .clock { font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
-  .sys-status { font-size:11px; color:var(--muted); }
+/* ── TOPBAR ── */
+#topbar{
+  background:var(--s1);border-bottom:1px solid var(--border);
+  padding:0 20px;height:52px;display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--cyan),#0082C8);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:16px;height:16px;fill:#fff}
+.logo-name{font-weight:700;font-size:15px;letter-spacing:-.02em}
+.logo-name span{color:var(--cyan)}
+.v-badge{font-size:10px;background:var(--cyan-bg);color:var(--cyan);border:1px solid var(--cyan);border-radius:4px;padding:1px 6px;font-weight:700;letter-spacing:.06em}
+.tab-row{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap;transition:background .15s,color .15s}
+.tab:hover{background:var(--s2);color:var(--text)}
+.tab.active{background:var(--s2);color:var(--text);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
 
-  /* LAYOUT */
-  .main { display:grid; grid-template-columns:200px 1fr 280px; height:calc(100vh - 49px); }
+/* ── LAYOUT ── */
+#layout{display:flex;flex:1;min-height:0}
+#sidebar{width:180px;background:var(--s1);border-right:1px solid var(--border);padding:16px 10px;flex-shrink:0;overflow-y:auto}
+#main{flex:1;overflow-y:auto;padding:20px}
+#rpanel{width:260px;background:var(--s1);border-left:1px solid var(--border);padding:16px;flex-shrink:0;overflow-y:auto}
 
-  /* SIDEBAR */
-  .sidebar { background:var(--panel); border-right:1px solid var(--border); padding:10px 0; overflow-y:auto; }
-  .sb-label { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; padding:0 14px; margin:14px 0 6px; }
-  .sb-item { display:flex; align-items:center; gap:8px; padding:7px 14px; cursor:pointer; transition:all .15s; font-size:12px; border-left:2px solid transparent; color:var(--muted); }
-  .sb-item:hover { background:rgba(124,108,255,.06); color:var(--text); }
-  .sb-item.active { background:rgba(124,108,255,.1); border-left-color:var(--accent); color:var(--accent); font-weight:600; }
-  .sb-icon { font-size:14px; width:18px; text-align:center; }
-  .sb-badge { margin-left:auto; font-size:9px; font-weight:700; padding:2px 6px; border-radius:10px; }
-  .sb-badge.green { background:rgba(34,197,94,.15); color:var(--online); }
-  .sb-badge.purple { background:rgba(124,108,255,.15); color:var(--accent); }
-  .sb-badge.yellow { background:rgba(245,158,11,.15); color:var(--warning); }
-  .sb-badge.red { background:rgba(239,68,68,.15); color:var(--danger); }
+/* SIDEBAR */
+.sb-section{margin-bottom:20px}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 8px;margin-bottom:6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--muted);transition:background .1s,color .1s;text-decoration:none;border:none;background:none;width:100%;text-align:left}
+.sb-item:hover,.sb-item.active{background:var(--s2);color:var(--text)}
+.sb-item .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}
+.dot-amber{background:var(--amber)}
+.dot-red{background:var(--red)}
+.dot-dim{background:var(--dim)}
 
-  /* CONTENT */
-  .content { overflow-y:auto; padding:16px; background:var(--bg); }
+/* VIEWS */
+.view{display:none}
+.view.active{display:block}
 
-  /* RIGHT PANEL */
-  .right-panel { background:var(--panel); border-left:1px solid var(--border); overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:12px; }
-  .rp-section { background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:12px; }
-  .rp-title { font-size:11px; font-weight:700; color:var(--text); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+.sec-title{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.sec-sub{font-size:12px;color:var(--muted)}
 
-  /* STATS ROW */
-  .stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
-  .stat-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; position:relative; overflow:hidden; transition:all .2s; }
-  .stat-card:hover { border-color:var(--accent); transform:translateY(-1px); }
-  .stat-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
-  .stat-card.purple::after { background:linear-gradient(90deg,var(--accent),#9d8cff); }
-  .stat-card.green::after { background:linear-gradient(90deg,var(--accent2),#66ffdd); }
-  .stat-card.yellow::after { background:linear-gradient(90deg,var(--accent4),#ffe680); }
-  .stat-card.red::after { background:linear-gradient(90deg,var(--accent3),#ff9999); }
-  .stat-card.blue::after { background:linear-gradient(90deg,var(--discord),#8b9cf8); }
-  .stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
-  .stat-value { font-size:24px; font-weight:800; margin-bottom:2px; }
-  .stat-sub { font-size:10px; color:var(--muted); }
-  .stat-sub.up { color:var(--online); }
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
 
-  /* SECTION HEADERS */
-  .sec-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-  .sec-title { font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; }
-  .sec-title::before { content:''; width:3px; height:14px; background:var(--accent); border-radius:2px; }
-  .sec-btn { font-size:10px; color:var(--accent); cursor:pointer; padding:4px 10px; border:1px solid rgba(124,108,255,.3); border-radius:6px; background:none; transition:all .2s; }
-  .sec-btn:hover { background:var(--accent); color:white; }
+/* CARD */
+.card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.card+.card{margin-top:12px}
 
-  /* AGENT GRID */
-  .agent-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin-bottom:16px; }
-  .agent-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px; transition:all .25s; cursor:pointer; position:relative; overflow:hidden; }
-  .agent-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 16px var(--glow); }
-  .agent-card .status-bar { position:absolute; top:0; left:0; right:0; height:2px; }
-  .agent-card.online .status-bar { background:var(--online); box-shadow:0 0 8px rgba(34,197,94,.4); }
-  .agent-card.busy .status-bar { background:var(--warning); box-shadow:0 0 8px rgba(245,158,11,.4); }
-  .agent-card.offline .status-bar { background:var(--muted); }
-  .agent-card.error .status-bar { background:var(--danger); box-shadow:0 0 8px rgba(239,68,68,.4); }
-  .agent-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .agent-avi { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; position:relative; }
-  .agent-avi.online { background:rgba(34,197,94,.1); }
-  .agent-avi.busy { background:rgba(245,158,11,.1); }
-  .agent-avi.offline { background:rgba(100,116,139,.1); }
-  .agent-pulse { position:absolute; bottom:1px; right:1px; width:9px; height:9px; border-radius:50%; border:2px solid var(--panel); }
-  .agent-pulse.online { background:var(--online); animation:glow-pulse 2s infinite; }
-  .agent-pulse.busy { background:var(--warning); animation:glow-pulse 2s infinite; }
-  .agent-pulse.offline { background:var(--muted); }
-  .agent-name { font-size:12px; font-weight:700; }
-  .agent-role { font-size:10px; color:var(--muted); }
-  .agent-task { font-size:10px; color:var(--muted); background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:6px; padding:6px 8px; margin-bottom:6px; line-height:1.4; min-height:30px; }
-  .agent-foot { display:flex; align-items:center; justify-content:space-between; }
-  .agent-tag { font-size:9px; padding:2px 6px; border-radius:4px; font-weight:600; }
-  .agent-tag.n8n { background:rgba(255,107,107,.12); color:var(--accent3); }
-  .agent-tag.discord { background:rgba(88,101,242,.12); color:#818cf8; }
-  .agent-tag.github { background:rgba(255,255,255,.08); color:var(--text); }
-  .agent-tag.claude { background:rgba(124,108,255,.12); color:var(--accent); }
-  .agent-status-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
-  .agent-status-label.online { color:var(--online); }
-  .agent-status-label.busy { color:var(--warning); }
-  .agent-status-label.offline { color:var(--muted); }
+/* STAT TILE */
+.stat-tile{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.stat-num{font-size:24px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stat-change{font-size:11px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--muted)}
 
-  /* QUICK ACTIONS */
-  .quick-actions { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
-  .qa-btn { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:5px; }
-  .qa-btn:hover { border-color:var(--accent); color:var(--accent); background:rgba(124,108,255,.05); }
+/* STATUS BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.04em}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,214,143,.25)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,166,35,.25)}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,71,87,.25)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid rgba(46,134,255,.25)}
+.badge-cyan{background:var(--cyan-bg);color:var(--cyan);border:1px solid rgba(0,197,181,.25)}
+.badge-dim{background:rgba(42,69,96,.3);color:var(--muted);border:1px solid var(--dim)}
 
-  /* REVENUE */
-  .revenue-bar { display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:14px; }
-  .rev-amount { font-size:28px; font-weight:800; color:var(--accent2); }
-  .rev-goal { font-size:11px; color:var(--muted); }
-  .rev-track { flex:1; }
-  .rev-bar-bg { height:8px; background:var(--border); border-radius:4px; overflow:hidden; margin-top:6px; }
-  .rev-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent2),var(--accent)); border-radius:4px; transition:width 1s ease; }
+/* SYSTEM ROW */
+.sys-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.sys-row:last-child{border-bottom:none}
+.sys-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sys-name{flex:1;font-size:13px;font-weight:500}
+.sys-detail{font-size:11px;color:var(--muted);flex:1}
 
-  /* TASK BOARD */
-  .task-board { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
-  .task-col { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; min-height:180px; }
-  .task-col-head { font-size:11px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
-  .task-cnt { background:var(--border); padding:1px 6px; border-radius:8px; font-size:10px; color:var(--muted); }
-  .task-item { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:6px; padding:8px; margin-bottom:6px; transition:all .15s; cursor:pointer; }
-  .task-item:hover { border-color:var(--accent); }
-  .task-title { font-size:11px; font-weight:500; margin-bottom:4px; line-height:1.4; }
-  .task-meta { display:flex; gap:6px; align-items:center; }
-  .task-tag { font-size:8px; padding:2px 5px; border-radius:3px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; }
-  .task-tag.ghl { background:rgba(0,212,170,.12); color:var(--accent2); }
-  .task-tag.n8n { background:rgba(255,107,107,.12); color:var(--accent3); }
-  .task-tag.discord { background:rgba(88,101,242,.12); color:#818cf8; }
-  .task-tag.website { background:rgba(255,217,61,.12); color:var(--accent4); }
-  .task-tag.system { background:rgba(124,108,255,.12); color:var(--accent); }
-  .task-who { font-size:9px; color:var(--muted); margin-left:auto; }
+/* AGENT CARD */
+.agent-card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative;overflow:hidden}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.ac-cyan::before{background:var(--cyan)}.ac-orange::before{background:var(--orange)}.ac-green::before{background:var(--green)}.ac-blue::before{background:var(--blue)}.ac-purple::before{background:var(--purple)}
+.agent-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.agent-emoji{font-size:24px;line-height:1}
+.agent-name{font-size:13px;font-weight:700}
+.agent-role{font-size:11px;color:var(--muted)}
+.agent-cost{font-size:11px;margin-top:8px;color:var(--muted)}
+.agent-cost strong{color:var(--text)}
 
-  /* PIPELINE */
-  .pipe-row { display:flex; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
-  .pipe-row:last-child { border-bottom:none; }
-  .pipe-name { font-size:11px; color:var(--muted); width:140px; }
-  .pipe-bar-bg { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin:0 12px; }
-  .pipe-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:3px; }
-  .pipe-count { font-size:13px; font-weight:700; width:24px; text-align:right; }
+/* TASK KANBAN */
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start}
+@media(max-width:700px){.kanban{grid-template-columns:1fr}}
+.kb-col-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.kb-count{background:var(--s3);color:var(--text);border-radius:4px;padding:1px 7px;font-size:11px}
+.kb-card{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px}
+.kb-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.4}
+.kb-tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;margin-right:4px;letter-spacing:.04em}
+.tag-grabcalls{background:rgba(0,197,181,.15);color:var(--cyan)}
+.tag-listsnap{background:rgba(255,140,66,.15);color:var(--orange)}
+.tag-system{background:rgba(124,108,255,.15);color:var(--purple)}
+.tag-bfrs{background:rgba(245,166,35,.15);color:var(--amber)}
 
-  /* ACTIVITY */
-  .act-item { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.04); align-items:flex-start; }
-  .act-item:last-child { border-bottom:none; }
-  .act-icon { width:24px; height:24px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; }
-  .act-icon.system { background:rgba(124,108,255,.12); }
-  .act-icon.n8n { background:rgba(255,107,107,.12); }
-  .act-icon.discord { background:rgba(88,101,242,.12); }
-  .act-icon.ghl { background:rgba(0,212,170,.12); }
-  .act-text { font-size:11px; line-height:1.4; }
-  .act-text strong { color:var(--accent); }
-  .act-time { font-size:9px; color:var(--muted); margin-top:1px; }
+/* PROJECT CARD */
+.proj-card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.proj-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.proj-name{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.proj-url{font-size:11px;color:var(--muted);margin-top:2px}
+.proj-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.proj-items{display:flex;flex-direction:column;gap:4px}
+.proj-item{font-size:12px;color:var(--muted);display:flex;gap:6px}
+.proj-item::before{content:'→';color:var(--cyan);flex-shrink:0}
 
-  /* MORNING BRIEF */
-  .brief-section { background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:12px; }
-  .brief-title { font-size:12px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
-  .brief-item { font-size:11px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.04); display:flex; align-items:flex-start; gap:8px; }
-  .brief-item:last-child { border-bottom:none; }
-  .brief-bullet { color:var(--accent); font-weight:700; }
+/* CMD CARD */
+.cmd-card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;gap:12px;align-items:flex-start}
+.cmd-model{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.cmd-code{font-family:'Cascadia Code','Fira Code',monospace;font-size:12px;background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:6px 10px;color:var(--cyan);margin:6px 0;display:block;overflow-x:auto;white-space:nowrap}
+.cmd-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.cmd-desc{font-size:12px;color:var(--muted);line-height:1.5}
 
-  /* TODAY SESSION */
-  .session-card { background:linear-gradient(135deg,rgba(124,108,255,.06),rgba(0,212,170,.04)); border:1px solid rgba(124,108,255,.2); border-radius:10px; padding:14px; margin-bottom:14px; }
-  .session-title { font-size:12px; font-weight:700; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+/* INBOX ITEM */
+.inbox-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.inbox-item:last-child{border-bottom:none}
+.inbox-priority{width:4px;border-radius:2px;flex-shrink:0}
+.p-red{background:var(--red)}.p-amber{background:var(--amber)}.p-blue{background:var(--blue)}
+.inbox-text{font-size:13px;line-height:1.5}
+.inbox-meta{font-size:11px;color:var(--muted);margin-top:4px}
 
-  /* DISCORD PANEL */
-  .dc-messages { overflow-y:auto; padding:8px; background:var(--bg); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; min-height:200px; max-height:320px; }
-  .dc-msg { padding:6px 8px; margin-bottom:4px; border-radius:6px; }
-  .dc-msg.sent { background:rgba(88,101,242,.1); border-left:2px solid var(--discord); }
-  .dc-msg.received { background:rgba(255,255,255,.02); border-left:2px solid var(--accent2); }
-  .dc-author { font-size:10px; font-weight:700; margin-bottom:2px; }
-  .dc-msg.sent .dc-author { color:var(--discord); }
-  .dc-msg.received .dc-author { color:var(--accent2); }
-  .dc-text { font-size:12px; line-height:1.4; }
-  .dc-time { font-size:9px; color:var(--muted); margin-top:2px; }
-  .dc-input-row { display:flex; gap:6px; }
-  .dc-input { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:8px 12px; color:var(--text); font-size:12px; outline:none; }
-  .dc-input:focus { border-color:var(--discord); }
-  .dc-send { background:var(--discord); border:none; color:white; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; }
+/* IDEA ITEM */
+.idea-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6;color:var(--muted)}
+.idea-item:last-child{border-bottom:none}
+.idea-item strong{color:var(--text);display:block;margin-bottom:2px}
 
-  /* NOTION */
-  .notion-stat { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
-  .notion-stat:last-child { border-bottom:none; }
+/* LINKS */
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
 
-  /* SERVER */
-  .server-stat { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
-  .server-stat:last-child { border-bottom:none; }
-  .server-label { font-size:11px; color:var(--muted); width:100px; }
-  .server-value { font-size:12px; font-weight:600; font-family:monospace; }
+/* RIGHT PANEL */
+.rp-section{margin-bottom:20px}
+.rp-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.activity-item{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.activity-text{color:var(--muted);line-height:1.4}
+.activity-text strong{color:var(--text)}
+.quick-link{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--s2);border:1px solid var(--border);border-radius:6px;margin-bottom:6px;font-size:12px;color:var(--text);text-decoration:none;transition:background .1s}
+.quick-link:hover{background:var(--s3);text-decoration:none}
+.quick-link-icon{font-size:14px}
 
-  /* MODAL */
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:500; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
-  .modal-overlay.visible { display:flex; }
-  .modal { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:22px; width:500px; max-width:92vw; max-height:90vh; overflow-y:auto; }
-  .modal-title { font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-  .modal-close { margin-left:auto; background:none; border:none; color:var(--muted); cursor:pointer; font-size:18px; }
-  .modal-field { margin-bottom:10px; }
-  .modal-label { font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px; display:block; }
-  .modal-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:8px 12px; color:var(--text); font-size:13px; outline:none; }
-  .modal-input:focus { border-color:var(--accent); }
-  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
-  .btn { padding:7px 16px; border-radius:8px; font-size:12px; cursor:pointer; border:none; font-weight:600; transition:all .15s; }
-  .btn-primary { background:var(--accent); color:white; }
-  .btn-primary:hover { opacity:.85; }
-  .btn-ghost { background:none; border:1px solid var(--border); color:var(--muted); }
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
 
-  /* COMMAND BAR */
-  .cmd-bar { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:560px; background:var(--panel); border:1px solid var(--accent); border-radius:12px; padding:10px 14px; display:none; align-items:center; gap:8px; box-shadow:0 8px 32px rgba(124,108,255,.3); z-index:200; }
-  .cmd-bar.visible { display:flex; }
-  .cmd-input { flex:1; background:none; border:none; outline:none; color:var(--text); font-size:14px; }
-  .cmd-input::placeholder { color:var(--muted); }
+/* GOAL BAR */
+.goal-wrap{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.goal-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.goal-label{font-size:13px;font-weight:600}
+.goal-value{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.goal-bar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.goal-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--orange));transition:width .4s}
+.goal-note{font-size:11px;color:var(--muted);margin-top:8px}
 
-  /* TOAST */
-  .toast { position:fixed; bottom:70px; right:20px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 16px; font-size:12px; z-index:1000; transform:translateX(120%); transition:transform .3s; max-width:300px; box-shadow:0 4px 20px rgba(0,0,0,.5); }
-  .toast.show { transform:translateX(0); }
-  .toast.success { border-left:3px solid var(--online); }
-  .toast.error { border-left:3px solid var(--danger); }
-  .toast.info { border-left:3px solid var(--accent); }
-
-  /* LIVE BADGE */
-  .live-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; padding:2px 7px; border-radius:10px; }
-  .live-badge.live { background:rgba(34,197,94,.12); color:var(--online); }
-  .live-badge.offline { background:rgba(100,116,139,.12); color:var(--muted); }
-  .live-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width:4px; }
-  ::-webkit-scrollbar-track { background:transparent; }
-  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-  ::-webkit-scrollbar-thumb:hover { background:var(--muted); }
-
-  @media (max-width:1200px) {
-    .main { grid-template-columns:180px 1fr 240px; }
-    .stats-row { grid-template-columns:repeat(3,1fr); }
-  }
+/* SEPARATOR */
+.gap{height:16px}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
-<nav class="topbar">
+<div id="topbar">
   <div class="logo">
-    <div class="logo-icon">&#x1F4DE;</div>
-    <span>GrabCalls <span style="color:var(--accent)">Mission Control</span></span>
-    <span class="version">v5</span>
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+    <div class="logo-name">Glover <span>Enterprise</span></div>
+    <div class="v-badge">v6</div>
   </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('overview',this)">Overview</button>
-    <button class="nav-tab" onclick="switchView('morning',this)">&#x2600; Morning Brief</button>
-    <button class="nav-tab" onclick="switchView('discord',this)">Discord</button>
-    <button class="nav-tab" onclick="switchView('notion',this)">Notion</button>
-    <button class="nav-tab" onclick="switchView('agents',this)">Agents</button>
-    <button class="nav-tab" onclick="switchView('tasks',this)">Tasks</button>
-    <button class="nav-tab" onclick="switchView('pipeline',this)">Pipeline</button>
-    <button class="nav-tab" onclick="switchView('server',this)" style="color:var(--accent2)">&#x26A1; Server</button>
-    <button class="nav-tab" onclick="switchView('gumroad',this)" style="color:#ff90e8">&#x1F4B0; Gumroad</button>
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab" onclick="switchTab('systems',this)">Systems</button>
+    <button class="tab" onclick="switchTab('agents',this)">Agents</button>
+    <button class="tab" onclick="switchTab('tasks',this)">Tasks</button>
+    <button class="tab" onclick="switchTab('projects',this)">Projects</button>
+    <button class="tab" onclick="switchTab('pipeline',this)">Pipeline</button>
+    <button class="tab" onclick="switchTab('brain',this)">Brain</button>
   </div>
   <div class="topbar-right">
-    <div class="pulse-dot"></div>
-    <span class="sys-status" id="systemStatus">All Systems Operational</span>
-    <span class="clock" id="clock"></span>
-    <button class="btn btn-primary" style="font-size:11px;padding:5px 12px" onclick="openModal('taskModal')">+ Task</button>
+    <div class="live-dot"></div>
+    <span id="clock">--:--:--</span>
   </div>
-</nav>
-
-<!-- MAIN LAYOUT -->
-<div class="main">
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sb-label">Dashboard</div>
-  <div class="sb-item active" id="nav-overview" onclick="switchView('overview',this)"><span class="sb-icon">&#x1F3AF;</span> Overview</div>
-  <div class="sb-item" id="nav-morning" onclick="switchView('morning',this)"><span class="sb-icon">&#x2600;</span> Morning Brief</div>
-
-  <div class="sb-label">Systems</div>
-  <div class="sb-item" id="nav-discord" onclick="switchView('discord',this)"><span class="sb-icon">&#x1F4AC;</span> Discord Bot</div>
-  <div class="sb-item" id="nav-notion" onclick="switchView('notion',this)"><span class="sb-icon">&#x1F4DD;</span> Notion Data</div>
-  <div class="sb-item" id="nav-agents" onclick="switchView('agents',this)"><span class="sb-icon">&#x1F916;</span> Agents <span class="sb-badge green">14</span></div>
-  <div class="sb-item" id="nav-tasks" onclick="switchView('tasks',this)"><span class="sb-icon">&#x2705;</span> Tasks <span class="sb-badge purple" id="task-badge">8</span></div>
-  <div class="sb-item" id="nav-pipeline" onclick="switchView('pipeline',this)"><span class="sb-icon">&#x1F4C8;</span> Pipeline</div>
-  <div class="sb-item" id="nav-server" onclick="switchView('server',this)"><span class="sb-icon">&#x1F5A5;</span> Hetzner <span class="sb-badge green">UP</span></div>
-  <div class="sb-item" id="nav-gumroad" onclick="switchView('gumroad',this)"><span class="sb-icon">&#x1F6D2;</span> Gumroad</div>
-
-  <div class="sb-label">Quick Actions</div>
-  <div class="sb-item" onclick="switchView('discord');setTimeout(()=>document.getElementById('discordInput').focus(),200)"><span class="sb-icon">&#x1F4E8;</span> Message Bot</div>
-  <div class="sb-item" onclick="openLink('https://n8n.grabcalls.com')"><span class="sb-icon">&#x26A1;</span> n8n Live</div>
-  <div class="sb-item" onclick="openLink('https://app.gohighlevel.com')"><span class="sb-icon">&#x1F517;</span> GHL CRM</div>
-  <div class="sb-item" onclick="openLink('https://terminal.grabcalls.com')"><span class="sb-icon">&#x1F4BB;</span> Web Terminal</div>
-  <div class="sb-item" onclick="openModal('taskModal')"><span class="sb-icon">&#x2795;</span> New Task</div>
-
-  <div class="sb-label">Links</div>
-  <div class="sb-item" onclick="openLink('https://discord.com')"><span class="sb-icon">&#x1F517;</span> Discord</div>
-  <div class="sb-item" onclick="openLink('https://www.notion.so')"><span class="sb-icon">&#x1F517;</span> Notion</div>
-  <div class="sb-item" onclick="openLink('https://github.com/G-lover10')"><span class="sb-icon">&#x1F517;</span> GitHub</div>
-  <div class="sb-item" onclick="openLink('https://g-lover10.github.io/grabcalls-website/')"><span class="sb-icon">&#x1F310;</span> Live Website</div>
-  <div class="sb-item" onclick="openLink('https://app.gumroad.com/products')"><span class="sb-icon">&#x1F517;</span> Gumroad</div>
-
-  <div class="sb-label">Print Files</div>
-  <div class="sb-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/HVAC-flyer-v2.html')"><span class="sb-icon">&#x2744;</span> HVAC Flyer</div>
-  <div class="sb-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/DENTAL-flyer-v2.html')"><span class="sb-icon">&#x1F9B7;</span> Dental Flyer</div>
-  <div class="sb-item" onclick="openLocal('C:/Users/medic/GrabCalls/flyers/MASSAGE-flyer-v2.html')"><span class="sb-icon">&#x1F486;</span> Massage Flyer</div>
-</aside>
-
-<!-- CONTENT AREA -->
-<main class="content" id="mainContent">
-
-<!-- ========== OVERVIEW VIEW ========== -->
-<div id="view-overview">
-  <!-- Revenue Tracker -->
-  <div class="revenue-bar">
-    <div>
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Monthly Revenue</div>
-      <div class="rev-amount" id="rev-display">$0</div>
-    </div>
-    <div class="rev-track">
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
-        <span>$0</span>
-        <span style="color:var(--accent2)">Goal: $10,000/mo</span>
-      </div>
-      <div class="rev-bar-bg"><div class="rev-bar-fill" id="rev-bar" style="width:0%"></div></div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:10px;color:var(--muted)">Clients</div>
-      <div style="font-size:20px;font-weight:800;color:var(--accent4)">0</div>
-    </div>
-  </div>
-
-  <!-- Stats Row -->
-  <div class="stats-row">
-    <div class="stat-card purple">
-      <div class="stat-label">Active Agents</div>
-      <div class="stat-value" style="color:var(--accent)">14</div>
-      <div class="stat-sub up">All systems running</div>
-    </div>
-    <div class="stat-card green">
-      <div class="stat-label">n8n Workflows</div>
-      <div class="stat-value" style="color:var(--accent2)">14</div>
-      <div class="stat-sub">on Hetzner server</div>
-    </div>
-    <div class="stat-card blue">
-      <div class="stat-label">Notion Leads</div>
-      <div class="stat-value" style="color:var(--discord)" id="stat-leads">...</div>
-      <div class="stat-sub" id="stat-leads-sub">Loading...</div>
-    </div>
-    <div class="stat-card yellow">
-      <div class="stat-label">Notion Tasks</div>
-      <div class="stat-value" style="color:var(--accent4)" id="stat-tasks-count">...</div>
-      <div class="stat-sub" id="stat-tasks-sub">Loading...</div>
-    </div>
-    <div class="stat-card red">
-      <div class="stat-label">Uptime</div>
-      <div class="stat-value" style="color:var(--accent3)" id="stat-uptime">0m</div>
-      <div class="stat-sub" id="uptime-label">Just opened</div>
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="quick-actions">
-    <button class="qa-btn" onclick="switchView('discord')" style="border-color:rgba(88,101,242,.3);color:#818cf8">&#x1F4AC; Message Bot</button>
-    <button class="qa-btn" onclick="switchView('notion')">&#x1F4DD; Notion Live</button>
-    <button class="qa-btn" onclick="openLink('mailto:grabcalls@gmail.com')" style="border-color:rgba(255,107,107,.3);color:var(--accent3)">&#x1F4E7; Send Email</button>
-    <button class="qa-btn" onclick="openLink('https://n8n.grabcalls.com')">&#x26A1; n8n Dashboard</button>
-    <button class="qa-btn" onclick="openLink('https://app.gohighlevel.com')">&#x1F517; GHL CRM</button>
-    <button class="qa-btn" onclick="switchView('server')">&#x1F5A5; Server</button>
-    <button class="qa-btn" onclick="openLink('https://terminal.grabcalls.com')">&#x1F4BB; Terminal</button>
-    <button class="qa-btn" onclick="openModal('taskModal')">+ New Task</button>
-    <button class="qa-btn" onclick="refreshNotionStats()">&#x1F504; Refresh</button>
-  </div>
-
-  <!-- Today's Session Card -->
-  <div class="session-card">
-    <div class="session-title">&#x1F4BB; Today's Session</div>
-    <div id="today-session" style="font-size:11px;line-height:1.6">
-      <div style="color:var(--muted);margin-bottom:6px" id="session-date"></div>
-      <div id="session-items" style="display:flex;flex-direction:column;gap:4px">
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> Mission Control upgraded to v5</div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> 17 agents active on Hetzner</div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--online)">&#x2713;</span> Permanent tunnels: n8n.grabcalls.com</div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--warning)">&#x25CB;</span> Chatbot demo widget built - needs testing</div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--warning)">&#x25CB;</span> Real Massage outreach in progress</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Client Card + Action Items Row -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-    <!-- Real Massage -->
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:8px">
-        &#x1F4DE; Active Client &mdash; Real Massage
-        <span style="margin-left:auto;font-size:9px;background:rgba(239,68,68,.12);color:var(--accent3);padding:2px 8px;border-radius:8px;font-weight:700">HOT LEAD</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;font-size:11px">
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">Phone</span><a href="tel:2054522193" style="color:var(--accent);text-decoration:none">(205) 452-2193</a></div>
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">Address</span><span>6215 US-11, Springville AL</span></div>
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">Hours</span><span>Mon&ndash;Sun 9AM&ndash;8PM</span></div>
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">Rating</span><span style="color:var(--accent4)">&#x2B50; 4.9 stars, 40+ reviews</span></div>
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">Pitch</span><span>Voice agent $197 | Scheduling $297</span></div>
-        <div style="display:flex;gap:8px"><span style="color:var(--muted);width:55px">n8n</span><span style="color:var(--accent2)">https://n8n.grabcalls.com</span></div>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:10px">
-        <button class="sec-btn" style="flex:1;text-align:center" onclick="openLink('https://www.canva.com/d/XhFm6eXuhNdbBjq')">Canva Flyer</button>
-        <button class="sec-btn" style="flex:1;text-align:center" onclick="openLocal('C:/Users/medic/GrabCalls/website/landing-pages/real-massage-v2.html')">Website Preview</button>
-      </div>
-    </div>
-
-    <!-- Eric Action Items -->
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px">&#x26A1; Eric's Action Items</div>
-      <div style="display:flex;flex-direction:column;gap:5px;font-size:11px" id="eric-actions">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:5px;background:rgba(239,68,68,.05);border-radius:6px;border:1px solid rgba(239,68,68,.12)">
-          <span style="color:var(--danger);font-weight:700">1</span>
-          <div><strong>Visit Real Massage</strong><br><span style="color:var(--muted)">(205) 452-2193 &mdash; print flyer + live demo</span></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:5px;background:rgba(239,68,68,.05);border-radius:6px;border:1px solid rgba(239,68,68,.12)">
-          <span style="color:var(--danger);font-weight:700">2</span>
-          <div><strong>Brevo SMTP signup</strong><br><span style="color:var(--muted)">brevo.com free 300/day &rarr; activate email outreach</span></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:5px;background:rgba(245,158,11,.05);border-radius:6px;border:1px solid rgba(245,158,11,.12)">
-          <span style="color:var(--warning);font-weight:700">3</span>
-          <div><strong>GHL Webhook</strong><br><span style="color:var(--muted)">Settings &rarr; Webhooks &rarr; https://n8n.grabcalls.com/webhook/ghl-new-contact</span></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:5px;background:rgba(245,158,11,.05);border-radius:6px;border:1px solid rgba(245,158,11,.12)">
-          <span style="color:var(--warning);font-weight:700">4</span>
-          <div><strong>Rotate GitHub PAT</strong><br><span style="color:var(--muted)">ghp_JVzk6lp... exposed &mdash; regenerate at github.com</span></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:5px;background:rgba(124,108,255,.05);border-radius:6px;border:1px solid rgba(124,108,255,.12)">
-          <span style="color:var(--accent);font-weight:700">5</span>
-          <div><strong>Test Vapi.ai + Bland.ai</strong><br><span style="color:var(--muted)">Pick voice agent backend &mdash; core product</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Agent Grid Preview -->
-  <div class="sec-head">
-    <div class="sec-title">Active Agents</div>
-    <button class="sec-btn" onclick="switchView('agents')">View All 14</button>
-  </div>
-  <div class="agent-grid" id="agentGrid"></div>
-
-  <!-- Task Board Preview -->
-  <div class="sec-head">
-    <div class="sec-title">Task Board</div>
-    <button class="sec-btn" onclick="switchView('tasks')">Full Board</button>
-  </div>
-  <div class="task-board" id="taskBoardPreview"></div>
 </div>
 
-<!-- ========== MORNING BRIEF VIEW ========== -->
-<div id="view-morning" style="display:none">
-  <div style="margin-bottom:16px">
-    <div style="font-size:20px;font-weight:800;margin-bottom:4px">&#x2600; Morning Brief</div>
-    <div style="font-size:12px;color:var(--muted)" id="brief-date"></div>
+<!-- LAYOUT -->
+<div id="layout">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Alive Now</div>
+      <button class="sb-item active" onclick="switchTab('systems',this)">
+        <div class="dot dot-green"></div>GH Actions (3)
+      </button>
+      <button class="sb-item" onclick="switchTab('systems',this)">
+        <div class="dot dot-green"></div>ListSnap Live
+      </button>
+      <button class="sb-item" onclick="switchTab('systems',this)">
+        <div class="dot dot-green"></div>grabcalls.com
+      </button>
+      <button class="sb-item" onclick="switchTab('systems',this)">
+        <div class="dot dot-green"></div>BFRS Functions
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Unknown</div>
+      <button class="sb-item" onclick="switchTab('systems',this)">
+        <div class="dot dot-amber"></div>Hetzner Server
+      </button>
+      <button class="sb-item" onclick="switchTab('systems',this)">
+        <div class="dot dot-amber"></div>n8n Stack
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Projects</div>
+      <button class="sb-item" onclick="switchTab('projects',this)">
+        <div class="dot dot-green"></div>GrabCalls
+      </button>
+      <button class="sb-item" onclick="switchTab('projects',this)">
+        <div class="dot dot-green"></div>ListSnap
+      </button>
+      <button class="sb-item" onclick="switchTab('projects',this)">
+        <div class="dot dot-amber"></div>BFRS
+      </button>
+      <button class="sb-item" onclick="switchTab('projects',this)">
+        <div class="dot dot-amber"></div>RealOrAI
+      </button>
+      <button class="sb-item" onclick="switchTab('projects',this)">
+        <div class="dot dot-dim"></div>TrueTag
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Quick Links</div>
+      <a class="sb-item" href="https://github.com/G-lover10/grabcalls-website/actions" target="_blank">⚡ GH Actions</a>
+      <a class="sb-item" href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank">🧠 Brain</a>
+      <a class="sb-item" href="https://list-snap.netlify.app" target="_blank">📦 ListSnap</a>
+      <a class="sb-item" href="https://openrouter.ai/activity" target="_blank">🔀 OpenRouter</a>
+      <a class="sb-item" href="https://hetzner.com/cloud" target="_blank">🖥️ Hetzner</a>
+    </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <!-- Accomplished -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--online)">&#x2705; What Was Accomplished</div>
-      <div id="brief-accomplished">
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Mission Control upgraded v3 &rarr; v5 with Morning Brief tab</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> 14 n8n workflows running on Hetzner 178.156.227.13</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Permanent Cloudflare tunnels configured (n8n.grabcalls.com)</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> OpenClaw Discord bot live &mdash; Claude AI responding</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Chatbot demo widget built for prospect demos</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> 7 workflow JSONs sanitized for Gumroad product</div>
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- OVERVIEW -->
+    <div id="view-overview" class="view active">
+      <div class="sec-hd">
+        <div class="sec-title">Mission Control</div>
+        <div class="sec-sub">Last updated Jul 16, 2026 · v6 reflects actual running systems</div>
+      </div>
+
+      <!-- STATS -->
+      <div class="g4" style="margin-bottom:16px">
+        <div class="stat-tile">
+          <div class="stat-num" style="color:var(--green)">3</div>
+          <div class="stat-lbl">GH Workflows Live</div>
+          <div class="stat-change up">✓ Daily Agent, Health Check, Deploy</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" style="color:var(--orange)">$0</div>
+          <div class="stat-lbl">GrabCalls MRR</div>
+          <div class="stat-change neutral">Goal: first paying client</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" style="color:var(--cyan)">5</div>
+          <div class="stat-lbl">Models in Stack</div>
+          <div class="stat-change up">Fable 5 · Sonnet · Laguna · Ling-1T</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" style="color:var(--amber)">2</div>
+          <div class="stat-lbl">Blocked Items</div>
+          <div class="stat-change down">Hetzner SSH · GrabCalls client #1</div>
+        </div>
+      </div>
+
+      <!-- GOAL BAR -->
+      <div class="goal-wrap" style="margin-bottom:16px">
+        <div class="goal-header">
+          <div class="goal-label">GrabCalls — First Paying Client</div>
+          <div class="goal-value">$0 / $300/mo target</div>
+        </div>
+        <div class="goal-bar"><div class="goal-fill" style="width:0%"></div></div>
+        <div class="goal-note">Daily agent runs campaign analysis + outreach at 8:15am CT. Run <code style="font-size:11px;color:var(--cyan)">campaign-analysis</code> from GitHub Actions for next best move.</div>
+      </div>
+
+      <!-- INBOX -->
+      <div class="card">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">📬 Brain Inbox — Needs Action</div></div>
+        <div class="inbox-item">
+          <div class="inbox-priority p-red"></div>
+          <div>
+            <div class="inbox-text"><strong>Hetzner SSH recovery</strong> — Access via web console (no SSH key needed). Run <code style="font-size:11px;color:var(--cyan)">docker ps</code> + <code style="font-size:11px;color:var(--cyan)">systemctl list-units</code>. Is n8n actually running? Keep the box or cancel?</div>
+            <div class="inbox-meta">Priority #1 blocker · 178.156.227.13</div>
+          </div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-priority p-red"></div>
+          <div>
+            <div class="inbox-text"><strong>GrabCalls first paying client</strong> — Run <code style="font-size:11px;color:var(--cyan)">campaign-analysis</code> from Actions tab to score all outreach channels. Top picks: auto repair shops + Google Maps scrape → cold email.</div>
+            <div class="inbox-meta">Priority #1 business goal · 0 clients today</div>
+          </div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-priority p-amber"></div>
+          <div>
+            <div class="inbox-text"><strong>ListSnap eBay token</strong> — A valid eBay user token may not be saved in the app. Test via Settings → eBay connection. Regenerate at developer.ebay.com → User Tokens if expired.</div>
+            <div class="inbox-meta">From ListSnap session log · Jul 16</div>
+          </div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-priority p-blue"></div>
+          <div>
+            <div class="inbox-text"><strong>BFRS Postgres 14 → 15 upgrade</strong> — Deprecation deadline has passed (-9 days). Do NOT touch this from here — handle in the BFRS project.</div>
+            <div class="inbox-meta">Urgent but hands-off from this repo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gap"></div>
+
+      <!-- TODAY'S AGENT RUN -->
+      <div class="card">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">⚡ Agent — Latest Idea Capture (Jul 10)</div></div>
+        <div class="idea-item"><strong>Benchmark GPT-5.6 "Sol" for coding tasks</strong>TLDR reports Sol leads on coding/cybersecurity while using fewer tokens at lower cost than Fable 5.</div>
+        <div class="idea-item"><strong>Add parallel subtask processing to God Mode orchestrator</strong>GPT-5.6 multi-agent parallel processing could speed up n8n workflows significantly.</div>
+        <div class="idea-item"><strong>"Relevance beats volume" outbound for GrabCalls</strong>Score accounts for fit, send one targeted email instead of stacking follow-ups to non-fits (UpLead).</div>
+        <div style="margin-top:10px"><a href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank" style="font-size:12px">→ See full Brain for all ideas</a></div>
       </div>
     </div>
 
-    <!-- In Progress -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--warning)">&#x1F504; In Progress</div>
-      <div id="brief-inprogress">
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Real Massage outreach &mdash; waiting for in-person visit</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Cloth On Main &mdash; awaiting email response</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Email outreach agent &mdash; needs Brevo SMTP setup</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Voice agent platform selection (Vapi vs Bland)</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> GrabCalls.com website &mdash; real content needed</div>
-      </div>
-    </div>
+    <!-- SYSTEMS -->
+    <div id="view-systems" class="view">
+      <div class="sec-hd"><div class="sec-title">Systems</div><div class="sec-sub">What's actually running — no guessing</div></div>
 
-    <!-- AI/Tech News -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--accent)">&#x1F4F0; AI/Tech Intel Feed</div>
-      <div id="brief-news" style="font-size:11px;color:var(--muted)">
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Intel Agent scans 7 RSS sources 4x/day &mdash; check Discord #intel</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Viral Intel Agent runs 7AM CST daily &mdash; AI news digest</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Viral Product Hunter scans Reddit every 6h for cloneable businesses</div>
-        <div style="margin-top:8px">
-          <button class="sec-btn" onclick="switchView('discord')">View Intel in Discord</button>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:12px">🟢 Confirmed Running — No Laptop Needed</div>
+
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">GrabCalls Daily Agent</div>
+          <div class="sys-detail">Fires 8:15am CT daily · <code style="font-size:11px;color:var(--cyan)">node agents/index.js daily-brief</code></div>
+          <a href="https://github.com/G-lover10/grabcalls-website/actions/workflows/agent-daily.yml" target="_blank"><span class="badge badge-green">LIVE</span></a>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">GrabCalls Health Check</div>
+          <div class="sys-detail">Fires 8:07am CT daily · checks grabcalls.com + Station 12</div>
+          <a href="https://github.com/G-lover10/grabcalls-website/actions/workflows/grabcalls-health.yml" target="_blank"><span class="badge badge-green">LIVE</span></a>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">GrabCalls Deploy</div>
+          <div class="sys-detail">Auto-deploys grabcalls.com on every push to main</div>
+          <span class="badge badge-green">LIVE</span>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">ListSnap App</div>
+          <div class="sys-detail">list-snap.netlify.app · eBay posting built · AI provider picker</div>
+          <a href="https://list-snap.netlify.app" target="_blank"><span class="badge badge-green">LIVE</span></a>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">BFRS Netlify Functions</div>
+          <div class="sys-detail">chatbot · send-email · keep-alive · pay-period-report (4 functions)</div>
+          <span class="badge badge-green">LIVE</span>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">grabcalls.com (Cloudflare Pages)</div>
+          <div class="sys-detail">Main site + Station 12 + Mission Control + demo pages</div>
+          <a href="https://grabcalls.com" target="_blank"><span class="badge badge-green">LIVE</span></a>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--green)"></div>
+          <div class="sys-name">Notion Master Brain</div>
+          <div class="sys-detail">Shared memory hub · last updated Jul 16, 2026</div>
+          <a href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank"><span class="badge badge-green">LIVE</span></a>
         </div>
       </div>
-    </div>
 
-    <!-- New Ideas -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--accent4)">&#x1F4A1; New Ideas &amp; Opportunities</div>
-      <div id="brief-ideas">
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Agent Orchestrator generates CEO action plans every 4h</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Sales Evolution Engine &mdash; weekly competition + mutation of sales variants</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Gumroad product: AI Automation Starter Kit at $97</div>
-        <div class="brief-item"><span class="brief-bullet">&#x2022;</span> Agent Builder &mdash; POST /agent-builder for full asset packages per client</div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:12px">⚠️ Cannot Confirm — Needs Manual Check</div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--amber)"></div>
+          <div class="sys-name">Hetzner Server (178.156.227.13)</div>
+          <div class="sys-detail">SSH key broken · access via hetzner.com web console · paying monthly</div>
+          <span class="badge badge-amber">UNKNOWN</span>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--amber)"></div>
+          <div class="sys-name">n8n God Mode Stack</div>
+          <div class="sys-detail">Planned on Hetzner · not confirmed running · may be dead</div>
+          <span class="badge badge-amber">UNKNOWN</span>
+        </div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--amber)"></div>
+          <div class="sys-name">RealOrAI (port 8001)</div>
+          <div class="sys-detail">Was on Hetzner · unreachable · status depends on server check</div>
+          <span class="badge badge-amber">UNKNOWN</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Revenue Tracking -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--accent2)">&#x1F4B0; Revenue Tracking</div>
-      <div style="text-align:center;padding:16px">
-        <div style="font-size:36px;font-weight:800;color:var(--accent2)">$0</div>
-        <div style="font-size:11px;color:var(--muted);margin:6px 0">of $10,000/month goal</div>
-        <div class="rev-bar-bg" style="margin:12px 0"><div class="rev-bar-fill" style="width:0%"></div></div>
-        <div style="font-size:11px;color:var(--muted)">Pricing: Chatbot $297 setup + $97/mo | Voice $497 setup + $197/mo | Full Package $997 + $497/mo</div>
-        <div style="margin-top:10px;font-size:11px;color:var(--accent4)">Need just 3 clients at $197/mo to hit $600/mo recurring</div>
-      </div>
-    </div>
-
-    <!-- Eric Actions -->
-    <div class="brief-section">
-      <div class="brief-title" style="color:var(--accent3)">&#x1F3AF; Today's Action Items for Eric</div>
-      <div style="font-size:11px;display:flex;flex-direction:column;gap:6px">
-        <div style="padding:6px;background:rgba(239,68,68,.05);border-radius:6px;border-left:3px solid var(--danger)">
-          <strong>&#x1F525; Visit Real Massage</strong> &mdash; Print flyer, bring tablet with live chatbot demo, close at $197 voice agent
+      <div class="card">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">❌ Retired — Required Device On</div>
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--dim)"></div>
+          <div class="sys-name">OpenClaw</div>
+          <div class="sys-detail">Retired as infra · keep as reading tool only · was burning API in loop</div>
+          <span class="badge badge-dim">RETIRED</span>
         </div>
-        <div style="padding:6px;background:rgba(245,158,11,.05);border-radius:6px;border-left:3px solid var(--warning)">
-          <strong>&#x1F4E7; Set up Brevo SMTP</strong> &mdash; brevo.com free account, 300 emails/day, update n8n credential
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--dim)"></div>
+          <div class="sys-name">Local Laptop as Host</div>
+          <div class="sys-detail">Any session/routine needing laptop to be on is not truly autonomous</div>
+          <span class="badge badge-dim">RETIRED</span>
         </div>
-        <div style="padding:6px;background:rgba(245,158,11,.05);border-radius:6px;border-left:3px solid var(--warning)">
-          <strong>&#x1F517; Connect GHL webhook</strong> &mdash; n8n.grabcalls.com/webhook/ghl-new-contact
-        </div>
-        <div style="padding:6px;background:rgba(124,108,255,.05);border-radius:6px;border-left:3px solid var(--accent)">
-          <strong>&#x1F50D; Test voice platforms</strong> &mdash; Vapi.ai + Bland.ai free accounts
-        </div>
-        <div style="padding:6px;background:rgba(124,108,255,.05);border-radius:6px;border-left:3px solid var(--accent)">
-          <strong>&#x1F510; Rotate GitHub PAT</strong> &mdash; Token was exposed, regenerate immediately
+        <div class="sys-row">
+          <div class="sys-dot" style="background:var(--dim)"></div>
+          <div class="sys-name">Cowork Scheduled Tasks</div>
+          <div class="sys-detail">daily-morning-brief, weekly-revenue-scan, server-health — only fire when desktop app is open</div>
+          <span class="badge badge-dim">LAPTOP-BOUND</span>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ========== DISCORD VIEW ========== -->
-<div id="view-discord" style="display:none">
-  <div class="sec-head">
-    <div class="sec-title">Discord Bot &mdash; GrabCalls</div>
-    <span class="live-badge live">Webhook Active</span>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 260px;gap:12px">
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Send messages to <strong style="color:#818cf8">#grabcalls-alerts</strong> via webhook. Bot commands use Discord app directly.</div>
-      <div class="dc-messages" id="discordMessages">
-        <div class="dc-msg received"><div class="dc-author">GrabCalls Bot</div><div class="dc-text">Mission Control v5 online. Use /status /help /agents /leads /tasks /brief /intel /pipeline in Discord.</div><div class="dc-time">Ready</div></div>
-      </div>
-      <div class="dc-input-row">
-        <input class="dc-input" id="discordInput" placeholder="Send a message to Discord..." onkeydown="if(event.key==='Enter')sendDiscordMessage()">
-        <button class="dc-send" onclick="sendDiscordMessage()">Send</button>
-      </div>
-      <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap">
-        <span style="font-size:10px;color:var(--muted)">Quick:</span>
-        <button class="sec-btn" onclick="sendQuickMsg('Status check from Mission Control v5')">Status</button>
-        <button class="sec-btn" onclick="sendQuickMsg('Morning check-in from Mission Control')">Check-in</button>
-        <button class="sec-btn" onclick="sendQuickMsg('Test message from MC v5')">Test</button>
-      </div>
-    </div>
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px">Slash Commands</div>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/status</div><div style="font-size:10px;color:var(--muted)">All agent statuses</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/leads</div><div style="font-size:10px;color:var(--muted)">Notion leads DB</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/tasks</div><div style="font-size:10px;color:var(--muted)">Task board items</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/brief</div><div style="font-size:10px;color:var(--muted)">Morning briefing</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/intel</div><div style="font-size:10px;color:var(--muted)">Latest intel feed</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/pipeline</div><div style="font-size:10px;color:var(--muted)">Sales pipeline</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/help</div><div style="font-size:10px;color:var(--muted)">Full reference</div></div>
-        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:6px"><div style="font-size:11px;font-weight:700;color:#818cf8">/agents</div><div style="font-size:10px;color:var(--muted)">Agent roster</div></div>
-      </div>
-      <div style="height:1px;background:var(--border);margin:10px 0"></div>
-      <button class="btn btn-primary" style="width:100%;font-size:11px;background:var(--discord)" onclick="openLink('https://discord.com/channels/@me')">Open Discord</button>
-    </div>
-  </div>
-</div>
+    <!-- AGENTS -->
+    <div id="view-agents" class="view">
+      <div class="sec-hd"><div class="sec-title">Agent Stack</div><div class="sec-sub">All routed via OpenRouter · one API key</div></div>
 
-<!-- ========== NOTION VIEW ========== -->
-<div id="view-notion" style="display:none">
-  <div class="sec-head">
-    <div class="sec-title">Notion &mdash; Live Database</div>
-    <button class="sec-btn" onclick="loadNotionData()">Refresh</button>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">Leads DB <span class="live-badge live" id="notion-leads-badge">Live</span></div>
-      <div class="notion-stat"><span style="font-size:11px;color:var(--muted)">Total Leads</span><span style="font-size:16px;font-weight:700" id="notion-leads-count">...</span></div>
-      <div style="height:1px;background:var(--border);margin:8px 0"></div>
-      <div id="notion-leads-list" style="font-size:11px;color:var(--muted)">Loading...</div>
-      <button class="sec-btn" style="margin-top:8px;width:100%;text-align:center" onclick="openLink('https://www.notion.so')">Open in Notion</button>
-    </div>
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">Task Board <span class="live-badge live" id="notion-tasks-badge">Live</span></div>
-      <div class="notion-stat"><span style="font-size:11px;color:var(--muted)">Open Tasks</span><span style="font-size:16px;font-weight:700" id="notion-tasks-count2">...</span></div>
-      <div style="height:1px;background:var(--border);margin:8px 0"></div>
-      <div id="notion-tasks-list" style="font-size:11px;color:var(--muted)">Loading...</div>
-      <button class="sec-btn" style="margin-top:8px;width:100%;text-align:center" onclick="openLink('https://www.notion.so')">Open in Notion</button>
-    </div>
-  </div>
-</div>
+      <div style="background:var(--cyan-bg);border:1px solid rgba(0,197,181,.2);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text)">
+        <strong>Run from GitHub Actions:</strong> Actions tab → GrabCalls Daily Agent → Run workflow → pick task. Or push code that calls <code style="color:var(--cyan)">node agents/index.js &lt;task&gt;</code>
+      </div>
 
-<!-- ========== AGENTS VIEW ========== -->
-<div id="view-agents" style="display:none">
-  <div class="sec-head">
-    <div class="sec-title">All Agents (14)</div>
-    <span class="live-badge live">14 Active</span>
-  </div>
-  <div class="agent-grid" id="agentGridFull"></div>
-</div>
+      <div class="g2" style="margin-bottom:16px">
+        <div class="agent-card ac-orange">
+          <div class="agent-header">
+            <div class="agent-emoji">🧠</div>
+            <div><div class="agent-name">Claude Fable 5</div><div class="agent-role">Lead orchestrator — deep strategy only</div></div>
+          </div>
+          <span class="badge badge-amber">EXPENSIVE — USE SPARINGLY</span>
+          <div class="agent-cost">Cost: <strong>$10/1M in · $50/1M out</strong> · 1M context · Used for: deep-research task only</div>
+        </div>
+        <div class="agent-card ac-blue">
+          <div class="agent-header">
+            <div class="agent-emoji">⚡</div>
+            <div><div class="agent-name">Claude Sonnet 4.6</div><div class="agent-role">Daily synthesis · standard research</div></div>
+          </div>
+          <span class="badge badge-blue">DEFAULT SMART MODEL</span>
+          <div class="agent-cost">Cost: <strong>$3/1M in · $15/1M out</strong> · Used for: daily-brief synthesis, researchProspects</div>
+        </div>
+        <div class="agent-card ac-cyan">
+          <div class="agent-header">
+            <div class="agent-emoji">🛠️</div>
+            <div><div class="agent-name">Laguna M.1</div><div class="agent-role">Copywriting · outreach emails</div></div>
+          </div>
+          <span class="badge badge-green">FREE</span>
+          <div class="agent-cost">Cost: <strong>$0</strong> · 256K context · Used for: writeOutreachEmail · agentic coding</div>
+        </div>
+        <div class="agent-card ac-green">
+          <div class="agent-header">
+            <div class="agent-emoji">📊</div>
+            <div><div class="agent-name">Ling-2.6-1T</div><div class="agent-role">Bulk extraction · campaign scoring</div></div>
+          </div>
+          <span class="badge badge-green">FREE</span>
+          <div class="agent-cost">Cost: <strong>$0</strong> · 262K context · Used for: email idea extraction, analyzeCampaignIdeas</div>
+        </div>
+      </div>
 
-<!-- ========== TASKS VIEW ========== -->
-<div id="view-tasks" style="display:none">
-  <div class="sec-head">
-    <div class="sec-title">Task Board</div>
-    <button class="sec-btn" onclick="openModal('taskModal')">+ Add Task</button>
-  </div>
-  <div class="task-board" id="taskBoardFull"></div>
-</div>
-
-<!-- ========== PIPELINE VIEW ========== -->
-<div id="view-pipeline" style="display:none">
-  <div class="sec-head"><div class="sec-title">Sales Pipeline</div></div>
-  <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px">
-    <div id="pipelineFull"></div>
-  </div>
-  <div style="margin-top:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-    <div style="font-size:12px;font-weight:700;margin-bottom:10px">Top Prospects</div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:11px">
-      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px">
-        <div style="font-weight:700;color:var(--accent3)">&#x1F525; Real Massage</div>
-        <div style="color:var(--muted)">(205) 452-2193 &bull; Springville AL &bull; HOT</div>
-      </div>
-      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px">
-        <div style="font-weight:700">Springville Family Dental</div>
-        <div style="color:var(--muted)">(205) 467-6147 &bull; Dental &bull; HIGH</div>
-      </div>
-      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px">
-        <div style="font-weight:700">Fulmer and Sons LLC</div>
-        <div style="color:var(--muted)">(205) 368-4525 &bull; Plumbing &bull; HIGH</div>
-      </div>
-      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px">
-        <div style="font-weight:700">CHM Heating and Air</div>
-        <div style="color:var(--muted)">(205) 441-3505 &bull; HVAC &bull; HIGH</div>
-      </div>
-      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px">
-        <div style="font-weight:700">Argo Air Inc</div>
-        <div style="color:var(--muted)">(205) 629-7180 &bull; HVAC &bull; HIGH</div>
+      <div class="sec-hd" style="margin-top:8px"><div class="sec-title" style="font-size:14px">Agent Commands</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="cmd-card">
+          <div style="font-size:22px">📰</div>
+          <div style="flex:1">
+            <div class="cmd-title">daily-brief <span style="font-size:11px;color:var(--green);font-weight:400">· runs automatically 8:15am CT</span></div>
+            <code class="cmd-code">node agents/index.js daily-brief</code>
+            <div class="cmd-desc">Ling-1T extracts ideas from EMAIL_SUMMARIES env var → Sonnet picks top 1-2 GrabCalls actions for the week. Output goes to GitHub Actions log + Notion Brain if NOTION_TOKEN set.</div>
+          </div>
+        </div>
+        <div class="cmd-card">
+          <div style="font-size:22px">🔍</div>
+          <div style="flex:1">
+            <div class="cmd-title">research</div>
+            <code class="cmd-code">node agents/index.js research "auto repair shop" Alabama</code>
+            <div class="cmd-desc">Sonnet researches sales angles, pain points, objections, outreach sequence, and price anchor for any business type + location.</div>
+          </div>
+        </div>
+        <div class="cmd-card">
+          <div style="font-size:22px">✉️</div>
+          <div style="flex:1">
+            <div class="cmd-title">outreach</div>
+            <code class="cmd-code">node agents/index.js outreach "Business Name" "type"</code>
+            <div class="cmd-desc">Laguna M.1 (free) writes a 5-sentence cold email for GrabCalls. Subject line + soft CTA to call (205) 605-9842.</div>
+          </div>
+        </div>
+        <div class="cmd-card">
+          <div style="font-size:22px">📈</div>
+          <div style="flex:1">
+            <div class="cmd-title">campaign-analysis</div>
+            <code class="cmd-code">node agents/index.js campaign-analysis</code>
+            <div class="cmd-desc">Ling-1T (free) scores 10 outreach channels 1-10 for likelihood of getting GrabCalls' first paying client in 30 days.</div>
+          </div>
+        </div>
+        <div class="cmd-card">
+          <div style="font-size:22px">🔭</div>
+          <div style="flex:1">
+            <div class="cmd-title">deep-research <span style="font-size:11px;color:var(--amber);font-weight:400">· uses Fable 5 · costs more</span></div>
+            <code class="cmd-code">node agents/index.js deep-research "topic"</code>
+            <div class="cmd-desc">Fable 5 does long-horizon strategic analysis. Only use when Sonnet isn't enough. Console will warn you it's expensive.</div>
+          </div>
+        </div>
+        <div class="cmd-card">
+          <div style="font-size:22px">🧪</div>
+          <div style="flex:1">
+            <div class="cmd-title">test</div>
+            <code class="cmd-code">node agents/index.js test</code>
+            <div class="cmd-desc">Pings all 5 models via OpenRouter. Confirms OPENROUTER_API_KEY is wired correctly. Runs in ~30 seconds.</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ========== SERVER VIEW ========== -->
-<div id="view-server" style="display:none">
-  <div class="sec-head"><div class="sec-title">Hetzner Server &mdash; 178.156.227.13</div><span class="live-badge live" id="server-status-badge">Online</span></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px">Server Info</div>
-      <div class="server-stat"><span class="server-label">IP</span><span class="server-value">178.156.227.13</span></div>
-      <div class="server-stat"><span class="server-label">OS</span><span class="server-value">Ubuntu 22.04</span></div>
-      <div class="server-stat"><span class="server-label">Type</span><span class="server-value">CAX11 (ARM)</span></div>
-      <div class="server-stat"><span class="server-label">n8n URL</span><span class="server-value" style="color:var(--accent2)">n8n.grabcalls.com</span></div>
-      <div class="server-stat"><span class="server-label">Terminal</span><span class="server-value" style="color:var(--accent2)">terminal.grabcalls.com</span></div>
-      <div class="server-stat"><span class="server-label">OpenClaw</span><span class="server-value" style="color:var(--accent2)">openclaw.grabcalls.com</span></div>
-    </div>
-    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;margin-bottom:10px">PM2 Services</div>
-      <div class="server-stat"><span class="server-label">id:0</span><span class="server-value" style="color:var(--online)">grabcalls-bot</span></div>
-      <div class="server-stat"><span class="server-label">id:2</span><span class="server-value" style="color:var(--online)">cloudflared</span></div>
-      <div class="server-stat"><span class="server-label">id:4</span><span class="server-value" style="color:var(--online)">n8n (port 5678)</span></div>
-      <div class="server-stat"><span class="server-label">Firewall</span><span class="server-value">UFW port 22 only</span></div>
-      <div class="server-stat"><span class="server-label">Security</span><span class="server-value">fail2ban + key-only SSH</span></div>
-      <div style="margin-top:10px;display:flex;gap:6px">
-        <button class="sec-btn" style="flex:1;text-align:center" onclick="openLink('https://n8n.grabcalls.com')">n8n Dashboard</button>
-        <button class="sec-btn" style="flex:1;text-align:center" onclick="openLink('https://terminal.grabcalls.com')">Web Terminal</button>
+    <!-- TASKS -->
+    <div id="view-tasks" class="view">
+      <div class="sec-hd"><div class="sec-title">Task Board</div><div class="sec-sub">Current work across all projects</div></div>
+      <div class="kanban">
+        <div>
+          <div class="kb-col-hd">To Do <span class="kb-count">6</span></div>
+          <div class="kb-card"><div class="kb-title">Hetzner SSH recovery via web console</div><span class="kb-tag tag-system">SYSTEM</span></div>
+          <div class="kb-card"><div class="kb-title">Add NOTION_TOKEN secret to GH Actions → enable Brain writes</div><span class="kb-tag tag-grabcalls">GRABCALLS</span></div>
+          <div class="kb-card"><div class="kb-title">Run campaign-analysis → pick top outreach channel for first client</div><span class="kb-tag tag-grabcalls">GRABCALLS</span></div>
+          <div class="kb-card"><div class="kb-title">Verify eBay user token in ListSnap Settings</div><span class="kb-tag tag-listsnap">LISTSNAP</span></div>
+          <div class="kb-card"><div class="kb-title">Fix eBay about page — spelling + broken video</div><span class="kb-tag tag-listsnap">LISTSNAP</span></div>
+          <div class="kb-card"><div class="kb-title">BFRS Postgres 14→15 upgrade (overdue)</div><span class="kb-tag tag-bfrs">BFRS</span></div>
+        </div>
+        <div>
+          <div class="kb-col-hd">In Progress <span class="kb-count">3</span></div>
+          <div class="kb-card"><div class="kb-title">GrabCalls daily agent system (merged to main ✓)</div><span class="kb-tag tag-grabcalls">GRABCALLS</span></div>
+          <div class="kb-card"><div class="kb-title">Mission Control v6 rebuild</div><span class="kb-tag tag-system">SYSTEM</span></div>
+          <div class="kb-card"><div class="kb-title">eBay store professional description redesign</div><span class="kb-tag tag-listsnap">LISTSNAP</span></div>
+        </div>
+        <div>
+          <div class="kb-col-hd">Done <span class="kb-count">7</span></div>
+          <div class="kb-card"><div class="kb-title">CLAUDE.md added to grabcalls-website → fixes cold-start</div><span class="kb-tag tag-system">SYSTEM</span></div>
+          <div class="kb-card"><div class="kb-title">Multi-model agent system pushed to main (Fable 5 + Laguna + Ling-1T)</div><span class="kb-tag tag-grabcalls">GRABCALLS</span></div>
+          <div class="kb-card"><div class="kb-title">OPENROUTER_API_KEY added to GitHub Secrets</div><span class="kb-tag tag-system">SYSTEM</span></div>
+          <div class="kb-card"><div class="kb-title">GrabCalls health check workflow live</div><span class="kb-tag tag-grabcalls">GRABCALLS</span></div>
+          <div class="kb-card"><div class="kb-title">Heartbeat trigger (8:03am daily) installed</div><span class="kb-tag tag-system">SYSTEM</span></div>
+          <div class="kb-card"><div class="kb-title">ListSnap eBay posting confirmed built + deployed</div><span class="kb-tag tag-listsnap">LISTSNAP</span></div>
+          <div class="kb-card"><div class="kb-title">Model routing cost-optimized (Sonnet for daily, Fable 5 manual only)</div><span class="kb-tag tag-system">SYSTEM</span></div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ========== GUMROAD VIEW ========== -->
-<div id="view-gumroad" style="display:none">
-  <div class="sec-head"><div class="sec-title">Gumroad &mdash; Digital Products</div></div>
-  <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px">
-    <div style="font-size:12px;font-weight:700;margin-bottom:12px">Product: Local Business AI Automation Starter Kit</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
-      <div style="background:var(--panel2);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase">Price</div>
-        <div style="font-size:24px;font-weight:800;color:#ff90e8">$97</div>
+    <!-- PROJECTS -->
+    <div id="view-projects" class="view">
+      <div class="sec-hd"><div class="sec-title">Projects</div><div class="sec-sub">Full status as of Jul 16, 2026</div></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <div class="proj-card" style="border-left:3px solid var(--red)">
+          <div class="proj-header">
+            <div><div class="proj-name">GrabCalls</div><div class="proj-url">grabcalls.com · (205) 605-9842</div></div>
+            <span class="badge badge-red">0 CLIENTS</span>
+          </div>
+          <div class="proj-desc">AI voice agent company targeting Alabama SMBs. Answers calls 24/7, books appointments, qualifies leads. Priority #1 — everything else is secondary until first paying client.</div>
+          <div class="proj-items">
+            <div class="proj-item">Daily agent fires at 8:15am CT — campaign research + outreach on auto</div>
+            <div class="proj-item">Demo line active: (205) 605-9842 — AI answers live</div>
+            <div class="proj-item">Target price: $200–400/month per client</div>
+            <div class="proj-item">Best channel (Brain data): auto repair shops · Google Maps scrape → cold email</div>
+          </div>
+        </div>
+
+        <div class="proj-card" style="border-left:3px solid var(--cyan)">
+          <div class="proj-header">
+            <div><div class="proj-name">ListSnap</div><div class="proj-url">list-snap.netlify.app</div></div>
+            <span class="badge badge-cyan">ACTIVE</span>
+          </div>
+          <div class="proj-desc">eBay + Facebook Marketplace listing tool. Previously called ListEasier. Session log (Jul 16) confirmed eBay direct posting is fully built and deployed — Netlify Function handles auth, photo upload, listing, and item management.</div>
+          <div class="proj-items">
+            <div class="proj-item">eBay posting: built via <code style="font-size:11px;color:var(--cyan)">/.netlify/functions/ebay</code></div>
+            <div class="proj-item">AI provider picker: Anthropic or Gemini</div>
+            <div class="proj-item">Blocker: eBay user token may be expired — test in Settings</div>
+            <div class="proj-item">Next: verify token · update eBay store about page</div>
+          </div>
+        </div>
+
+        <div class="proj-card" style="border-left:3px solid var(--amber)">
+          <div class="proj-header">
+            <div><div class="proj-name">BFRS Staffing Portal</div><div class="proj-url">bfrs-events-staffing</div></div>
+            <span class="badge badge-amber">HANDOFF</span>
+          </div>
+          <div class="proj-desc">Special events staffing app. In ownership transfer talks with EMS Chief. DO NOT touch the repo — this is in handoff mode.</div>
+          <div class="proj-items">
+            <div class="proj-item">Postgres 14 deprecation: overdue — handle separately in BFRS repo</div>
+            <div class="proj-item">Netlify functions still running (keep-alive, chatbot, pay-period)</div>
+          </div>
+        </div>
+
+        <div class="proj-card" style="border-left:3px solid var(--amber)">
+          <div class="proj-header">
+            <div><div class="proj-name">RealOrAI</div><div class="proj-url">178.156.227.13:8001</div></div>
+            <span class="badge badge-amber">BLOCKED</span>
+          </div>
+          <div class="proj-desc">Hosted on Hetzner server. Status completely unknown until SSH is recovered. All progress blocked until Hetzner web console access is used.</div>
+          <div class="proj-items">
+            <div class="proj-item">Unblock: log in at hetzner.com → web console → check what's running</div>
+          </div>
+        </div>
+
+        <div class="proj-card" style="border-left:3px solid var(--dim)">
+          <div class="proj-header">
+            <div><div class="proj-name">TrueTag</div><div class="proj-url">Wallet: 0x6434b2...C8f457</div></div>
+            <span class="badge badge-dim">PAUSED</span>
+          </div>
+          <div class="proj-desc">Trademark conflict unresolved. Missing smart contracts + Privy + legal docs. On hold until GrabCalls gets first client.</div>
+        </div>
+
       </div>
-      <div style="background:var(--panel2);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase">Sales</div>
-        <div style="font-size:24px;font-weight:800">0</div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div id="view-pipeline" class="view">
+      <div class="sec-hd"><div class="sec-title">GrabCalls Pipeline</div><div class="sec-sub">Goal: first paying client · target price $200–400/mo</div></div>
+
+      <div class="g4" style="margin-bottom:20px">
+        <div class="stat-tile"><div class="stat-num" style="color:var(--muted)">0</div><div class="stat-lbl">Contacted</div></div>
+        <div class="stat-tile"><div class="stat-num" style="color:var(--muted)">0</div><div class="stat-lbl">Demoed</div></div>
+        <div class="stat-tile"><div class="stat-num" style="color:var(--muted)">0</div><div class="stat-lbl">Proposals</div></div>
+        <div class="stat-tile"><div class="stat-num" style="color:var(--orange)">$0</div><div class="stat-lbl">MRR</div></div>
       </div>
-      <div style="background:var(--panel2);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase">Revenue</div>
-        <div style="font-size:24px;font-weight:800;color:var(--accent2)">$0</div>
+
+      <div class="card">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">Best Outreach Channels (Brain Data)</div></div>
+        <div class="sys-row"><div class="sys-dot" style="background:var(--green)"></div><div class="sys-name">Google Maps scrape → email shop owners</div><div class="sys-detail">Highest ROI · free · targetable by zip code</div><span class="badge badge-green">DO THIS</span></div>
+        <div class="sys-row"><div class="sys-dot" style="background:var(--green)"></div><div class="sys-name">Auto repair shops — cold email</div><div class="sys-detail">Miss calls constantly · easy pain point · $200-300/mo fits budget</div><span class="badge badge-green">DO THIS</span></div>
+        <div class="sys-row"><div class="sys-dot" style="background:var(--cyan)"></div><div class="sys-name">Medical / dental offices</div><div class="sys-detail">Higher budget · longer sales cycle · strong ROI once in</div><span class="badge badge-cyan">NEXT</span></div>
+        <div class="sys-row"><div class="sys-dot" style="background:var(--cyan)"></div><div class="sys-name">Facebook Groups for local biz owners</div><div class="sys-detail">Warm audience · free · needs authentic approach</div><span class="badge badge-cyan">NEXT</span></div>
+        <div class="sys-row"><div class="sys-dot" style="background:var(--muted)"></div><div class="sys-name">Referrals from your network</div><div class="sys-detail">Highest close rate but limited volume</div><span class="badge badge-dim">ANYTIME</span></div>
+      </div>
+
+      <div class="gap"></div>
+      <div class="card">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">Quick Outreach Actions</div></div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Run these from GitHub Actions → GrabCalls Daily Agent → Run workflow:</p>
+        <code class="cmd-code" style="display:block;font-family:'Cascadia Code',monospace;font-size:12px;background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:10px;color:var(--cyan);margin-bottom:8px"># Research any business type
+node agents/index.js research "auto repair shop" Alabama
+
+# Write cold email for specific business
+node agents/index.js outreach "Mike's Auto" "auto repair shop"
+
+# Score all 10 outreach channels
+node agents/index.js campaign-analysis</code>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--muted)">Includes 7 sanitized n8n workflow JSONs: morning brief, intel agent, lead notifier, security guard, follow-up sequence, email outreach, viral product hunter</div>
-    <div style="margin-top:12px"><button class="btn btn-primary" style="background:#ff90e8;color:#000" onclick="openLink('https://app.gumroad.com/products')">Open Gumroad Dashboard</button></div>
-  </div>
-</div>
 
-</main>
+    <!-- BRAIN -->
+    <div id="view-brain" class="view">
+      <div class="sec-hd"><div class="sec-title">Notion Master Brain</div><div class="sec-sub">Single source of truth for all Claude sessions</div></div>
 
-<!-- RIGHT PANEL -->
-<aside class="right-panel">
-  <div class="rp-section">
-    <div class="rp-title">&#x1F4E1; Live Activity</div>
-    <div id="activityFeed" style="max-height:280px;overflow-y:auto"></div>
-  </div>
+      <div style="background:var(--cyan-bg);border:1px solid rgba(0,197,181,.2);border-radius:8px;padding:14px 16px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px">How to use the Brain</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          Every Claude session should read the Brain before doing anything.<br>
+          1. Claude Code: CLAUDE.md in every repo auto-loads it<br>
+          2. claude.ai: paste the Brain URL, say "read this before we start"<br>
+          3. Cowork: attach CLAUDE.md from Google Drive<br>
+          <strong style="color:var(--text)">Golden rule: Read first · ask second · build third</strong>
+        </div>
+      </div>
 
-  <div class="rp-section">
-    <div class="rp-title">&#x1F4CB; Notes &amp; Memory</div>
-    <div id="notesList" style="font-size:11px;max-height:200px;overflow-y:auto"></div>
-    <button class="sec-btn" style="width:100%;text-align:center;margin-top:8px" onclick="openModal('noteModal')">+ Add Note</button>
-  </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">Brain Quick Reference</div></div>
+        <div class="sys-row"><div class="sys-name">Master Brain URL</div><div class="sys-detail"><a href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank">app.notion.com/p/3629f925...</a></div></div>
+        <div class="sys-row"><div class="sys-name">ListSnap Hub</div><div class="sys-detail"><a href="https://www.notion.so/35c9f92593e581e19e87eae0bf6f2780" target="_blank">Full context on ListSnap build</a></div></div>
+        <div class="sys-row"><div class="sys-name">BFRS Hub</div><div class="sys-detail"><a href="https://www.notion.so/35c9f92593e5814fab94e5abc6eacb3d" target="_blank">BFRS handoff status</a></div></div>
+        <div class="sys-row"><div class="sys-name">Owner</div><div class="sys-detail">Eric Glover · medicglover@gmail.com · (205) 914-3390</div></div>
+        <div class="sys-row"><div class="sys-name">GrabCalls demo</div><div class="sys-detail">(205) 605-9842</div></div>
+        <div class="sys-row"><div class="sys-name">GitHub</div><div class="sys-detail"><a href="https://github.com/G-lover10" target="_blank">github.com/G-lover10</a></div></div>
+      </div>
 
-  <div class="rp-section">
-    <div class="rp-title">&#x1F517; Infrastructure</div>
-    <div style="font-size:10px;display:flex;flex-direction:column;gap:4px">
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">n8n</span><a href="https://n8n.grabcalls.com" target="_blank" style="color:var(--accent2);text-decoration:none">n8n.grabcalls.com</a></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Terminal</span><a href="https://terminal.grabcalls.com" target="_blank" style="color:var(--accent2);text-decoration:none">terminal.grabcalls.com</a></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">OpenClaw</span><a href="https://openclaw.grabcalls.com" target="_blank" style="color:var(--accent2);text-decoration:none">openclaw.grabcalls.com</a></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Hetzner</span><span style="font-family:monospace">178.156.227.13</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">GHL</span><a href="https://app.gohighlevel.com" target="_blank" style="color:var(--accent2);text-decoration:none">GHL CRM</a></div>
+      <div class="card">
+        <div class="sec-hd"><div class="sec-title" style="font-size:14px">🔒 Locked Decisions — Don't Re-Litigate</div></div>
+        <div class="sys-row"><div class="sys-name">Brain = this Notion page</div><div class="sys-detail">Single source of truth. Not Google Drive. Not two brains.</div></div>
+        <div class="sys-row"><div class="sys-name">Heartbeat = GitHub Actions</div><div class="sys-detail">No laptop needed. Real autonomous infrastructure.</div></div>
+        <div class="sys-row"><div class="sys-name">OpenClaw = retired as infra</div><div class="sys-detail">Was burning API in runaway loop. Reading tool only now.</div></div>
+        <div class="sys-row"><div class="sys-name">n8n multi-model stays</div><div class="sys-detail">Do NOT replace with Claude Managed Agents — Anthropic-only, locks out other models.</div></div>
+        <div class="sys-row"><div class="sys-name">BFRS = hands off</div><div class="sys-detail">In handoff. Do not touch from GrabCalls sessions.</div></div>
+      </div>
     </div>
-  </div>
-</aside>
 
-</div><!-- end .main -->
+  </div><!-- /main -->
 
-<!-- MODALS -->
-<div class="modal-overlay" id="taskModal">
-  <div class="modal">
-    <div class="modal-title">&#x2795; New Task <button class="modal-close" onclick="closeModal('taskModal')">&times;</button></div>
-    <div class="modal-field"><label class="modal-label">Title</label><input class="modal-input" id="newTaskTitle" placeholder="What needs to be done?"></div>
-    <div class="modal-field"><label class="modal-label">Category</label>
-      <select class="modal-input" id="newTaskTag"><option value="ghl">GHL</option><option value="n8n">n8n</option><option value="discord">Discord</option><option value="website">Website</option><option value="system">System</option></select>
+  <!-- RIGHT PANEL -->
+  <div id="rpanel">
+    <div class="rp-section">
+      <div class="rp-title">Quick Links</div>
+      <a class="quick-link" href="https://github.com/G-lover10/grabcalls-website/actions" target="_blank"><span class="quick-link-icon">⚡</span>GitHub Actions</a>
+      <a class="quick-link" href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank"><span class="quick-link-icon">🧠</span>Master Brain</a>
+      <a class="quick-link" href="https://list-snap.netlify.app" target="_blank"><span class="quick-link-icon">📦</span>ListSnap App</a>
+      <a class="quick-link" href="https://grabcalls.com" target="_blank"><span class="quick-link-icon">📞</span>grabcalls.com</a>
+      <a class="quick-link" href="https://openrouter.ai/activity" target="_blank"><span class="quick-link-icon">🔀</span>OpenRouter Usage</a>
+      <a class="quick-link" href="https://hetzner.com/cloud" target="_blank"><span class="quick-link-icon">🖥️</span>Hetzner Console</a>
+      <a class="quick-link" href="https://developer.ebay.com/my/auth/?app=production&env=production" target="_blank"><span class="quick-link-icon">🛒</span>eBay User Token</a>
     </div>
-    <div class="modal-field"><label class="modal-label">Assignee</label>
-      <select class="modal-input" id="newTaskAgent"><option value="Eric">Eric</option><option value="Claude">Claude</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('taskModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="addTask()">Add Task</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal-overlay" id="noteModal">
-  <div class="modal">
-    <div class="modal-title">&#x1F4DD; Add Note <button class="modal-close" onclick="closeModal('noteModal')">&times;</button></div>
-    <div class="modal-field"><label class="modal-label">Note</label><textarea class="modal-input" id="newNote" rows="4" placeholder="Quick note or memory..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('noteModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="addNote()">Save</button>
+    <div class="rp-section">
+      <div class="rp-title">Activity Feed</div>
+      <div class="activity-item"><div class="activity-icon">✅</div><div class="activity-text"><strong>PR #8 merged</strong> — agent system live on main</div></div>
+      <div class="activity-item"><div class="activity-icon">🔑</div><div class="activity-text"><strong>OPENROUTER_API_KEY</strong> added to GitHub Secrets</div></div>
+      <div class="activity-item"><div class="activity-icon">💰</div><div class="activity-text"><strong>$10 credit</strong> added to OpenRouter account</div></div>
+      <div class="activity-item"><div class="activity-icon">🧠</div><div class="activity-text"><strong>Brain updated</strong> — ListSnap eBay posting confirmed</div></div>
+      <div class="activity-item"><div class="activity-icon">📋</div><div class="activity-text"><strong>Mission Control v6</strong> rebuilt with real system state</div></div>
     </div>
-  </div>
-</div>
 
-<!-- COMMAND BAR -->
-<div class="cmd-bar" id="cmdBar">
-  <span style="color:var(--accent);font-weight:700">&#x2318;</span>
-  <input class="cmd-input" id="cmdInput" placeholder="Type a command..." onkeydown="handleCommand(event)">
-  <span style="font-size:10px;color:var(--muted)">ESC to close</span>
-</div>
+    <div class="rp-section">
+      <div class="rp-title">Today's Priority</div>
+      <div style="background:var(--red-bg);border:1px solid rgba(255,71,87,.2);border-radius:6px;padding:12px;font-size:13px;line-height:1.6">
+        <strong style="color:var(--red)">GrabCalls needs Client #1</strong><br>
+        <span style="color:var(--muted)">Go to Actions → Run workflow → pick <strong>campaign-analysis</strong> to score your best outreach channels right now.</span>
+      </div>
+    </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+    <div class="rp-section">
+      <div class="rp-title">Stack Costs (Daily Run)</div>
+      <div style="font-size:12px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Ling-1T (extraction)</span><span style="color:var(--green)">FREE</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Sonnet (synthesis)</span><span style="color:var(--text)">~$0.01/day</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Laguna (emails)</span><span style="color:var(--green)">FREE</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:6px;margin-top:2px"><span style="color:var(--text);font-weight:600">Daily total</span><span style="color:var(--green);font-weight:600">~$0.01</span></div>
+        <div style="color:var(--muted);font-size:11px;margin-top:4px">Fable 5 only when you manually trigger deep-research</div>
+      </div>
+    </div>
+  </div><!-- /rpanel -->
+
+</div><!-- /layout -->
 
 <script>
-const STORAGE_KEY = 'grabcalls_mc_v5';
-const N8N_URL = 'https://n8n.grabcalls.com';
-const NOTION_KEY = ''; // Notion API calls routed through n8n proxy to avoid exposing token
-const NOTION_LEADS_DB = '30c9ce9b-08b1-8084-aed0-ea0b7ae57b1e';
-const NOTION_TASK_DB = '30c9ce9b-08b1-804e-8cf3-c9153f934e9e';
-const DISCORD_WEBHOOK = localStorage.getItem('dc_webhook') || ''; // Set via Ctrl+K: set-webhook <url>
-const startTime = Date.now();
-
-const DEFAULT_STATE = {
-  agents: [
-    { id:1, emoji:'\u{1F4AC}', name:'GrabCalls Bot', role:'Discord AI Chat', platform:'OpenClaw/Hetzner', status:'online', task:'Claude AI responding on Discord DMs. 8 slash commands via n8n.', tag:'discord' },
-    { id:2, emoji:'\u{2600}', name:'Morning Briefer', role:'Daily Summary', platform:'n8n/Hetzner', status:'online', task:'8AM daily: GHL + Notion + Discord digest to all channels.', tag:'n8n' },
-    { id:3, emoji:'\u{1F4F0}', name:'Intel Agent', role:'News Aggregator', platform:'n8n/Hetzner', status:'online', task:'4x/day: 7 RSS sources scanned, AI-summarized to Discord #intel.', tag:'n8n' },
-    { id:4, emoji:'\u{1F514}', name:'Lead Notifier', role:'CRM Alert Router', platform:'n8n/Hetzner', status:'online', task:'GHL webhook: new contacts routed to Discord + Telegram instantly.', tag:'n8n' },
-    { id:5, emoji:'\u{1F504}', name:'Follow-up Sequencer', role:'Pipeline Automation', platform:'n8n/Hetzner', status:'online', task:'GHL webhook: automated follow-up sequences per pipeline stage.', tag:'n8n' },
-    { id:6, emoji:'\u{1F310}', name:'Website Agent', role:'GitHub Pages', platform:'GitHub/Cloudflare', status:'online', task:'grabcalls.com + Mission Control live on GitHub Pages.', tag:'github' },
-    { id:7, emoji:'\u{1F6E1}', name:'Security Guard', role:'System Monitor', platform:'n8n/Hetzner', status:'online', task:'6x/day: .env integrity, uptime check, GitHub token monitor.', tag:'n8n' },
-    { id:8, emoji:'\u{1F4F1}', name:'Telegram Commander', role:'Mobile Control', platform:'n8n/Hetzner', status:'online', task:'@GrabCalls_bot: /status /leads /tasks commands via Telegram.', tag:'n8n' },
-    { id:9, emoji:'\u{1F9E0}', name:'Claude Orchestrator', role:'AI Brain', platform:'Claude/Cowork', status:'online', task:'Running this session. Builds, deploys, strategizes.', tag:'claude' },
-    { id:10, emoji:'\u{1F4E7}', name:'Email Outreach', role:'Cold Email Engine', platform:'n8n/Hetzner', status:'busy', task:'Needs Brevo SMTP setup to activate. Manual trigger ready.', tag:'n8n' },
-    { id:11, emoji:'\u{1F50D}', name:'Viral Product Hunter', role:'Reddit Scanner', platform:'n8n/Hetzner', status:'online', task:'Every 6h: Reddit scan for cloneable businesses + opportunities.', tag:'n8n' },
-    { id:12, emoji:'\u{1F3AF}', name:'Agent Orchestrator', role:'CEO Action Planner', platform:'n8n/Hetzner', status:'online', task:'Every 4h: generates CEO action plan posted to Discord.', tag:'n8n' },
-    { id:13, emoji:'\u{1F52C}', name:'Sales Evolution', role:'Variant Testing', platform:'n8n/Hetzner', status:'online', task:'Weekly: 3 sales variants compete, worst replaced by mutation of best.', tag:'n8n' },
-    { id:14, emoji:'\u{1F916}', name:'Agent Builder', role:'Asset Generator', platform:'n8n/Hetzner', status:'online', task:'POST /agent-builder: chatbot personality, emails, proposals, website copy.', tag:'n8n' },
-    { id:15, emoji:'\u{1F3AE}', name:'Discord Commander', role:'Command Router', platform:'n8n/Hetzner', status:'online', task:'10 slash commands via OpenClaw !gc routing. /status /agents /leads etc.', tag:'n8n' },
-    { id:16, emoji:'\u{1F50E}', name:'Discord Prospector', role:'AI Lead Finder', platform:'n8n/Hetzner', status:'online', task:'Groq AI generates 5 targeted prospects per industry/city combo.', tag:'n8n' },
-    { id:17, emoji:'\u{1F4CE}', name:'Paperclip AI', role:'Company Orchestrator', platform:'Hetzner/Claude', status:'online', task:'AI company orchestrator at paperclip.grabcalls.com. Claude subscription powered.', tag:'claude' },
-  ],
-  tasks: {
-    todo: [
-      { id:1, title:'Sign up Brevo SMTP (brevo.com) \u2192 activate email outreach', tag:'n8n', agent:'Eric' },
-      { id:2, title:'Set GHL webhook: n8n.grabcalls.com/webhook/ghl-new-contact', tag:'ghl', agent:'Eric' },
-      { id:3, title:'Rotate GitHub PAT \u2014 token exposed, regenerate now', tag:'system', agent:'Eric' },
-      { id:4, title:'Test Vapi.ai + Bland.ai \u2014 pick voice agent backend', tag:'system', agent:'Eric' },
-      { id:5, title:'Create Gumroad product: AI Automation Starter Kit $97', tag:'website', agent:'Eric' },
-      { id:6, title:'A2P 10DLC registration ($49) for SMS capability', tag:'ghl', agent:'Eric' },
-      { id:7, title:'Point grabcalls.com to GitHub Pages (Cloudflare CNAME)', tag:'website', agent:'Eric' },
-    ],
-    inprogress: [
-      { id:11, title:'Real Massage \u2014 in-person visit with flyer + live demo', tag:'ghl', agent:'Eric' },
-      { id:12, title:'Cloth On Main \u2014 awaiting email response (Feb 21)', tag:'ghl', agent:'Eric' },
-      { id:13, title:'Chatbot demo widget \u2014 testing & refining for prospects', tag:'website', agent:'Claude' },
-    ],
-    done: [
-      { id:20, title:'Mission Control upgraded v3 \u2192 v5', tag:'website', agent:'Claude' },
-      { id:21, title:'14 n8n workflows active on Hetzner', tag:'n8n', agent:'Claude' },
-      { id:22, title:'Permanent Cloudflare tunnels: n8n.grabcalls.com', tag:'system', agent:'Claude' },
-      { id:23, title:'OpenClaw Discord bot fixed \u2014 Claude AI on Discord', tag:'discord', agent:'Claude' },
-      { id:24, title:'Server hardened: UFW, fail2ban, key-only SSH', tag:'system', agent:'Claude' },
-      { id:25, title:'7 workflow JSONs sanitized for Gumroad', tag:'website', agent:'Claude' },
-      { id:26, title:'Discord bot rebuilt with Notion + multi-AI routing', tag:'discord', agent:'Claude' },
-      { id:27, title:'GitHub Pages live, print flyers built', tag:'website', agent:'Claude' },
-      { id:28, title:'4 evolutionary agents deployed (Hunter, Orchestrator, Sales, Builder)', tag:'n8n', agent:'Claude' },
-    ]
-  },
-  pipeline: [
-    { stage:'New Lead', count:0 },
-    { stage:'Contacted', count:2 },
-    { stage:'Discovery Call', count:0 },
-    { stage:'Demo Scheduled', count:1 },
-    { stage:'Proposal Sent', count:0 },
-    { stage:'Negotiation', count:0 },
-    { stage:'Closed Won', count:0 },
-  ],
-  activity: [
-    { type:'system', icon:'\u{1F680}', text:'<strong>Mission Control v5</strong> deployed \u2014 Morning Brief + Revenue tracking + 17 agents', time:'now' },
-    { type:'n8n', icon:'\u{1F50D}', text:'<strong>Viral Product Hunter</strong> scanning Reddit every 6h for opportunities', time:'active' },
-    { type:'n8n', icon:'\u{1F3AF}', text:'<strong>Agent Orchestrator</strong> CEO action plan posted to Discord', time:'4h cycle' },
-    { type:'discord', icon:'\u{1F4AC}', text:'<strong>OpenClaw bot</strong> live \u2014 Claude AI responding on Discord DMs', time:'online' },
-    { type:'n8n', icon:'\u{1F6E1}', text:'<strong>Security Guard</strong> last check: all systems healthy', time:'recent' },
-    { type:'system', icon:'\u{26A1}', text:'<strong>Permanent tunnels</strong> configured: n8n.grabcalls.com', time:'stable' },
-    { type:'n8n', icon:'\u{2600}', text:'<strong>Morning Briefer</strong> 8AM daily digest active', time:'scheduled' },
-  ],
-  notes: [
-    'n8n permanent URL: https://n8n.grabcalls.com (no more temp tunnels!)',
-    'Hetzner: 178.156.227.13 | SSH key auth only | UFW port 22',
-    'Real Massage: (205) 452-2193 | 9AM-8PM | 4.9 stars | HOT LEAD',
-    'GHL webhook needed: n8n.grabcalls.com/webhook/ghl-new-contact',
-    'Voice agent: test Vapi.ai + Bland.ai free \u2014 pick one for product',
-    'Spring Nails is DEAD \u2014 do not pursue',
-    'GitHub PAT ghp_JVzk6lp... exposed \u2014 ROTATE NOW',
-    'Gumroad product copy in INCOME-STREAM-PLAN.md \u2014 $97 bundle',
-  ],
-  revenue: 0,
-  nextId: 50,
-};
-
-let state = loadState() || DEFAULT_STATE;
-
-function loadState() { try { const s=localStorage.getItem(STORAGE_KEY); return s?JSON.parse(s):null; } catch(e) { return null; } }
-function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-// Toast
-function showToast(msg, type='info') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type+' show'; setTimeout(()=>t.classList.remove('show'),3500); }
-
 // Clock
-function updateClock() { document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
-setInterval(updateClock,1000); updateClock();
-
-// Uptime
-function updateUptime() {
-  const m=Math.floor((Date.now()-startTime)/60000);
-  const el=document.getElementById('stat-uptime');
-  if(el) el.textContent=m<60?m+'m':Math.floor(m/60)+'h '+m%60+'m';
-  const lb=document.getElementById('uptime-label');
-  if(lb) lb.textContent=m<1?'Just opened':m<60?'Session active':'Long session';
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=
+    n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
 }
-setInterval(updateUptime,30000); updateUptime();
+tick();setInterval(tick,1000);
 
-// Brief date
-const briefDate=document.getElementById('brief-date');
-if(briefDate) briefDate.textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-const sessionDate=document.getElementById('session-date');
-if(sessionDate) sessionDate.textContent='Session: '+new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric',year:'numeric'});
-
-// View switching
-function switchView(name, el) {
-  const views=['overview','morning','discord','notion','agents','tasks','pipeline','server','gumroad'];
-  views.forEach(v=>{const e=document.getElementById('view-'+v);if(e)e.style.display='none';});
-  const target=document.getElementById('view-'+name);
-  if(target)target.style.display='block';
-  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
-  if(el)el.classList.add('active');
-  const navId=document.getElementById('nav-'+name);
-  if(navId)navId.classList.add('active');
-  if(name==='agents')renderAgentsFull();
-  if(name==='tasks')renderTaskBoard('taskBoardFull');
-  if(name==='pipeline')renderPipelineFull();
-  if(name==='notion')loadNotionData();
+// Tab switching
+function switchTab(id,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const v=document.getElementById('view-'+id);
+  if(v)v.classList.add('active');
+  if(btn)btn.classList.add('active');
+  // sync topbar tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+id+"'")){t.classList.add('active');}
+  });
 }
-</script>
-
-<script>
-// Agent cards
-function agentCard(a) {
-  return `<div class="agent-card ${a.status}" onclick="showToast('${a.name}: ${a.status}','info')">
-    <div class="status-bar"></div>
-    <div class="agent-head">
-      <div class="agent-avi ${a.status}">${a.emoji}<div class="agent-pulse ${a.status}"></div></div>
-      <div><div class="agent-name">${a.name}</div><div class="agent-role">${a.platform}</div></div>
-    </div>
-    <div class="agent-task">${a.task}</div>
-    <div class="agent-foot">
-      <span class="agent-tag ${a.tag}">${a.tag.toUpperCase()}</span>
-      <span class="agent-status-label ${a.status}">${a.status.toUpperCase()}</span>
-    </div>
-  </div>`;
-}
-function renderAgents() { const g=document.getElementById('agentGrid'); if(g)g.innerHTML=state.agents.slice(0,6).map(agentCard).join(''); }
-function renderAgentsFull() { const g=document.getElementById('agentGridFull'); if(g)g.innerHTML=state.agents.map(agentCard).join(''); }
-
-// Task board
-function renderTaskBoard(targetId) {
-  const el=document.getElementById(targetId); if(!el)return;
-  const cols=[
-    {key:'todo',label:'To Do',color:'var(--accent3)'},
-    {key:'inprogress',label:'In Progress',color:'var(--warning)'},
-    {key:'done',label:'Done',color:'var(--online)'}
-  ];
-  el.innerHTML=cols.map(c=>{
-    const items=state.tasks[c.key]||[];
-    return `<div class="task-col">
-      <div class="task-col-head"><span style="color:${c.color}">${c.label}</span><span class="task-cnt">${items.length}</span></div>
-      ${items.map(t=>`<div class="task-item">
-        <div class="task-title">${t.title}</div>
-        <div class="task-meta"><span class="task-tag ${t.tag}">${t.tag}</span><span class="task-who">${t.agent}</span></div>
-      </div>`).join('')}
-    </div>`;
-  }).join('');
-}
-
-// Pipeline
-function renderPipelineFull() {
-  const el=document.getElementById('pipelineFull'); if(!el)return;
-  const max=Math.max(...state.pipeline.map(p=>p.count),1);
-  el.innerHTML=state.pipeline.map(p=>`<div class="pipe-row">
-    <span class="pipe-name">${p.stage}</span>
-    <div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:${(p.count/max)*100}%"></div></div>
-    <span class="pipe-count">${p.count}</span>
-  </div>`).join('');
-}
-
-// Activity feed
-function renderActivity() {
-  const el=document.getElementById('activityFeed'); if(!el)return;
-  el.innerHTML=state.activity.map(a=>`<div class="act-item">
-    <div class="act-icon ${a.type}">${a.icon}</div>
-    <div><div class="act-text">${a.text}</div><div class="act-time">${a.time}</div></div>
-  </div>`).join('');
-}
-
-// Notes
-function renderNotes() {
-  const el=document.getElementById('notesList'); if(!el)return;
-  el.innerHTML=state.notes.map(n=>`<div style="padding:5px 0;border-bottom:1px solid var(--border);font-size:11px;line-height:1.4">${n}</div>`).join('');
-}
-
-// Add task
-function addTask() {
-  const title=document.getElementById('newTaskTitle').value.trim();
-  const tag=document.getElementById('newTaskTag').value;
-  const agent=document.getElementById('newTaskAgent').value;
-  if(!title)return;
-  state.tasks.todo.unshift({id:state.nextId++,title,tag,agent});
-  saveState();
-  renderTaskBoard('taskBoardPreview');
-  closeModal('taskModal');
-  showToast('Task added!','success');
-  document.getElementById('newTaskTitle').value='';
-}
-
-// Add note
-function addNote() {
-  const note=document.getElementById('newNote').value.trim();
-  if(!note)return;
-  state.notes.unshift(note);
-  saveState();
-  renderNotes();
-  closeModal('noteModal');
-  showToast('Note saved!','success');
-  document.getElementById('newNote').value='';
-}
-
-// Add activity
-function addActivity(type,icon,text) {
-  state.activity.unshift({type,icon,text,time:new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})});
-  if(state.activity.length>20)state.activity.pop();
-  saveState();
-  renderActivity();
-}
-
-// Discord messaging
-function sendDiscordMessage() {
-  const input=document.getElementById('discordInput');
-  const msg=input.value.trim();
-  if(!msg)return;
-  appendDiscordMsg('You (Mission Control)',msg,'sent');
-  input.value='';
-  const wh=localStorage.getItem('dc_webhook');
-  if(!wh){showToast('Set webhook first: Ctrl+K then "set-webhook <url>"','error');return;}
-  fetch(wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:msg,username:'Mission Control v5'})})
-    .then(r=>{if(r.ok){showToast('Sent to Discord!','success');addActivity('discord','\u{1F4E8}','<strong>Mission Control</strong>: message sent to Discord');}else showToast('Send failed: '+r.status,'error');})
-    .catch(()=>showToast('Sent (CORS may block confirmation)','info'));
-}
-function sendQuickMsg(msg) { document.getElementById('discordInput').value=msg; sendDiscordMessage(); }
-function appendDiscordMsg(author,text,type) {
-  const el=document.getElementById('discordMessages');
-  const div=document.createElement('div');
-  div.className='dc-msg '+type;
-  div.innerHTML=`<div class="dc-author">${author}</div><div class="dc-text">${text}</div><div class="dc-time">${new Date().toLocaleTimeString()}</div>`;
-  el.appendChild(div);
-  el.scrollTop=el.scrollHeight;
-}
-
-// Notion API — routed through n8n proxy to keep tokens server-side
-async function loadNotionData() {
-  try {
-    // Try n8n proxy endpoint first (keeps Notion token on server)
-    const proxyUrl = N8N_URL + '/webhook/notion-proxy';
-    const res = await fetch(proxyUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'query'})}).catch(()=>null);
-    if(res && res.ok) {
-      const d = await res.json();
-      if(d.leads !== undefined) { document.getElementById('stat-leads').textContent=d.leads; document.getElementById('stat-leads-sub').textContent=d.leads+' in Notion'; document.getElementById('notion-leads-count').textContent=d.leads; }
-      if(d.tasks !== undefined) { document.getElementById('stat-tasks-count').textContent=d.tasks; document.getElementById('stat-tasks-sub').textContent=d.tasks+' in Notion'; const c2=document.getElementById('notion-tasks-count2'); if(c2)c2.textContent=d.tasks; }
-      return;
-    }
-    // Fallback: show cached/known counts
-    document.getElementById('stat-leads').textContent='5+';
-    document.getElementById('stat-leads-sub').textContent='Open Notion for live data';
-    document.getElementById('stat-tasks-count').textContent='8+';
-    document.getElementById('stat-tasks-sub').textContent='Open Notion for live data';
-    document.getElementById('notion-leads-count').textContent='5+';
-    const c2=document.getElementById('notion-tasks-count2'); if(c2)c2.textContent='8+';
-    const ll=document.getElementById('notion-leads-list'); if(ll)ll.innerHTML='<div style="padding:4px 0">Real Massage (HOT)</div><div style="padding:4px 0">Springville Family Dental</div><div style="padding:4px 0">Fulmer and Sons LLC</div><div style="padding:4px 0">CHM Heating and Air</div><div style="padding:4px 0">Argo Air Inc</div>';
-    const tl=document.getElementById('notion-tasks-list'); if(tl)tl.innerHTML='<div style="font-size:11px;color:var(--muted)">Use Notion app or Discord /tasks for live data</div>';
-  } catch(e) {
-    document.getElementById('stat-leads').textContent='--';
-    document.getElementById('stat-tasks-count').textContent='--';
-  }
-}
-function refreshNotionStats() { showToast('Refreshing Notion...','info'); loadNotionData().then(()=>showToast('Notion updated!','success')); }
-
-// Modals
-function openModal(id) { document.getElementById(id).classList.add('visible'); }
-function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
-
-// Command bar
-document.addEventListener('keydown', e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();const b=document.getElementById('cmdBar');b.classList.toggle('visible');if(b.classList.contains('visible'))document.getElementById('cmdInput').focus();}
-  if(e.key==='Escape'){document.getElementById('cmdBar').classList.remove('visible');document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('visible'));}
-});
-function handleCommand(e) {
-  if(e.key!=='Enter')return;
-  const cmd=e.target.value.trim().toLowerCase();
-  e.target.value='';
-  document.getElementById('cmdBar').classList.remove('visible');
-  if(cmd.startsWith('set-webhook ')){localStorage.setItem('dc_webhook',cmd.slice(12).trim());showToast('Discord webhook saved!','success');return;}
-  if(cmd==='reset'){localStorage.removeItem(STORAGE_KEY);location.reload();return;}
-  const cmds={discord:()=>switchView('discord'),agents:()=>switchView('agents'),tasks:()=>switchView('tasks'),pipeline:()=>switchView('pipeline'),server:()=>switchView('server'),notion:()=>switchView('notion'),gumroad:()=>switchView('gumroad'),morning:()=>switchView('morning'),brief:()=>switchView('morning'),refresh:()=>refreshNotionStats(),n8n:()=>openLink(N8N_URL),terminal:()=>openLink('https://terminal.grabcalls.com'),ghl:()=>openLink('https://app.gohighlevel.com')};
-  if(cmds[cmd])cmds[cmd](); else showToast('Unknown: '+cmd+' | Try: discord, agents, morning, refresh, set-webhook <url>','error');
-}
-
-// Utils
-function openLink(url) { window.open(url,'_blank'); }
-function openLocal(path) { window.open('file:///'+path,'_blank'); }
-
-// Revenue
-function updateRevenue() {
-  const rev=state.revenue||0;
-  document.getElementById('rev-display').textContent='$'+rev.toLocaleString();
-  const pct=Math.min((rev/10000)*100,100);
-  document.getElementById('rev-bar').style.width=pct+'%';
-}
-
-// Init
-function init() {
-  renderAgents();
-  renderTaskBoard('taskBoardPreview');
-  renderActivity();
-  renderNotes();
-  updateRevenue();
-  loadNotionData();
-}
-init();
 </script>
 </body>
 </html>
