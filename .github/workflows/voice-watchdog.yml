@@ -1,0 +1,26 @@
+name: GrabCalls Voice Watchdog
+
+on:
+  schedule:
+    # Every 2 hours — detects voice agent down and auto-switches to Bland.ai
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check voice agent health + auto-recover
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_SID: ${{ secrets.TWILIO_PHONE_SID }}
+          BLAND_INBOUND_URL: ${{ secrets.BLAND_INBOUND_URL }}
+        run: node agents/index.js voice-watchdog

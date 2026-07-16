@@ -9,6 +9,8 @@
 const { runDailyBrief } = require('./tasks/daily-brief');
 const { researchProspects, deepResearch, writeOutreachEmail, analyzeCampaignIdeas } = require('./tasks/grabcalls-research');
 const { runOutreachPipeline } = require('./tasks/outreach-pipeline');
+const { runFollowUpPipeline } = require('./tasks/followup-pipeline');
+const { runVoiceWatchdog } = require('./tasks/voice-watchdog');
 const { MODELS, callModel } = require('./models');
 
 const task = process.argv[2] || 'daily-brief';
@@ -63,6 +65,16 @@ async function main() {
         break;
       }
 
+      case 'followup-pipeline': {
+        await runFollowUpPipeline();
+        break;
+      }
+
+      case 'voice-watchdog': {
+        await runVoiceWatchdog();
+        break;
+      }
+
       case 'campaign-analysis': {
         const analysis = await analyzeCampaignIdeas();
         console.log('\n=== CAMPAIGN ANALYSIS ===\n' + analysis);
@@ -86,7 +98,7 @@ async function main() {
 
       default:
         console.error(`Unknown task: ${task}`);
-        console.error('Available: daily-brief, outreach-pipeline, research, deep-research, outreach, campaign-analysis, test');
+        console.error('Available: daily-brief, outreach-pipeline, followup-pipeline, voice-watchdog, research, deep-research, outreach, campaign-analysis, test');
         process.exit(1);
     }
   } catch (err) {

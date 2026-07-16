@@ -23,12 +23,20 @@ const CHAIN_KEYWORDS = [
 
 // Business types + Alabama cities to rotate through
 const TARGETS = [
-  { type: 'auto repair', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Auburn', 'Decatur', 'Dothan', 'Gadsden'] },
-  { type: 'HVAC contractor', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa'] },
-  { type: 'plumber', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile'] },
-  { type: 'dentist', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa'] },
-  { type: 'roofing contractor', cities: ['Birmingham', 'Huntsville', 'Montgomery'] },
-  { type: 'electrician', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile'] },
+  { type: 'auto repair', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Auburn', 'Decatur', 'Dothan', 'Gadsden', 'Pelham', 'Vestavia Hills', 'Prattville', 'Madison', 'Florence'] },
+  { type: 'auto detailing', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Auburn', 'Madison', 'Decatur'] },
+  { type: 'HVAC contractor', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Decatur', 'Auburn', 'Dothan', 'Hoover', 'Madison'] },
+  { type: 'plumber', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Auburn', 'Decatur', 'Madison'] },
+  { type: 'dentist', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Auburn', 'Hoover', 'Madison', 'Dothan', 'Gadsden', 'Florence'] },
+  { type: 'orthodontist', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Auburn', 'Madison'] },
+  { type: 'roofing contractor', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Decatur', 'Madison'] },
+  { type: 'electrician', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Decatur', 'Auburn', 'Madison'] },
+  { type: 'pest control', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Auburn', 'Madison'] },
+  { type: 'landscaping', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Madison', 'Auburn'] },
+  { type: 'chiropractic', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Auburn', 'Madison', 'Hoover'] },
+  { type: 'law firm', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa'] },
+  { type: 'moving company', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile'] },
+  { type: 'pressure washing', cities: ['Birmingham', 'Huntsville', 'Montgomery', 'Mobile', 'Tuscaloosa', 'Hoover', 'Madison'] },
 ];
 
 function loadLog() {
