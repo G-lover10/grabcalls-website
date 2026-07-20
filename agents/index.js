@@ -18,7 +18,8 @@ const arg1 = process.argv[3] || '';
 const arg2 = process.argv[4] || '';
 
 async function main() {
-  if (!process.env.OPENROUTER_API_KEY) {
+  // voice-watchdog never calls an OpenRouter model (n8n/Twilio/Bland only) — don't gate it on this key
+  if (task !== 'voice-watchdog' && !process.env.OPENROUTER_API_KEY) {
     console.error('ERROR: OPENROUTER_API_KEY not set. Add it as a GitHub secret or env var.');
     process.exit(1);
   }

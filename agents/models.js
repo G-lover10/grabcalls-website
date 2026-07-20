@@ -106,7 +106,12 @@ async function callModel(modelKey, messages, options = {}) {
   }
 
   const data = await resp.json();
-  return data.choices[0].message.content;
+  const content = data.choices?.[0]?.message?.content;
+  if (content == null) {
+    const finishReason = data.choices?.[0]?.finish_reason || 'unknown';
+    throw new Error(`OpenRouter returned empty content for ${model.id} (finish_reason: ${finishReason})`);
+  }
+  return content;
 }
 
 module.exports = { MODELS, pickModel, callModel };
