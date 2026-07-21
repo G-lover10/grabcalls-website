@@ -270,7 +270,13 @@ async function runOutreachPipeline() {
     }
 
     // Generate cold email copy
-    const { subject, body } = await generateEmail(lead);
+    let subject, body;
+    try {
+      ({ subject, body } = await generateEmail(lead));
+    } catch (e) {
+      console.log(`[pipeline] Email generation failed for ${lead.name}: ${e.message}. Skipping — will retry next run.`);
+      continue;
+    }
 
     console.log(`\n${'─'.repeat(60)}`);
     console.log(`LEAD: ${lead.name}`);

@@ -55,7 +55,13 @@ Output ONLY the bullet list, nothing else.`,
   ];
 
   console.log('[daily-brief] Extracting ideas with Ling-1T (free)...');
-  const rawIdeas = await callModel('ling1T', extractionPrompt, { maxTokens: 1000 });
+  let rawIdeas;
+  try {
+    rawIdeas = await callModel('ling1T', extractionPrompt, { maxTokens: 1000 });
+  } catch (e) {
+    console.log(`[daily-brief] Ling-1T extraction failed: ${e.message}. Falling back to Sonnet.`);
+    rawIdeas = await callModel('sonnet', extractionPrompt, { maxTokens: 1000 });
+  }
 
   // Step 2: Sonnet — synthesis (replaces Fable 5; good enough for this task at 5x lower cost)
   const synthesisPrompt = [

@@ -101,7 +101,13 @@ async function runFollowUpPipeline() {
 
   for (const lead of followUp1Due) {
     console.log(`\n[followup] Round 1 → ${lead.name} (${lead.email})`);
-    const { subject, body } = await generateFollowUp(lead, 1);
+    let subject, body;
+    try {
+      ({ subject, body } = await generateFollowUp(lead, 1));
+    } catch (e) {
+      console.log(`[followup] Generation failed for ${lead.name}: ${e.message}. Skipping — will retry next run.`);
+      continue;
+    }
     console.log(`Subject: ${subject}\n${body}`);
     const sent = await sendViaResend(lead.email, subject, body);
     console.log(`[followup] ${sent ? '✅ SENT' : '⚠️ logged only'}`);
@@ -116,7 +122,13 @@ async function runFollowUpPipeline() {
 
   for (const lead of followUp2Due) {
     console.log(`\n[followup] Round 2 → ${lead.name} (${lead.email})`);
-    const { subject, body } = await generateFollowUp(lead, 2);
+    let subject, body;
+    try {
+      ({ subject, body } = await generateFollowUp(lead, 2));
+    } catch (e) {
+      console.log(`[followup] Generation failed for ${lead.name}: ${e.message}. Skipping — will retry next run.`);
+      continue;
+    }
     console.log(`Subject: ${subject}\n${body}`);
     const sent = await sendViaResend(lead.email, subject, body);
     console.log(`[followup] ${sent ? '✅ SENT' : '⚠️ logged only'}`);
