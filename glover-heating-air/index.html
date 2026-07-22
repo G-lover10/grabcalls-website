@@ -179,7 +179,7 @@ nav.main-nav .container{display:flex;justify-content:space-between;align-items:c
 .menu-toggle span:nth-child(1){top:0;} .menu-toggle span:nth-child(2){top:8.5px;} .menu-toggle span:nth-child(3){top:17px;}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;background:linear-gradient(155deg,var(--navy) 0%,var(--navy-2) 62%,#081527 100%);color:#fff;padding:5.5rem 0 4.5rem;overflow:hidden;}
+.hero{position:relative;background:linear-gradient(155deg,rgba(18,42,78,.93) 0%,rgba(10,28,54,.91) 55%,rgba(8,21,39,.95) 100%),url('photos/ac-unit-dusk.jpg') center/cover no-repeat;color:#fff;padding:5.5rem 0 4.5rem;overflow:hidden;}
 .hero::before{content:"";position:absolute;top:-10%;right:-8%;width:620px;height:620px;background:var(--hero-mark) center/contain no-repeat;opacity:.07;pointer-events:none;}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,var(--red),var(--ice));}
 .hero .container{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center;}
@@ -201,6 +201,10 @@ nav.main-nav .container{display:flex;justify-content:space-between;align-items:c
 .record-line span:first-child{color:#9FB0C8;}
 .record-line span:last-child{color:#fff;font-weight:600;text-align:right;}
 
+/* ---------- Proof strip ---------- */
+.proof-strip{padding:0;position:relative;background:var(--navy-2);}
+.proof-strip img{width:100%;height:460px;object-fit:cover;object-position:center 78%;display:block;}
+
 /* ---------- Section shell ---------- */
 section{padding:5.5rem 0;}
 .section-head{max-width:680px;margin-bottom:3rem;}
@@ -220,6 +224,10 @@ section{padding:5.5rem 0;}
 .record-card ul li{font-size:.94rem;color:#DCE4F0;padding:.4rem 0 .4rem 1.1rem;position:relative;}
 .record-card ul li::before{content:"";position:absolute;left:0;top:.85rem;width:6px;height:6px;background:var(--red);border-radius:50%;}
 .record-card .divider{height:1px;background:rgba(255,255,255,.15);margin:1.6rem 0;}
+.story-photos{display:grid;grid-template-columns:1fr 1fr;gap:1.75rem;margin-top:3.5rem;}
+.story-photos figure{margin:0;border-radius:6px;overflow:hidden;position:relative;}
+.story-photos img{width:100%;height:280px;object-fit:cover;display:block;}
+.story-photos figcaption{position:absolute;left:0;right:0;bottom:0;padding:1.1rem 1.25rem;background:linear-gradient(0deg,rgba(10,28,54,.88),transparent);color:#fff;font-size:.92rem;font-weight:600;}
 
 /* ---------- Services ---------- */
 .services{background:var(--light);}
@@ -231,7 +239,7 @@ section{padding:5.5rem 0;}
 .service-card p{font-size:.94rem;margin-bottom:0;}
 
 /* ---------- Why ---------- */
-.why{background:var(--navy);color:#fff;position:relative;}
+.why{background:linear-gradient(155deg,rgba(18,42,78,.94),rgba(8,21,39,.96)),url('photos/frost-embers.jpg') center/cover no-repeat;color:#fff;position:relative;}
 .why h2{color:#fff;}
 .why .section-head p{color:#B7C4DA;}
 .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.75rem;}
@@ -245,9 +253,10 @@ section{padding:5.5rem 0;}
 .area-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
 .area-list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem .9rem;}
 .area-list li{padding:.85rem 1rem;background:var(--light);border-left:3px solid var(--red);border-radius:3px;font-weight:600;color:var(--navy);font-size:.95rem;}
-.area-note{background:var(--ice-light);border:1px solid #D3E3F5;border-radius:6px;padding:1.9rem;}
+.area-note{position:relative;border-radius:6px;padding:1.9rem;color:#fff;background:linear-gradient(155deg,rgba(18,42,78,.90),rgba(8,21,39,.92)),url('photos/neighborhood-dusk.jpg') center/cover no-repeat;}
 .area-note svg{width:34px;height:34px;color:var(--ice);margin-bottom:1rem;}
-.area-note p{color:var(--navy-soft);font-size:.98rem;margin-bottom:0;}
+.area-note h3{color:#fff;}
+.area-note p{color:#DCE4F0;font-size:.98rem;margin-bottom:0;}
 
 /* ---------- FAQ ---------- */
 .faq{background:var(--light);}
@@ -296,8 +305,11 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
   .why-grid{grid-template-columns:repeat(2,1fr);}
   .story-grid,.area-grid,.contact-grid{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
+  .proof-strip img{height:300px;}
 }
 @media (max-width:640px){
+  .story-photos{grid-template-columns:1fr;}
+  .proof-strip img{height:220px;}
   .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:flex-start;padding:.5rem 1.5rem 1.25rem;box-shadow:0 10px 20px rgba(0,0,0,.08);}
   .nav-links.open{display:flex;}
   .nav-links li{width:100%;padding:.8rem 0;border-bottom:1px solid var(--border);}
@@ -397,6 +409,11 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
   </div>
 </header>
 
+<!-- Proof Strip -->
+<section class="proof-strip">
+  <img src="photos/van-real.jpg" alt="Glover Heating and Air Conditioning service van, showing the company logo and 'Firefighter Owned & Operated' tagline, parked outside a home in the Birmingham, AL area" loading="lazy" />
+</section>
+
 <!-- About / Story -->
 <section class="story" id="about">
   <div class="container">
@@ -427,6 +444,15 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
           <li>Odenville Fire and Rescue</li>
         </ul>
       </div>
+    </div>
+    <div class="story-photos">
+      <figure>
+        <img src="photos/ac-gauges.jpg" alt="Close-up of HVAC refrigerant gauges and copper lines during a Glover Heating and Air Conditioning service call" loading="lazy" />
+        <figcaption>Every job starts with getting the details right.</figcaption>
+      </figure>
+      <figure>
+        <img src="photos/firefighter-helmet.jpg" alt="Firefighter helmet and hand tools with the words Firefighter Owned and Operated, People You Can Trust, representing Ralph Glover's fire and rescue background" loading="lazy" style="object-position:center 25%;" />
+      </figure>
     </div>
   </div>
 </section>
@@ -534,7 +560,7 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
         <svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-pin"/></svg>
         <h3>Don't See Your Area?</h3>
         <p>This list isn't exhaustive &mdash; Ralph grew up working these communities as a firefighter, and Glover Heating &amp; Air Conditioning serves the wider Central Alabama area. Give us a call and we'll let you know if we can get to you.</p>
-        <a href="tel:+12052968029" class="btn btn-dark" style="margin-top:.5rem;"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-phone"/></svg> Call to Confirm</a>
+        <a href="tel:+12052968029" class="btn btn-primary" style="margin-top:.5rem;"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-phone"/></svg> Call to Confirm</a>
       </div>
     </div>
   </div>
