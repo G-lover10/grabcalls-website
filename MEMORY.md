@@ -13,6 +13,40 @@ Rolling session log across all Claude sessions. Read at session start (step 3 of
 
 ---
 
+## Session: Jul 22, 2026 — afternoon
+
+### Built & Deployed
+- **Glover Heating & Air Conditioning website** → `grabcalls.com/glover-heating-air/` (new directory: `glover-heating-air/`). Real client site for Eric's dad's HVAC business, not a demo/prospecting page.
+- Custom design (not copied from `alabama-cooling-heating` template) — navy/red brand palette matched to the business card logo, Fraunces + Inter typography, hand-built SVG icon set and a recreated "GL✻VER" wordmark (flame-over-snowflake mark). No stock photos, no emoji.
+- Content is 100% fact-checked against what Eric confirmed — no fabricated years-in-business, license numbers, review counts, or fake testimonials (the alabama-cooling-heating template has all of these; deliberately did not reuse that pattern).
+- Owner story section built from real details: Ralph Glover — 30-year fire & rescue career (Center Point Fire, North Shelby Fire, retired from Odenville Fire & Rescue). Eric Glover — active firefighter, Birmingham Fire and Rescue + Odenville Fire and Rescue. This is the site's core trust/differentiation angle.
+- SEO: `HVACBusiness` + `FAQPage` JSON-LD schema, canonical tag, OG/Twitter card tags, geo-targeted title/meta (Birmingham AL + surrounding cities pulled from the family's actual fire-department service area: Center Point, Trussville, Clay, Springville, Odenville, Moody, Argo, Pell City, Chelsea, Pelham, North Shelby County).
+- Added root-level `robots.txt` (none existed before) and `sitemap.xml` listing the homepage + the new Glover page.
+- Generated `favicon.svg`, `apple-touch-icon.png`, `favicon-32.png`, `og-image.png` via a one-off Playwright/Chromium render script (no image-gen tool available in this session — asked Eric about Grok, but there's no Grok/image tool in the toolset, so went with hand-built SVG brand assets instead).
+- Visually QA'd desktop + mobile via Playwright screenshots before shipping.
+
+### Decisions Made & Why
+| Decision | Why |
+|----------|-----|
+| Did not fabricate "years in business," licensing, financing, or 24/7 claims | Eric didn't confirm these; the business card only confirms "New Installations, Repairs, Replacement, Etc." and "Firefighter Owned and Operated." Fabricating trust signals is the opposite of "people you can trust." |
+| No testimonials/reviews section | No real Google reviews exist yet for this business — fake ones would be dishonest and risk FTC issues. Left a note in the plan (not on-page) that GBP + real reviews are the next step. |
+| Hosted at `grabcalls.com/glover-heating-air/` for now, not a new domain | Eric chose to ship now rather than wait on a domain purchase. Code is domain-agnostic — moving to a dedicated domain later is a DNS change in Cloudflare, no rebuild. |
+| Custom-built SVG icons/logo instead of stock photos or emoji | Eric explicitly said no generic emojis or cheap-looking elements, and no real photos were available yet. |
+| Ralph's number (205-296-8029) is primary; Eric's (205-914-3390) is secondary | Eric's own answer when asked. |
+
+### Open Blockers
+1. **No Google Business Profile yet** — this is the single biggest lever for "AC repair near me" search visibility (more than the website itself). Someone (Ralph or Eric) needs to claim/verify a free GBP listing at business.google.com with category "HVAC Contractor," matching NAP to the site. I have no GBP/GMB tool access to do this myself.
+2. **No real photos** — truck, Ralph, completed jobs. Site is built to drop photos in later (hero, about section) without a redesign.
+3. **Domain** — still on `grabcalls.com/glover-heating-air/`. Recommended a dedicated domain (e.g. gloverheatingandair.com, ~$12/yr) for stronger long-term local SEO/credibility; Eric deferred this.
+4. **No verified business email** — contact section is call/text only (tel: and sms: links), intentionally, since no email was confirmed and there's no form backend in this static setup.
+
+### Next 3 Priority Actions
+1. Claim & verify Google Business Profile for Glover Heating & Air Conditioning (Birmingham, AL) — biggest unlock for actually showing up in "AC repair near me" searches.
+2. Submit `https://grabcalls.com/sitemap.xml` in Google Search Console and request indexing of `/glover-heating-air/`.
+3. Get first few real Google reviews once GBP is live — review velocity matters more than a review dump.
+
+---
+
 ## Session: Jul 16, 2026 — night (continued)
 
 ### Key Diagnosis
