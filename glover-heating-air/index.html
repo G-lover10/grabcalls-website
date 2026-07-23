@@ -151,7 +151,7 @@ img,svg{display:block;max-width:100%;}
 .brand-word{display:flex;align-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:1.7rem;letter-spacing:-.01em;}
 .brand-word .gl{color:var(--navy);}
 .brand-word .ver{color:var(--red);}
-.brand-icon{width:1.05em;height:1.05em;margin:0 .06em;flex-shrink:0;}
+.brand-icon{height:1.4em;width:auto;margin:0 .04em -.05em;flex-shrink:0;}
 .brand-sub{font-family:'Inter',sans-serif;font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gray);margin-top:.15rem;}
 footer .brand-word{font-size:1.55rem;}
 footer .brand-word .gl{color:#fff;}
@@ -179,7 +179,8 @@ nav.main-nav .container{display:flex;justify-content:space-between;align-items:c
 .menu-toggle span:nth-child(1){top:0;} .menu-toggle span:nth-child(2){top:8.5px;} .menu-toggle span:nth-child(3){top:17px;}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;background:linear-gradient(155deg,rgba(18,42,78,.93) 0%,rgba(10,28,54,.91) 55%,rgba(8,21,39,.95) 100%),url('photos/ac-unit-dusk.jpg') center/cover no-repeat;color:#fff;padding:5.5rem 0 4.5rem;overflow:hidden;}
+.hero{position:relative;background:linear-gradient(155deg,rgba(18,42,78,.72) 0%,rgba(12,30,58,.62) 52%,rgba(8,21,39,.80) 100%),url('photos/ac-unit-dusk.jpg') center/cover no-repeat;color:#fff;padding:5.5rem 0 4.5rem;overflow:hidden;}
+.hero h1,.hero .lead{text-shadow:0 2px 18px rgba(6,16,32,.55);}
 .hero::before{content:"";position:absolute;top:-10%;right:-8%;width:620px;height:620px;background:var(--hero-mark) center/contain no-repeat;opacity:.07;pointer-events:none;}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,var(--red),var(--ice));}
 .hero .container{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center;}
@@ -239,7 +240,7 @@ section{padding:5.5rem 0;}
 .service-card p{font-size:.94rem;margin-bottom:0;}
 
 /* ---------- Why ---------- */
-.why{background:linear-gradient(155deg,rgba(18,42,78,.94),rgba(8,21,39,.96)),url('photos/frost-embers.jpg') center/cover no-repeat;color:#fff;position:relative;}
+.why{background:linear-gradient(155deg,rgba(18,42,78,.76),rgba(8,21,39,.83)),url('photos/frost-embers.jpg') center/cover no-repeat;color:#fff;position:relative;}
 .why h2{color:#fff;}
 .why .section-head p{color:#B7C4DA;}
 .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.75rem;}
@@ -253,7 +254,8 @@ section{padding:5.5rem 0;}
 .area-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
 .area-list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem .9rem;}
 .area-list li{padding:.85rem 1rem;background:var(--light);border-left:3px solid var(--red);border-radius:3px;font-weight:600;color:var(--navy);font-size:.95rem;}
-.area-note{position:relative;border-radius:6px;padding:1.9rem;color:#fff;background:linear-gradient(155deg,rgba(18,42,78,.90),rgba(8,21,39,.92)),url('photos/neighborhood-dusk.jpg') center/cover no-repeat;}
+.area-note{position:relative;border-radius:6px;padding:1.9rem;color:#fff;background:linear-gradient(155deg,rgba(18,42,78,.74),rgba(8,21,39,.82)),url('photos/neighborhood-dusk.jpg') center/cover no-repeat;}
+.area-note strong,.area-note h3{text-shadow:0 2px 14px rgba(6,16,32,.5);}
 .area-note svg{width:34px;height:34px;color:var(--ice);margin-bottom:1rem;}
 .area-note h3{color:#fff;}
 .area-note p{color:#DCE4F0;font-size:.98rem;margin-bottom:0;}
@@ -353,6 +355,7 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
     <div class="util-items">
       <a href="tel:+12052968029"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-phone"/></svg> Ralph: (205) 296-8029</a>
       <a href="tel:+12059143390"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-phone"/></svg> Eric: (205) 914-3390</a>
+      <a href="https://www.facebook.com/profile.php?id=100063497021714" target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-facebook"/></svg> Facebook</a>
     </div>
     <span class="tag-pill">Firefighter Owned &amp; Operated</span>
   </div>
@@ -363,7 +366,7 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
   <div class="container">
     <a href="#home" class="brand">
       <div>
-        <span class="brand-word"><span class="gl">GL</span><svg class="brand-icon" aria-hidden="true" viewBox="0 0 100 100"><g stroke="var(--ice)" stroke-width="7" stroke-linecap="round"><line x1="16" y1="50" x2="84" y2="50"/><line x1="33" y1="79.4" x2="67" y2="20.6"/><line x1="33" y1="20.6" x2="67" y2="79.4"/></g><path d="M50,20 C42,32 36,42 36,54 C36,64 42,72 50,72 C58,72 64,64 64,54 C64,42 58,32 50,20 Z" fill="var(--red)"/><path d="M50,36 C45,44 42,50 42,57 C42,63 45,67 50,67 C55,67 58,63 58,57 C58,50 55,44 50,36 Z" fill="#F2A33E"/></svg><span class="ver">VER</span></span>
+        <span class="brand-word"><span class="gl">GL</span><img class="brand-icon" src="photos/logo-o.png" alt="O" /><span class="ver">VER</span></span>
         <div class="brand-sub">Heating &amp; Air Conditioning</div>
       </div>
     </a>
@@ -642,7 +645,7 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
   <div class="container">
     <div class="footer-grid">
       <div>
-        <span class="brand-word"><span class="gl">GL</span><svg class="brand-icon" aria-hidden="true" viewBox="0 0 100 100"><g stroke="var(--ice)" stroke-width="7" stroke-linecap="round"><line x1="16" y1="50" x2="84" y2="50"/><line x1="33" y1="79.4" x2="67" y2="20.6"/><line x1="33" y1="20.6" x2="67" y2="79.4"/></g><path d="M50,20 C42,32 36,42 36,54 C36,64 42,72 50,72 C58,72 64,64 64,54 C64,42 58,32 50,20 Z" fill="var(--red)"/><path d="M50,36 C45,44 42,50 42,57 C42,63 45,67 50,67 C55,67 58,63 58,57 C58,50 55,44 50,36 Z" fill="#F2A33E"/></svg><span class="ver">VER</span></span>
+        <span class="brand-word"><span class="gl">GL</span><img class="brand-icon" src="photos/logo-o.png" alt="O" /><span class="ver">VER</span></span>
         <div class="brand-sub" style="margin-bottom:1rem;">Heating &amp; Air Conditioning</div>
         <p>Firefighter-owned, family-operated heating and air conditioning company serving Birmingham and Central Alabama.</p>
       </div>
@@ -680,6 +683,35 @@ footer ul li{margin-bottom:.55rem;font-size:.9rem;}
 <div class="mobile-call-bar">
   <a href="tel:+12052968029"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#i-phone"/></svg> Call Ralph Now</a>
 </div>
+
+<script>
+(function(){
+  var menu = document.querySelector('.nav-links');
+  var toggle = document.querySelector('.menu-toggle');
+  var nav = document.querySelector('nav.main-nav');
+  // In-page links: close the mobile menu and smooth-scroll with sticky-nav offset
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href');
+      if(!id || id.length < 2) return;
+      var target = document.querySelector(id);
+      if(!target) return;
+      e.preventDefault();
+      if(menu) menu.classList.remove('open');
+      var navH = nav ? nav.offsetHeight : 0;
+      var y = target.getBoundingClientRect().top + window.pageYOffset - navH + 1;
+      window.scrollTo({top: y, behavior:'smooth'});
+      if(history.replaceState) history.replaceState(null,'',id);
+    });
+  });
+  // Tap outside the open menu closes it
+  document.addEventListener('click', function(e){
+    if(menu && toggle && menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)){
+      menu.classList.remove('open');
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
