@@ -98,5 +98,19 @@
     "emailStatus": "valid",
     "source": "vibe-prospecting",
     "loggedAt": "2026-07-16T14:10:00.000Z"
+  },
+  {
+    "name": "QRE Construction",
+    "phone": "(256) 227-4789",
+    "email": "",
+    "address": "Madison, AL",
+    "website": "",
+    "type": "roofing contractor",
+    "city": "Madison",
+    "score": 5,
+    "emailSubject": "Never Miss a Call Again, QRE Construction?",
+    "emailBody": "Hi there,  \n\nAs a roofing contractor in Madison, you’re probably losing jobs every time a call goes to voicemail—especially during storm season. GrabCalls’ AI answers your phone 24/7, books appointments, and handles FAQs so you never miss a lead. It’s like having a full-time receptionist for $200-400/month. Call (205) 605-9842 to hear the AI in action right now—no pressure, just proof it works.",
+    "sent": false,
+    "loggedAt": "2026-07-26T15:03:44.551Z"
   }
 ]
