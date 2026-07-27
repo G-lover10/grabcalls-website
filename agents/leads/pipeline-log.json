@@ -112,5 +112,19 @@
     "emailBody": "Hi there,  \n\nAs a roofing contractor in Madison, you’re probably losing jobs every time a call goes to voicemail—especially during storm season. GrabCalls’ AI answers your phone 24/7, books appointments, and handles FAQs so you never miss a lead. It’s like having a full-time receptionist for $200-400/month. Call (205) 605-9842 to hear the AI in action right now—no pressure, just proof it works.",
     "sent": false,
     "loggedAt": "2026-07-26T15:03:44.551Z"
+  },
+  {
+    "name": "Rich Electric",
+    "phone": "(205) 365-3514",
+    "email": "",
+    "address": "Birmingham, AL",
+    "website": "http://richelectric577892236.localsearch.com",
+    "type": "electrician",
+    "city": "Birmingham",
+    "score": 5,
+    "emailSubject": "Never Miss Another Call at Rich Electric",
+    "emailBody": "Hi there,  \n\nI’m Eric Glover, founder of GrabCalls—we help electricians like Rich Electric stop losing revenue to missed calls. Our AI answers your phone 24/7, books jobs, and handles FAQs so you can focus on the work that matters. Right now, every missed call is a missed opportunity, but with GrabCalls, you’ll never drop another lead. Give our demo line a ring at (205) 605-9842 to hear the AI in action—it’s live and ready to show you how it works.  \n\nCall (205) 605-9842 to hear the AI in action.",
+    "sent": false,
+    "loggedAt": "2026-07-27T16:22:00.041Z"
   }
 ]
