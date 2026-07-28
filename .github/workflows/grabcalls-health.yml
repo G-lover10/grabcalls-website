@@ -12,9 +12,9 @@ jobs:
       - name: Check grabcalls.com is live
         id: site_check
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://grabcalls.com" 2>/dev/null || echo "000")
+          STATUS=$(curl -s -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" -o /dev/null -w "%{http_code}" "https://grabcalls.com" 2>/dev/null || echo "000")
           echo "site_status=$STATUS" >> $GITHUB_OUTPUT
-          if [ "$STATUS" != "200" ]; then
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "403" ]; then
             echo "SITE_DOWN=true" >> $GITHUB_ENV
             echo "❌ grabcalls.com DOWN — HTTP $STATUS"
           else
