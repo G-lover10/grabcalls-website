@@ -428,7 +428,7 @@
     </div>
     <button class="share-btn" id="shareBtn">📤 Share</button>
     <button class="share-btn" id="shareAppBtn" style="background:rgba(255,255,255,0.18);">📲 Share App</button>
-    <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Re-Swap</button>
+    <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Res→Res</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
   </div>
   <!-- Normal mode: E12 → Reserve # -->
@@ -454,7 +454,7 @@
 </header>
 
 <div class="reswap-banner" id="reswapBanner">
-  🔄 RE-SWAP MODE — showing E12 gear on current reserve
+  🔄 RES→RES MODE — moving gear from one reserve to another
   <button class="reswap-exit" id="reswapExitBtn">Exit</button>
 </div>
 
@@ -735,6 +735,11 @@ if (!state.driver) state.driver = "";
 if (!Array.isArray(state.customItems)) state.customItems = [];
 if (!state.startedAt) state.startedAt = new Date().toISOString();
 
+// Re-swap state — declared early so renderCustomItems() can safely reference them
+const RESWAP_KEY = "station12-reswap-v1";
+let reswapMode = false;
+let reswapState = { checked: [], skipped: [], notes: "" };
+
 // ── Render ────────────────────────────────────────────────────────
 function itemKey(sectionId, idx) { return `${sectionId}-${idx}`; }
 
@@ -1006,9 +1011,6 @@ document.getElementById("shareBtn").addEventListener("click", shareSwap);
 document.getElementById("doneShareBtn").addEventListener("click", shareSwap);
 
 // ── Re-Swap Mode ─────────────────────────────────────────────────
-const RESWAP_KEY = "station12-reswap-v1";
-let reswapMode = false;
-let reswapState = { checked: [], skipped: [], notes: "" };
 
 function loadReswapState() {
   try {
