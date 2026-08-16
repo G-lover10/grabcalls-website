@@ -3,6 +3,7 @@
 // Updates log with followUpSent, followUp2Sent tracking
 
 const { callModel } = require('../models');
+const { sendEmail } = require('../mailer');
 const fs = require('fs');
 const path = require('path');
 
@@ -53,27 +54,6 @@ Sender: Eric Glover, GrabCalls`;
   return { subject, body };
 }
 
-async function sendViaResend(to, subject, body) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-  const from = process.env.FROM_EMAIL || 'Eric Glover <onboarding@resend.dev>';
-  try {
-    const resp = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [to], subject, text: body }),
-    });
-    if (!resp.ok) {
-      const err = await resp.text();
-      console.log(`[followup] Resend error: ${err}`);
-      return false;
-    }
-    return true;
-  } catch (e) {
-    console.log(`[followup] Send failed: ${e.message}`);
-    return false;
-  }
-}
 
 async function runFollowUpPipeline() {
   const log = loadLog();
@@ -109,8 +89,8 @@ async function runFollowUpPipeline() {
       continue;
     }
     console.log(`Subject: ${subject}\n${body}`);
-    const sent = await sendViaResend(lead.email, subject, body);
-    console.log(`[followup] ${sent ? '✅ SENT' : '⚠️ logged only'}`);
+    const { sent, method: sentMethod } = await sendEmail(lead.email, subject, body);
+    console.log(`[followup] ${sent ? `✅ SENT via ${sentMethod}` : '⚠️ logged only — add GMAIL_APP_PASSWORD to GitHub Secrets'}`);
     const idx = updatedLog.findIndex(e => e.name === lead.name && e.email === lead.email);
     if (idx !== -1) {
       updatedLog[idx].followUpSent = sent;
@@ -130,8 +110,8 @@ async function runFollowUpPipeline() {
       continue;
     }
     console.log(`Subject: ${subject}\n${body}`);
-    const sent = await sendViaResend(lead.email, subject, body);
-    console.log(`[followup] ${sent ? '✅ SENT' : '⚠️ logged only'}`);
+    const { sent, method: sentMethod } = await sendEmail(lead.email, subject, body);
+    console.log(`[followup] ${sent ? `✅ SENT via ${sentMethod}` : '⚠️ logged only — add GMAIL_APP_PASSWORD to GitHub Secrets'}`);
     const idx = updatedLog.findIndex(e => e.name === lead.name && e.email === lead.email);
     if (idx !== -1) {
       updatedLog[idx].followUp2Sent = sent;
@@ -143,8 +123,8 @@ async function runFollowUpPipeline() {
 
   saveLog(updatedLog);
   console.log(`\n[followup] ===== DONE =====`);
-  if (!process.env.RESEND_API_KEY) {
-    console.log('[followup] → Add RESEND_API_KEY to GitHub Secrets to enable sending');
+  if (!process.env.GMAIL_APP_PASSWORD && !process.env.RESEND_API_KEY) {
+    console.log('[followup] → Add GMAIL_APP_PASSWORD to GitHub Secrets to enable sending from grabcalls@gmail.com');
   }
 }
 

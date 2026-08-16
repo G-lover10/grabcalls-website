@@ -19,9 +19,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install agent dependencies
+        run: npm install --prefix agents
+
       - name: Run follow-up pipeline
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
         run: node agents/index.js followup-pipeline

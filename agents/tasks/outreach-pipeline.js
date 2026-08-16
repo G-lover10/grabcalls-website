@@ -1,14 +1,16 @@
 // Outreach Pipeline — Automated Lead Generation for GrabCalls
-// Flow: Scrape YellowPages → Score with Ling-1T → Write email with Laguna → Send via Resend
+// Flow: Scrape YellowPages → Score with Ling-1T → Write email with Laguna → Send via Gmail/Resend
 //
-// Required secrets:  OPENROUTER_API_KEY (already set)
-// Optional secrets:  RESEND_API_KEY    (enables auto-send; without it, logs only)
-//                    FROM_EMAIL        (defaults to eric@grabcalls.com)
+// Required secrets:  OPENROUTER_API_KEY      (already set)
+// Email (pick one):  GMAIL_APP_PASSWORD      (preferred — sends from grabcalls@gmail.com)
+//                    RESEND_API_KEY          (fallback — sends from onboarding@resend.dev)
+// Optional:          GMAIL_SENDER            (defaults to grabcalls@gmail.com)
+//                    FROM_EMAIL              (Resend only, defaults to Eric Glover <onboarding@resend.dev>)
 //
-// Without RESEND_API_KEY the pipeline still runs and logs every email to Actions output.
-// Add RESEND_API_KEY → GitHub Settings → Secrets → Actions to enable auto-send.
+// Without either email secret the pipeline still runs and logs every email to Actions output.
 
 const { callModel } = require('../models');
+const { sendEmail } = require('../mailer');
 const fs = require('fs');
 const path = require('path');
 
@@ -207,27 +209,6 @@ End with ONE call to action: call (205) 605-9842 to hear the AI in action.`;
   return { subject, body };
 }
 
-async function sendViaResend(to, subject, body) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-  const from = process.env.FROM_EMAIL || 'Eric Glover <onboarding@resend.dev>';
-  try {
-    const resp = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [to], subject, text: body }),
-    });
-    if (!resp.ok) {
-      const err = await resp.text();
-      console.log(`[pipeline] Resend error: ${err}`);
-      return false;
-    }
-    return true;
-  } catch (e) {
-    console.log(`[pipeline] Resend failed: ${e.message}`);
-    return false;
-  }
-}
 
 async function runOutreachPipeline() {
   const log = loadLog();
@@ -288,9 +269,14 @@ async function runOutreachPipeline() {
     console.log('─'.repeat(60));
 
     let sent = false;
+    let sentMethod = null;
     if (email) {
-      sent = await sendViaResend(email, subject, body);
-      console.log(`[pipeline] Email ${sent ? '✅ SENT' : '⚠️  logged only (RESEND_API_KEY not set)'} to ${email}`);
+      ({ sent, method: sentMethod } = await sendEmail(email, subject, body));
+      if (sent) {
+        console.log(`[pipeline] ✅ SENT via ${sentMethod} → ${email}`);
+      } else {
+        console.log(`[pipeline] ⚠️  logged only — add GMAIL_APP_PASSWORD or RESEND_API_KEY to GitHub Secrets`);
+      }
     } else {
       console.log(`[pipeline] No email found — add HUNTER_API_KEY secret for email enrichment`);
     }
@@ -321,8 +307,8 @@ async function runOutreachPipeline() {
   console.log(`[pipeline] Emails sent: ${sentCount}`);
   console.log(`[pipeline] Logged (not sent): ${loggedCount}`);
   console.log(`[pipeline] Total in pipeline log: ${log.length + newEntries.length}`);
-  if (!process.env.RESEND_API_KEY) {
-    console.log(`[pipeline] → Add RESEND_API_KEY to GitHub Secrets to enable auto-sending`);
+  if (!process.env.GMAIL_APP_PASSWORD && !process.env.RESEND_API_KEY) {
+    console.log(`[pipeline] → Add GMAIL_APP_PASSWORD to GitHub Secrets to enable sending from grabcalls@gmail.com`);
   }
 }
 
