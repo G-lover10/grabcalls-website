@@ -89,6 +89,25 @@
   .share-btn:active { background: rgba(255,255,255,0.3); }
   .done-btn-share { background: var(--blue); color: white; }
 
+  /* ── Re-Swap banner ── */
+  .reswap-banner {
+    display: none;
+    background: #1e3a5f;
+    color: #93c5fd;
+    font-size: 13px; font-weight: 700;
+    text-align: center;
+    padding: 7px 16px;
+    letter-spacing: 0.04em;
+  }
+  .reswap-banner.show { display: block; }
+  .reswap-exit {
+    background: none; border: none;
+    color: #93c5fd; font-size: 12px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+  }
+
   /* Progress bar */
   .progress-wrap {
     background: rgba(0,0,0,0.3);
@@ -338,6 +357,7 @@
       <div class="header-sub">E12 → Reserve</div>
     </div>
     <button class="share-btn" id="shareBtn">📤 Share</button>
+    <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Re-Swap</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
   </div>
   <div class="progress-wrap">
@@ -348,6 +368,11 @@
     <span id="progressPct">0%</span>
   </div>
 </header>
+
+<div class="reswap-banner" id="reswapBanner">
+  🔄 RE-SWAP MODE — showing E12 gear on current reserve
+  <button class="reswap-exit" id="reswapExitBtn">Exit</button>
+</div>
 
 <div id="listContainer"></div>
 
@@ -369,6 +394,7 @@
     <div class="done-time" id="doneTime"></div>
     <div class="done-actions">
       <button class="done-btn done-btn-share" id="doneShareBtn">📤 Share with Incoming Crew</button>
+      <button class="done-btn" id="doneReswapBtn" style="background:#1d4ed8;color:white;">🔄 Re-Swap to New Reserve</button>
       <button class="done-btn done-btn-primary" id="doneBackBtn">Back to Station 12</button>
       <button class="done-btn done-btn-ghost" id="doneStayBtn">View Checklist</button>
     </div>
@@ -717,8 +743,8 @@ function updateProgress() {
 const notesEl = document.getElementById("swapNotes");
 notesEl.value = state.notes;
 notesEl.addEventListener("input", () => {
-  state.notes = notesEl.value;
-  saveState();
+  if (reswapMode) { reswapState.notes = notesEl.value; saveReswapState(); }
+  else { state.notes = notesEl.value; saveState(); }
 });
 
 // ── Complete ─────────────────────────────────────────────────────
@@ -789,6 +815,197 @@ function shareSwap() {
 
 document.getElementById("shareBtn").addEventListener("click", shareSwap);
 document.getElementById("doneShareBtn").addEventListener("click", shareSwap);
+
+// ── Re-Swap Mode ─────────────────────────────────────────────────
+const RESWAP_KEY = "station12-reswap-v1";
+let reswapMode = false;
+let reswapState = { checked: [], skipped: [], notes: "" };
+
+function loadReswapState() {
+  try {
+    const raw = localStorage.getItem(RESWAP_KEY);
+    if (!raw) return { checked: [], skipped: [], notes: "" };
+    return JSON.parse(raw);
+  } catch(_) { return { checked: [], skipped: [], notes: "" }; }
+}
+function saveReswapState() {
+  try { localStorage.setItem(RESWAP_KEY, JSON.stringify(reswapState)); } catch(_) {}
+}
+
+// Items currently on the reserve = what was ✓ moved from E12
+// If nothing was tracked, fall back to showing everything
+function reswapItems() {
+  const moved = state.checked.length > 0 ? state.checked : allItems;
+  return moved;
+}
+
+function enterReswapMode() {
+  reswapMode = true;
+  reswapState = loadReswapState();
+  if (!Array.isArray(reswapState.checked)) reswapState.checked = [];
+  if (!Array.isArray(reswapState.skipped)) reswapState.skipped = [];
+  if (typeof reswapState.notes !== "string") reswapState.notes = "";
+  document.getElementById("reswapBanner").classList.add("show");
+  document.getElementById("doneOverlay").classList.remove("show");
+  document.querySelector(".header-sub").textContent = "Reserve → Reserve";
+  notesEl.value = reswapState.notes;
+  buildUI();
+  updateProgress();
+}
+
+function exitReswapMode() {
+  reswapMode = false;
+  document.getElementById("reswapBanner").classList.remove("show");
+  document.querySelector(".header-sub").textContent = "E12 → Reserve";
+  notesEl.value = state.notes;
+  buildUI();
+  updateProgress();
+}
+
+// Patch buildUI & toggles to use reswapState when active
+const _origBuildUI = buildUI;
+buildUI = function() {
+  const container = document.getElementById("listContainer");
+  container.innerHTML = "";
+  const activeState = reswapMode ? reswapState : state;
+  const activeItems = reswapMode ? reswapItems() : allItems;
+
+  SECTIONS.forEach(sec => {
+    const visibleIdxs = sec.items.map((_, i) => i).filter(i => activeItems.includes(itemKey(sec.id, i)));
+    if (visibleIdxs.length === 0) return;
+
+    const sectionDone = visibleIdxs.every(i => {
+      const k = itemKey(sec.id, i);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
+    });
+    const doneCount = visibleIdxs.filter(i => {
+      const k = itemKey(sec.id, i);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
+    }).length;
+
+    const div = document.createElement("div");
+    div.className = "section" + (sec.warn ? " warn" : "") + (sectionDone ? " collapsed" : "");
+
+    const hdr = document.createElement("div");
+    hdr.className = "section-header";
+    hdr.innerHTML = `
+      <span class="section-icon">${sec.icon}</span>
+      <span class="section-label">${sec.label}</span>
+      <span class="section-count${sectionDone ? " done" : ""}">${doneCount}/${visibleIdxs.length}</span>
+      <span class="section-chevron">▼</span>
+    `;
+    hdr.addEventListener("click", () => div.classList.toggle("collapsed"));
+
+    const body = document.createElement("div");
+    body.className = "section-body";
+
+    visibleIdxs.forEach(idx => {
+      const k = itemKey(sec.id, idx);
+      const text = sec.items[idx];
+      const isChecked = activeState.checked.includes(k);
+      const isSkipped = activeState.skipped.includes(k);
+
+      const row = document.createElement("div");
+      row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
+      row.innerHTML = `
+        <div class="item-check">
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div>
+        </div>
+        <div class="item-text">${text}</div>
+        <div class="item-skip">
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : reswapMode ? "new res has it" : "had it"}</button>
+        </div>
+      `;
+      row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
+      row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
+      row.querySelector(".skip-btn").addEventListener("click", e => { e.stopPropagation(); toggleSkip(k); });
+      body.appendChild(row);
+    });
+
+    div.appendChild(hdr);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+};
+
+const _origToggleCheck = toggleCheck;
+toggleCheck = function(key) {
+  if (reswapMode) {
+    const ci = reswapState.checked.indexOf(key);
+    const si = reswapState.skipped.indexOf(key);
+    if (si !== -1) reswapState.skipped.splice(si, 1);
+    if (ci === -1) reswapState.checked.push(key); else reswapState.checked.splice(ci, 1);
+    saveReswapState(); buildUI(); updateProgress();
+  } else { _origToggleCheck(key); }
+};
+
+const _origToggleSkip = toggleSkip;
+toggleSkip = function(key) {
+  if (reswapMode) {
+    const ci = reswapState.checked.indexOf(key);
+    const si = reswapState.skipped.indexOf(key);
+    if (ci !== -1) reswapState.checked.splice(ci, 1);
+    if (si === -1) reswapState.skipped.push(key); else reswapState.skipped.splice(si, 1);
+    saveReswapState(); buildUI(); updateProgress();
+  } else { _origToggleSkip(key); }
+};
+
+// Patch updateProgress for reswap mode
+const _origUpdateProgress = updateProgress;
+updateProgress = function() {
+  if (!reswapMode) { _origUpdateProgress(); return; }
+  const active = reswapItems();
+  const total = active.length;
+  const done = active.filter(k => reswapState.checked.includes(k) || reswapState.skipped.includes(k)).length;
+  const pct = total === 0 ? 0 : Math.round(done / total * 100);
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = `${done} of ${total} items`;
+  document.getElementById("progressPct").textContent = pct + "%";
+  const btn = document.getElementById("completeBtn");
+  if (done >= total) {
+    btn.classList.remove("inactive"); btn.classList.add("active");
+    btn.textContent = "✓ Re-Swap Complete — Tap to Confirm";
+  } else {
+    btn.classList.remove("active"); btn.classList.add("inactive");
+    btn.textContent = `Re-Swap Complete (${total - done} remaining)`;
+  }
+};
+
+// Wire buttons
+document.getElementById("reswapBtn").addEventListener("click", enterReswapMode);
+document.getElementById("doneReswapBtn").addEventListener("click", enterReswapMode);
+document.getElementById("reswapExitBtn").addEventListener("click", exitReswapMode);
+
+// Share text for reswap mode
+const _origBuildShareText = buildShareText;
+buildShareText = function() {
+  if (!reswapMode) return _origBuildShareText();
+  const now = new Date();
+  const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  const active = reswapItems();
+  const moved = [], hadIt = [], pending = [];
+  SECTIONS.forEach(sec => {
+    sec.items.forEach((text, idx) => {
+      const k = itemKey(sec.id, idx);
+      if (!active.includes(k)) return;
+      if (reswapState.checked.includes(k)) moved.push(text);
+      else if (reswapState.skipped.includes(k)) hadIt.push(text);
+      else pending.push(text);
+    });
+  });
+  let msg = `🔄 Reserve → Reserve Re-Swap | Station 12\n${dateStr}\n\n`;
+  msg += `✓ Moved to new reserve: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
+  msg += `↷ New reserve already had: ${hadIt.length} item${hadIt.length !== 1 ? "s" : ""}\n`;
+  if (pending.length > 0) {
+    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n`;
+    msg += pending.map(i => `  • ${i}`).join("\n") + "\n";
+  } else {
+    msg += `\n✅ New reserve fully equipped.\n`;
+  }
+  if (reswapState.notes && reswapState.notes.trim()) msg += `\nNotes: ${reswapState.notes.trim()}\n`;
+  msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
+  return msg;
+};
 
 // ── Reset ────────────────────────────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
