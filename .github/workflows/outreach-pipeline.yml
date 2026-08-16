@@ -26,10 +26,15 @@ jobs:
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
         run: node agents/index.js outreach-pipeline
 
-      - name: Save pipeline log
+      - name: Save pipeline log + update MEMORY status
         run: |
           git config user.email "agent@grabcalls.com"
           git config user.name "GrabCalls Agent"
-          git add agents/leads/pipeline-log.json
+          # Update last-run timestamp in MEMORY.md
+          TIMESTAMP="$(date -u '+%Y-%m-%d %H:%M UTC')"
+          sed -i "s/<!-- outreach-last-run:.*-->/<!-- outreach-last-run: $TIMESTAMP -->/" MEMORY.md || true
+          # If marker not found, append it
+          grep -q "outreach-last-run" MEMORY.md || echo "<!-- outreach-last-run: $TIMESTAMP -->" >> MEMORY.md
+          git add agents/leads/pipeline-log.json MEMORY.md
           git diff --staged --quiet || git commit -m "chore: outreach pipeline run $(date +%Y-%m-%d)"
           git push || echo "Nothing to push"
