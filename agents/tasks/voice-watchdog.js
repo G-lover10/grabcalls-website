@@ -9,12 +9,12 @@
 //   BLAND_INBOUND_URL    — from bland.ai → your inbound agent → webhook URL
 //
 // Optional:
-//   N8N_WEBHOOK_URL      — defaults to http://178.156.227.13:5678
+//   N8N_WEBHOOK_URL      — defaults to https://n8n.grabcalls.com
 
 async function checkN8nHealth() {
-  const base = process.env.N8N_WEBHOOK_URL || 'http://178.156.227.13:5678';
+  const base = process.env.N8N_WEBHOOK_URL || 'https://n8n.grabcalls.com';
   try {
-    const resp = await fetch(base, { signal: AbortSignal.timeout(6000) });
+    const resp = await fetch(base, { signal: AbortSignal.timeout(10000) });
     return resp.status < 500;
   } catch {
     return false;

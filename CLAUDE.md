@@ -48,9 +48,10 @@ All models route through OpenRouter. Key: `OPENROUTER_API_KEY` in GitHub Secrets
 | ListSnap (list-snap.netlify.app) | ✅ LIVE | eBay posting built; user token may be expired |
 | Notion Master Brain | ✅ LIVE | ID: 3629f925-93e5-814e-a7c8-dc4e1d4c93e7 |
 | BFRS Netlify Functions | ✅ LIVE | 4 functions: chatbot, send-email, keep-alive, pay-period |
-| Hetzner (178.156.227.13) | ⚠️ UNKNOWN | SSH broken — use hetzner.com web console / VNC |
-| n8n God Mode Stack | ⚠️ UNKNOWN | Depends on Hetzner check |
-| RealOrAI (port 8001) | ⚠️ UNKNOWN | Depends on Hetzner check |
+| Hetzner (178.156.227.13) | ✅ RUNNING | SSH broken — use hetzner.com console. SSL cert expired (needs certbot renew) |
+| n8n God Mode Stack | ✅ RUNNING | Live at n8n.grabcalls.com. 20 workflows. SSL cert expired = Chrome warning |
+| Voice agent (205) 605-9842 | ❌ DOWN | n8n up but Twilio VoiceUrl needs update. See Inbox in Brain. |
+| RealOrAI (port 8001) | ⚠️ UNKNOWN | Hetzner alive but port 8001 unverified |
 | OpenClaw | ❌ RETIRED | Was burning API in runaway loop. Reading tool only. |
 
 ## Locked Decisions (Don't Re-Litigate)

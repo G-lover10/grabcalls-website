@@ -10,6 +10,9 @@
     "campaign-analysis": "node index.js campaign-analysis",
     "test": "node index.js test"
   },
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  },
   "engines": {
     "node": ">=18.0.0"
   }

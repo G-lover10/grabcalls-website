@@ -19,17 +19,25 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install agent dependencies
+        run: npm install --prefix agents
+
       - name: Run follow-up pipeline
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
         run: node agents/index.js followup-pipeline
 
-      - name: Save pipeline log
+      - name: Save pipeline log + update MEMORY status
         run: |
           git config user.email "agent@grabcalls.com"
           git config user.name "GrabCalls Agent"
-          git add agents/leads/pipeline-log.json
+          TIMESTAMP="$(date -u '+%Y-%m-%d %H:%M UTC')"
+          sed -i "s/<!-- followup-last-run:.*-->/<!-- followup-last-run: $TIMESTAMP -->/" MEMORY.md || true
+          grep -q "followup-last-run" MEMORY.md || echo "<!-- followup-last-run: $TIMESTAMP -->" >> MEMORY.md
+          git add agents/leads/pipeline-log.json MEMORY.md
           git diff --staged --quiet || git commit -m "chore: follow-up pipeline run $(date +%Y-%m-%d)"
           git push || echo "Nothing to push"
