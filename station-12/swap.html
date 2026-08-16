@@ -89,6 +89,95 @@
   .share-btn:active { background: rgba(255,255,255,0.3); }
   .done-btn-share { background: var(--blue); color: white; }
 
+  /* ── Unit number row ── */
+  .unit-row {
+    display: flex; align-items: center;
+    gap: 8px; margin-bottom: 8px;
+  }
+  .unit-label { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.85); white-space: nowrap; }
+  .unit-num-input {
+    flex: 1; min-width: 0;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    color: white; font-size: 14px; font-weight: 700;
+    font-family: inherit; padding: 5px 8px;
+  }
+  .unit-num-input::placeholder { color: rgba(255,255,255,0.35); }
+  .unit-num-input:focus { outline: none; border-color: rgba(255,255,255,0.6); }
+  .unit-arrow-txt { color: rgba(255,255,255,0.5); font-size: 16px; font-weight: 700; }
+
+  /* ── Crew fields ── */
+  .crew-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .crew-field { flex: 1; min-width: 0; }
+  .crew-label-sm {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px;
+  }
+  .crew-input {
+    width: 100%; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 8px;
+    color: var(--text); font-size: 14px; font-family: inherit; padding: 8px 10px;
+  }
+  .crew-input:focus { outline: none; border-color: var(--red); }
+
+  /* ── Custom items ── */
+  .custom-section {
+    margin: 12px 12px 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .custom-section-hdr {
+    display: flex; align-items: center;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--muted); gap: 6px;
+  }
+  .add-item-row {
+    display: flex; gap: 8px; padding: 10px 12px;
+    border-top: 1px solid var(--line);
+  }
+  .add-item-input {
+    flex: 1; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 8px;
+    color: var(--text); font-size: 14px; font-family: inherit; padding: 8px 10px;
+  }
+  .add-item-input:focus { outline: none; border-color: var(--red); }
+  .add-item-btn {
+    background: var(--red); color: white; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 800;
+    font-family: inherit; padding: 8px 16px; cursor: pointer; white-space: nowrap;
+  }
+  .item-remove { flex-shrink: 0; padding: 0 12px 0 0; display: flex; align-items: center; }
+  .remove-btn {
+    background: none; border: 1px solid var(--line); border-radius: 6px;
+    color: var(--muted); font-size: 13px; cursor: pointer; padding: 4px 8px; line-height: 1;
+  }
+  .remove-btn:active { background: rgba(214,40,40,0.1); border-color: var(--red); color: var(--red); }
+
+  /* ── Re-Swap banner ── */
+  .reswap-banner {
+    display: none;
+    background: #1e3a5f;
+    color: #93c5fd;
+    font-size: 13px; font-weight: 700;
+    text-align: center;
+    padding: 7px 16px;
+    letter-spacing: 0.04em;
+  }
+  .reswap-banner.show { display: block; }
+  .reswap-exit {
+    background: none; border: none;
+    color: #93c5fd; font-size: 12px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+  }
+
   /* Progress bar */
   .progress-wrap {
     background: rgba(0,0,0,0.3);
@@ -338,7 +427,21 @@
       <div class="header-sub">E12 → Reserve</div>
     </div>
     <button class="share-btn" id="shareBtn">📤 Share</button>
+    <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Re-Swap</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
+  </div>
+  <!-- Normal mode: E12 → Reserve # -->
+  <div class="unit-row" id="unitRowNormal">
+    <span class="unit-label">E12 →</span>
+    <input class="unit-num-input" id="unitToInput" placeholder="Reserve # (e.g. 402)" type="text" />
+  </div>
+  <!-- Re-swap mode: Res → Res -->
+  <div class="unit-row" id="unitRowReswap" style="display:none">
+    <span class="unit-label">Res #</span>
+    <input class="unit-num-input" id="reswapFromInput" placeholder="From (e.g. 402)" type="text" style="max-width:120px" />
+    <span class="unit-arrow-txt">→</span>
+    <span class="unit-label">Res #</span>
+    <input class="unit-num-input" id="reswapToInput" placeholder="To (e.g. 403)" type="text" style="max-width:120px" />
   </div>
   <div class="progress-wrap">
     <div class="progress-bar" id="progressBar" style="width:0%"></div>
@@ -349,12 +452,40 @@
   </div>
 </header>
 
+<div class="reswap-banner" id="reswapBanner">
+  🔄 RE-SWAP MODE — showing E12 gear on current reserve
+  <button class="reswap-exit" id="reswapExitBtn">Exit</button>
+</div>
+
 <div id="listContainer"></div>
 
 <div class="notes-section">
+  <div class="notes-label" style="margin-bottom:8px">Crew on Duty</div>
+  <div class="crew-row">
+    <div class="crew-field">
+      <div class="crew-label-sm">Officer</div>
+      <input class="crew-input" id="crewOfficer" placeholder="Name" type="text" />
+    </div>
+    <div class="crew-field">
+      <div class="crew-label-sm">Driver</div>
+      <input class="crew-input" id="crewDriver" placeholder="Name" type="text" />
+    </div>
+  </div>
+</div>
+
+<div class="notes-section" style="margin-top:8px">
   <div class="notes-label">Swap Notes</div>
   <textarea class="notes-input" id="swapNotes" placeholder="Anything the reserve already had, anything unusual, items left on E12..."></textarea>
-  <div class="notes-hint">Saved automatically. Example: "This reserve had attack nozzles, no blitz nozzle."</div>
+  <div class="notes-hint">Saved automatically.</div>
+</div>
+
+<div class="custom-section">
+  <div class="custom-section-hdr">➕ Custom Items</div>
+  <div id="customItemsList"></div>
+  <div class="add-item-row">
+    <input class="add-item-input" id="addItemInput" placeholder="Add item not on the list..." type="text" />
+    <button class="add-item-btn" id="addItemBtn">Add</button>
+  </div>
 </div>
 
 <div class="complete-bar">
@@ -365,10 +496,11 @@
   <div class="done-inner">
     <div class="done-emoji">🚒</div>
     <div class="done-title">Swap Complete</div>
-    <div class="done-sub">E12 equipment transferred to reserve.<br>Reserve is ready to roll.</div>
+    <div class="done-sub" id="doneSub">E12 equipment transferred to reserve.<br>Reserve is ready to roll.</div>
     <div class="done-time" id="doneTime"></div>
     <div class="done-actions">
       <button class="done-btn done-btn-share" id="doneShareBtn">📤 Share with Incoming Crew</button>
+      <button class="done-btn" id="doneReswapBtn" style="background:#1d4ed8;color:white;">🔄 Re-Swap to New Reserve</button>
       <button class="done-btn done-btn-primary" id="doneBackBtn">Back to Station 12</button>
       <button class="done-btn done-btn-ghost" id="doneStayBtn">View Checklist</button>
     </div>
@@ -402,6 +534,8 @@ const SECTIONS = [
     label: "Cab — Seats & Door Steps",
     items: [
       "Officer's SCBA (seat bracket)",
+      "Fill-in SCBAs (jump seat brackets)",
+      "Spare air bottles",
       "Gray TIC (Thermal Imaging Camera)",
       "Orange clip-on TIC",
       "Toughbook laptop",
@@ -580,9 +714,9 @@ const TOTAL = allItems.length;
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null };
+    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() };
     return JSON.parse(raw);
-  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null }; }
+  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() }; }
 }
 function saveState() {
   try {
@@ -594,6 +728,11 @@ let state = loadState();
 if (!Array.isArray(state.checked)) state.checked = [];
 if (!Array.isArray(state.skipped)) state.skipped = [];
 if (typeof state.notes !== "string") state.notes = "";
+if (!state.reserveTo) state.reserveTo = "";
+if (!state.officer) state.officer = "";
+if (!state.driver) state.driver = "";
+if (!Array.isArray(state.customItems)) state.customItems = [];
+if (!state.startedAt) state.startedAt = new Date().toISOString();
 
 // ── Render ────────────────────────────────────────────────────────
 function itemKey(sectionId, idx) { return `${sectionId}-${idx}`; }
@@ -695,42 +834,117 @@ function toggleSkip(key) {
 }
 
 function updateProgress() {
+  const customCount = (state.customItems || []).length;
+  const total = TOTAL + customCount;
   const done = state.checked.length + state.skipped.length;
-  const pct = TOTAL === 0 ? 0 : Math.round(done / TOTAL * 100);
+  const pct = total === 0 ? 0 : Math.round(done / total * 100);
   document.getElementById("progressBar").style.width = pct + "%";
-  document.getElementById("progressLabel").textContent = `${done} of ${TOTAL} items`;
+  document.getElementById("progressLabel").textContent = `${done} of ${total} items`;
   document.getElementById("progressPct").textContent = pct + "%";
 
   const btn = document.getElementById("completeBtn");
-  if (done >= TOTAL) {
-    btn.classList.remove("inactive");
-    btn.classList.add("active");
+  if (done >= total) {
+    btn.classList.remove("inactive"); btn.classList.add("active");
     btn.textContent = "✓ Swap Complete — Tap to Confirm";
   } else {
-    btn.classList.remove("active");
-    btn.classList.add("inactive");
-    btn.textContent = `Swap Complete (${TOTAL - done} remaining)`;
+    btn.classList.remove("active"); btn.classList.add("inactive");
+    btn.textContent = `Swap Complete (${total - done} remaining)`;
   }
 }
+
+// ── Unit number inputs ───────────────────────────────────────────
+const unitToEl = document.getElementById("unitToInput");
+unitToEl.value = state.reserveTo;
+unitToEl.addEventListener("input", () => { state.reserveTo = unitToEl.value; saveState(); });
+
+const reswapFromEl = document.getElementById("reswapFromInput");
+const reswapToEl = document.getElementById("reswapToInput");
+reswapFromEl.addEventListener("input", () => { reswapState.fromRes = reswapFromEl.value; saveReswapState(); });
+reswapToEl.addEventListener("input", () => { reswapState.toRes = reswapToEl.value; saveReswapState(); });
+
+// ── Crew inputs ──────────────────────────────────────────────────
+const officerEl = document.getElementById("crewOfficer");
+const driverEl = document.getElementById("crewDriver");
+officerEl.value = state.officer;
+driverEl.value = state.driver;
+officerEl.addEventListener("input", () => { state.officer = officerEl.value; saveState(); });
+driverEl.addEventListener("input", () => { state.driver = driverEl.value; saveState(); });
+
+// ── Custom items ─────────────────────────────────────────────────
+function renderCustomItems() {
+  const as = reswapMode ? reswapState : state;
+  const container = document.getElementById("customItemsList");
+  container.innerHTML = "";
+  (as.customItems || []).forEach((item, idx) => {
+    const k = `custom-${item.id}`;
+    const isChecked = as.checked.includes(k);
+    const isSkipped = as.skipped.includes(k);
+    const row = document.createElement("div");
+    row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
+    row.innerHTML = `
+      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div></div>
+      <div class="item-text">${item.text}</div>
+      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "had it"}</button></div>
+      <div class="item-remove"><button class="remove-btn" type="button">✕</button></div>
+    `;
+    row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
+    row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
+    row.querySelector(".skip-btn").addEventListener("click", e => { e.stopPropagation(); toggleSkip(k); });
+    row.querySelector(".remove-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      const ci = as.checked.indexOf(k); if (ci !== -1) as.checked.splice(ci, 1);
+      const si = as.skipped.indexOf(k); if (si !== -1) as.skipped.splice(si, 1);
+      as.customItems.splice(idx, 1);
+      reswapMode ? saveReswapState() : saveState();
+      renderCustomItems(); updateProgress();
+    });
+    container.appendChild(row);
+  });
+}
+renderCustomItems();
+
+document.getElementById("addItemBtn").addEventListener("click", () => {
+  const input = document.getElementById("addItemInput");
+  const text = input.value.trim();
+  if (!text) return;
+  const as = reswapMode ? reswapState : state;
+  if (!Array.isArray(as.customItems)) as.customItems = [];
+  as.customItems.push({ id: Date.now().toString(36), text });
+  reswapMode ? saveReswapState() : saveState();
+  input.value = "";
+  renderCustomItems(); updateProgress();
+});
+document.getElementById("addItemInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("addItemBtn").click();
+});
 
 // ── Notes ────────────────────────────────────────────────────────
 const notesEl = document.getElementById("swapNotes");
 notesEl.value = state.notes;
 notesEl.addEventListener("input", () => {
-  state.notes = notesEl.value;
-  saveState();
+  if (reswapMode) { reswapState.notes = notesEl.value; saveReswapState(); }
+  else { state.notes = notesEl.value; saveState(); }
 });
 
 // ── Complete ─────────────────────────────────────────────────────
 document.getElementById("completeBtn").addEventListener("click", () => {
-  if (state.checked.length + state.skipped.length < TOTAL) return;
+  const as = reswapMode ? reswapState : state;
+  const customCount = (as.customItems || []).length;
+  const total = (reswapMode ? reswapItems().length : TOTAL) + customCount;
+  if (as.checked.length + as.skipped.length < total) return;
   const now = new Date();
-  state.completedAt = now.toISOString();
-  saveState();
-  const overlay = document.getElementById("doneOverlay");
-  overlay.classList.add("show");
-  document.getElementById("doneTime").textContent =
-    "Completed " + now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  as.completedAt = now.toISOString();
+  reswapMode ? saveReswapState() : saveState();
+
+  const fmt = d => new Date(d).toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+
+  const fromUnit = reswapMode ? (reswapState.fromRes ? `Res ${reswapState.fromRes}` : "Reserve") : "E12";
+  const toUnit = reswapMode ? (reswapState.toRes ? `Res ${reswapState.toRes}` : "New Reserve") : (state.reserveTo ? `Res ${state.reserveTo}` : "Reserve");
+
+  document.getElementById("doneSub").innerHTML = `${fromUnit} → ${toUnit}<br>Equipment transferred. Ready to roll.`;
+  document.getElementById("doneTime").textContent = "Completed " + fmt(now.toISOString());
+
+  document.getElementById("doneOverlay").classList.add("show");
 });
 
 document.getElementById("doneBackBtn").addEventListener("click", () => {
@@ -790,12 +1004,259 @@ function shareSwap() {
 document.getElementById("shareBtn").addEventListener("click", shareSwap);
 document.getElementById("doneShareBtn").addEventListener("click", shareSwap);
 
+// ── Re-Swap Mode ─────────────────────────────────────────────────
+const RESWAP_KEY = "station12-reswap-v1";
+let reswapMode = false;
+let reswapState = { checked: [], skipped: [], notes: "" };
+
+function loadReswapState() {
+  try {
+    const raw = localStorage.getItem(RESWAP_KEY);
+    if (!raw) return { checked: [], skipped: [], notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() };
+    return JSON.parse(raw);
+  } catch(_) { return { checked: [], skipped: [], notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() }; }
+}
+function saveReswapState() {
+  try { localStorage.setItem(RESWAP_KEY, JSON.stringify(reswapState)); } catch(_) {}
+}
+
+// Items currently on the reserve = what was ✓ moved from E12
+// If nothing was tracked, fall back to showing everything
+function reswapItems() {
+  const moved = state.checked.length > 0 ? state.checked : allItems;
+  return moved;
+}
+
+function enterReswapMode() {
+  reswapMode = true;
+  reswapState = loadReswapState();
+  if (!Array.isArray(reswapState.checked)) reswapState.checked = [];
+  if (!Array.isArray(reswapState.skipped)) reswapState.skipped = [];
+  if (typeof reswapState.notes !== "string") reswapState.notes = "";
+  if (!Array.isArray(reswapState.customItems)) reswapState.customItems = [];
+  if (!reswapState.fromRes) reswapState.fromRes = state.reserveTo || "";
+  if (!reswapState.toRes) reswapState.toRes = "";
+  if (!reswapState.startedAt) reswapState.startedAt = new Date().toISOString();
+  document.getElementById("reswapBanner").classList.add("show");
+  document.getElementById("doneOverlay").classList.remove("show");
+  document.querySelector(".header-sub").textContent = "Reserve → Reserve";
+  document.getElementById("unitRowNormal").style.display = "none";
+  document.getElementById("unitRowReswap").style.display = "flex";
+  reswapFromEl.value = reswapState.fromRes;
+  reswapToEl.value = reswapState.toRes;
+  notesEl.value = reswapState.notes;
+  renderCustomItems();
+  buildUI();
+  updateProgress();
+}
+
+function exitReswapMode() {
+  reswapMode = false;
+  document.getElementById("reswapBanner").classList.remove("show");
+  document.querySelector(".header-sub").textContent = "E12 → Reserve";
+  document.getElementById("unitRowNormal").style.display = "flex";
+  document.getElementById("unitRowReswap").style.display = "none";
+  notesEl.value = state.notes;
+  renderCustomItems();
+  buildUI();
+  updateProgress();
+}
+
+// Patch buildUI & toggles to use reswapState when active
+const _origBuildUI = buildUI;
+buildUI = function() {
+  const container = document.getElementById("listContainer");
+  container.innerHTML = "";
+  const activeState = reswapMode ? reswapState : state;
+  const activeItems = reswapMode ? reswapItems() : allItems;
+
+  SECTIONS.forEach(sec => {
+    const visibleIdxs = sec.items.map((_, i) => i).filter(i => activeItems.includes(itemKey(sec.id, i)));
+    if (visibleIdxs.length === 0) return;
+
+    const sectionDone = visibleIdxs.every(i => {
+      const k = itemKey(sec.id, i);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
+    });
+    const doneCount = visibleIdxs.filter(i => {
+      const k = itemKey(sec.id, i);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
+    }).length;
+
+    const div = document.createElement("div");
+    div.className = "section" + (sec.warn ? " warn" : "") + (sectionDone ? " collapsed" : "");
+
+    const hdr = document.createElement("div");
+    hdr.className = "section-header";
+    hdr.innerHTML = `
+      <span class="section-icon">${sec.icon}</span>
+      <span class="section-label">${sec.label}</span>
+      <span class="section-count${sectionDone ? " done" : ""}">${doneCount}/${visibleIdxs.length}</span>
+      <span class="section-chevron">▼</span>
+    `;
+    hdr.addEventListener("click", () => div.classList.toggle("collapsed"));
+
+    const body = document.createElement("div");
+    body.className = "section-body";
+
+    visibleIdxs.forEach(idx => {
+      const k = itemKey(sec.id, idx);
+      const text = sec.items[idx];
+      const isChecked = activeState.checked.includes(k);
+      const isSkipped = activeState.skipped.includes(k);
+
+      const row = document.createElement("div");
+      row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
+      row.innerHTML = `
+        <div class="item-check">
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div>
+        </div>
+        <div class="item-text">${text}</div>
+        <div class="item-skip">
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : reswapMode ? "new res has it" : "had it"}</button>
+        </div>
+      `;
+      row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
+      row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
+      row.querySelector(".skip-btn").addEventListener("click", e => { e.stopPropagation(); toggleSkip(k); });
+      body.appendChild(row);
+    });
+
+    div.appendChild(hdr);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+};
+
+const _origToggleCheck = toggleCheck;
+toggleCheck = function(key) {
+  if (reswapMode) {
+    const ci = reswapState.checked.indexOf(key);
+    const si = reswapState.skipped.indexOf(key);
+    if (si !== -1) reswapState.skipped.splice(si, 1);
+    if (ci === -1) reswapState.checked.push(key); else reswapState.checked.splice(ci, 1);
+    saveReswapState(); buildUI(); updateProgress();
+  } else { _origToggleCheck(key); }
+};
+
+const _origToggleSkip = toggleSkip;
+toggleSkip = function(key) {
+  if (reswapMode) {
+    const ci = reswapState.checked.indexOf(key);
+    const si = reswapState.skipped.indexOf(key);
+    if (ci !== -1) reswapState.checked.splice(ci, 1);
+    if (si === -1) reswapState.skipped.push(key); else reswapState.skipped.splice(si, 1);
+    saveReswapState(); buildUI(); updateProgress();
+  } else { _origToggleSkip(key); }
+};
+
+// Patch updateProgress for reswap mode
+const _origUpdateProgress = updateProgress;
+updateProgress = function() {
+  if (!reswapMode) { _origUpdateProgress(); return; }
+  const active = reswapItems();
+  const customCount = (reswapState.customItems || []).length;
+  const total = active.length + customCount;
+  const done = reswapState.checked.length + reswapState.skipped.length;
+  const pct = total === 0 ? 0 : Math.round(done / total * 100);
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = `${done} of ${total} items`;
+  document.getElementById("progressPct").textContent = pct + "%";
+  const btn = document.getElementById("completeBtn");
+  if (done >= total) {
+    btn.classList.remove("inactive"); btn.classList.add("active");
+    btn.textContent = "✓ Re-Swap Complete — Tap to Confirm";
+  } else {
+    btn.classList.remove("active"); btn.classList.add("inactive");
+    btn.textContent = `Re-Swap Complete (${total - done} remaining)`;
+  }
+};
+
+// Wire buttons
+document.getElementById("reswapBtn").addEventListener("click", enterReswapMode);
+document.getElementById("doneReswapBtn").addEventListener("click", enterReswapMode);
+document.getElementById("reswapExitBtn").addEventListener("click", exitReswapMode);
+
+// Share text patches for unit numbers, crew, custom items
+const _origBuildShareText = buildShareText;
+buildShareText = function() {
+  const now = new Date();
+  const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+
+  if (reswapMode) {
+    const fromLabel = reswapState.fromRes ? `Res Eng ${reswapState.fromRes}` : "Reserve";
+    const toLabel = reswapState.toRes ? `Res Eng ${reswapState.toRes}` : "New Reserve";
+    const active = reswapItems();
+    const moved = [], hadIt = [], pending = [];
+    SECTIONS.forEach(sec => {
+      sec.items.forEach((text, idx) => {
+        const k = itemKey(sec.id, idx);
+        if (!active.includes(k)) return;
+        if (reswapState.checked.includes(k)) moved.push(text);
+        else if (reswapState.skipped.includes(k)) hadIt.push(text);
+        else pending.push(text);
+      });
+    });
+    (reswapState.customItems || []).forEach(item => {
+      const k = `custom-${item.id}`;
+      if (reswapState.checked.includes(k)) moved.push(item.text + " ✎");
+      else if (reswapState.skipped.includes(k)) hadIt.push(item.text + " ✎");
+      else pending.push(item.text + " ✎");
+    });
+    let msg = `🔄 ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
+    if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
+    msg += `\n✓ Moved: ${moved.length} items\n↷ New reserve had: ${hadIt.length} items\n`;
+    if (pending.length > 0) {
+      msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
+    } else { msg += `\n✅ New reserve fully equipped.\n`; }
+    if (reswapState.notes && reswapState.notes.trim()) msg += `\nNotes: ${reswapState.notes.trim()}\n`;
+    msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
+    return msg;
+  }
+
+  // Normal E12 → Reserve mode
+  const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
+  const moved = [], hadIt = [], pending = [];
+  SECTIONS.forEach(sec => {
+    sec.items.forEach((text, idx) => {
+      const k = itemKey(sec.id, idx);
+      if (state.checked.includes(k)) moved.push(text);
+      else if (state.skipped.includes(k)) hadIt.push(text);
+      else pending.push(text);
+    });
+  });
+  (state.customItems || []).forEach(item => {
+    const k = `custom-${item.id}`;
+    if (state.checked.includes(k)) moved.push(item.text + " ✎");
+    else if (state.skipped.includes(k)) hadIt.push(item.text + " ✎");
+    else pending.push(item.text + " ✎");
+  });
+  let msg = `🚒 E12 → ${toLabel} | Station 12\n${dateStr}\n`;
+  if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
+  msg += `\n✓ Moved from E12: ${moved.length} items\n↷ Reserve had: ${hadIt.length} items\n`;
+  if (pending.length > 0) {
+    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
+  } else { msg += `\n✅ Reserve fully equipped.\n`; }
+  if (state.notes && state.notes.trim()) msg += `\nNotes: ${state.notes.trim()}\n`;
+  msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
+  return msg;
+};
+
 // ── Reset ────────────────────────────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset the checklist? This clears all checked items and notes.")) return;
-  state = { checked: [], skipped: [], notes: "", completedAt: null };
-  saveState();
-  notesEl.value = "";
+  const label = reswapMode ? "Reset re-swap? This clears all re-swap progress." : "Reset the checklist? This clears all checked items and notes.";
+  if (!confirm(label)) return;
+  if (reswapMode) {
+    reswapState = { checked: [], skipped: [], notes: "", fromRes: reswapState.fromRes, toRes: "", customItems: [], startedAt: new Date().toISOString() };
+    saveReswapState();
+    reswapToEl.value = "";
+    notesEl.value = "";
+  } else {
+    state = { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: state.reserveTo, officer: state.officer, driver: state.driver, customItems: [], startedAt: new Date().toISOString() };
+    saveState();
+    notesEl.value = "";
+  }
+  renderCustomItems();
   buildUI();
   updateProgress();
 });
