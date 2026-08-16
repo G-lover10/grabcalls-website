@@ -427,6 +427,7 @@
       <div class="header-sub">E12 → Reserve</div>
     </div>
     <button class="share-btn" id="shareBtn">📤 Share</button>
+    <button class="share-btn" id="shareAppBtn" style="background:rgba(255,255,255,0.18);">📲 Share App</button>
     <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Re-Swap</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
   </div>
@@ -1171,6 +1172,21 @@ updateProgress = function() {
     btn.textContent = `Re-Swap Complete (${total - done} remaining)`;
   }
 };
+
+// ── Share App link ───────────────────────────────────────────────
+document.getElementById("shareAppBtn").addEventListener("click", () => {
+  const url = "https://g-lover10.github.io/grabcalls-website/station-12/swap.html";
+  const text = "🚒 E12 Truck Swap Checklist — Station 12 B-Shift\nTap the link, then add to your home screen so it's ready next time E12 goes OOS.";
+  if (navigator.share) {
+    navigator.share({ title: "E12 Truck Swap — Station 12", text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text + "\n\n" + url).then(() => {
+      alert("App link copied to clipboard!");
+    }).catch(() => {
+      prompt("Copy and share this link:", url);
+    });
+  }
+});
 
 // Wire buttons
 document.getElementById("reswapBtn").addEventListener("click", enterReswapMode);
