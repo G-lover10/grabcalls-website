@@ -424,17 +424,20 @@
     <a href="index.html" class="back-btn">← E12</a>
     <div class="header-title">
       Truck Swap
-      <div class="header-sub">E12 → Reserve</div>
+      <div class="header-sub">Engine → Reserve</div>
     </div>
     <button class="share-btn" id="shareBtn">📤 Share</button>
     <button class="share-btn" id="shareAppBtn" style="background:rgba(255,255,255,0.18);">📲 Share App</button>
     <button class="share-btn" id="reswapBtn" style="background:rgba(37,99,235,0.25);">🔄 Res→Res</button>
     <button class="reset-btn" id="resetBtn">Reset</button>
   </div>
-  <!-- Normal mode: E12 → Reserve # -->
+  <!-- Normal mode: Engine # → Reserve # -->
   <div class="unit-row" id="unitRowNormal">
-    <span class="unit-label">E12 →</span>
-    <input class="unit-num-input" id="unitToInput" placeholder="Reserve # (e.g. 402)" type="text" />
+    <span class="unit-label">Eng #</span>
+    <input class="unit-num-input" id="unitFromInput" placeholder="E12" type="text" style="max-width:90px" />
+    <span class="unit-arrow-txt">→</span>
+    <span class="unit-label">Res #</span>
+    <input class="unit-num-input" id="unitToInput" placeholder="402" type="text" style="max-width:90px" />
   </div>
   <!-- Re-swap mode: Res → Res -->
   <div class="unit-row" id="unitRowReswap" style="display:none">
@@ -715,9 +718,9 @@ const TOTAL = allItems.length;
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() };
+    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() };
     return JSON.parse(raw);
-  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() }; }
+  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() }; }
 }
 function saveState() {
   try {
@@ -729,6 +732,7 @@ let state = loadState();
 if (!Array.isArray(state.checked)) state.checked = [];
 if (!Array.isArray(state.skipped)) state.skipped = [];
 if (typeof state.notes !== "string") state.notes = "";
+if (!state.fromEngine) state.fromEngine = "E12";
 if (!state.reserveTo) state.reserveTo = "";
 if (!state.officer) state.officer = "";
 if (!state.driver) state.driver = "";
@@ -859,9 +863,21 @@ function updateProgress() {
 }
 
 // ── Unit number inputs ───────────────────────────────────────────
+function updateHeaderSub() {
+  if (reswapMode) return;
+  const from = state.fromEngine || "Engine";
+  const to = state.reserveTo ? `Res ${state.reserveTo}` : "Reserve";
+  document.querySelector(".header-sub").textContent = `${from} → ${to}`;
+}
+
+const unitFromEl = document.getElementById("unitFromInput");
+unitFromEl.value = state.fromEngine;
+unitFromEl.addEventListener("input", () => { state.fromEngine = unitFromEl.value; saveState(); updateHeaderSub(); });
+
 const unitToEl = document.getElementById("unitToInput");
 unitToEl.value = state.reserveTo;
-unitToEl.addEventListener("input", () => { state.reserveTo = unitToEl.value; saveState(); });
+unitToEl.addEventListener("input", () => { state.reserveTo = unitToEl.value; saveState(); updateHeaderSub(); });
+updateHeaderSub();
 
 const reswapFromEl = document.getElementById("reswapFromInput");
 const reswapToEl = document.getElementById("reswapToInput");
@@ -944,7 +960,7 @@ document.getElementById("completeBtn").addEventListener("click", () => {
 
   const fmt = d => new Date(d).toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
 
-  const fromUnit = reswapMode ? (reswapState.fromRes ? `Res ${reswapState.fromRes}` : "Reserve") : "E12";
+  const fromUnit = reswapMode ? (reswapState.fromRes ? `Res ${reswapState.fromRes}` : "Reserve") : (state.fromEngine || "Engine");
   const toUnit = reswapMode ? (reswapState.toRes ? `Res ${reswapState.toRes}` : "New Reserve") : (state.reserveTo ? `Res ${state.reserveTo}` : "Reserve");
 
   document.getElementById("doneSub").innerHTML = `${fromUnit} → ${toUnit}<br>Equipment transferred. Ready to roll.`;
@@ -1056,7 +1072,7 @@ function enterReswapMode() {
 function exitReswapMode() {
   reswapMode = false;
   document.getElementById("reswapBanner").classList.remove("show");
-  document.querySelector(".header-sub").textContent = "E12 → Reserve";
+  updateHeaderSub();
   document.getElementById("unitRowNormal").style.display = "flex";
   document.getElementById("unitRowReswap").style.display = "none";
   notesEl.value = state.notes;
@@ -1232,7 +1248,8 @@ buildShareText = function() {
     return msg;
   }
 
-  // Normal E12 → Reserve mode
+  // Normal Engine → Reserve mode
+  const fromEngineLabel = state.fromEngine || "Engine";
   const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
   const moved = [], hadIt = [], pending = [];
   SECTIONS.forEach(sec => {
@@ -1249,9 +1266,9 @@ buildShareText = function() {
     else if (state.skipped.includes(k)) hadIt.push(item.text + " ✎");
     else pending.push(item.text + " ✎");
   });
-  let msg = `🚒 E12 → ${toLabel} | Station 12\n${dateStr}\n`;
+  let msg = `🚒 ${fromEngineLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
   if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
-  msg += `\n✓ Moved from E12: ${moved.length} items\n↷ Reserve had: ${hadIt.length} items\n`;
+  msg += `\n✓ Moved from ${fromEngineLabel}: ${moved.length} items\n↷ Reserve had: ${hadIt.length} items\n`;
   if (pending.length > 0) {
     msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
   } else { msg += `\n✅ Reserve fully equipped.\n`; }
