@@ -935,17 +935,12 @@ document.getElementById("completeBtn").addEventListener("click", () => {
   reswapMode ? saveReswapState() : saveState();
 
   const fmt = d => new Date(d).toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
-  const startStr = as.startedAt ? fmt(as.startedAt) : null;
-  const endStr = fmt(now.toISOString());
-  const diffMin = as.startedAt ? Math.round((now - new Date(as.startedAt)) / 60000) : null;
 
   const fromUnit = reswapMode ? (reswapState.fromRes ? `Res ${reswapState.fromRes}` : "Reserve") : "E12";
   const toUnit = reswapMode ? (reswapState.toRes ? `Res ${reswapState.toRes}` : "New Reserve") : (state.reserveTo ? `Res ${state.reserveTo}` : "Reserve");
 
   document.getElementById("doneSub").innerHTML = `${fromUnit} → ${toUnit}<br>Equipment transferred. Ready to roll.`;
-  let timeHtml = `Completed ${endStr}`;
-  if (startStr && diffMin !== null) timeHtml += `<br><span style="font-size:12px">Started ${startStr} &bull; ${diffMin} min</span>`;
-  document.getElementById("doneTime").innerHTML = timeHtml;
+  document.getElementById("doneTime").textContent = "Completed " + fmt(now.toISOString());
 
   document.getElementById("doneOverlay").classList.add("show");
 });
