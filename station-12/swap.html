@@ -636,7 +636,7 @@ const SECTIONS = [
     items: [
       "5-inch supply line — 700 ft",
       "3-inch hose — 250 ft",
-      "2½-inch hose — 200 ft",
+      { text: "2½-inch hose — 200 ft", skipLabel: "N/A" },
       "House pack — 1¾\" × 100 ft with gated Y",
     ]
   },
@@ -1133,7 +1133,9 @@ buildUI = function() {
 
     visibleIdxs.forEach(idx => {
       const k = itemKey(sec.id, idx);
-      const text = sec.items[idx];
+      const itemDef = sec.items[idx];
+      const text = typeof itemDef === "string" ? itemDef : itemDef.text;
+      const itemSkipLabel = typeof itemDef === "string" ? null : itemDef.skipLabel;
       const isChecked = activeState.checked.includes(k);
       const isSkipped = activeState.skipped.includes(k);
 
@@ -1145,7 +1147,7 @@ buildUI = function() {
         </div>
         <div class="item-text">${text}</div>
         <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : reswapMode ? "new res has it" : "had it"}</button>
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "had it")}</button>
         </div>
       `;
       row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
@@ -1236,7 +1238,8 @@ buildShareText = function() {
     const active = reswapItems();
     const moved = [], hadIt = [], pending = [];
     SECTIONS.forEach(sec => {
-      sec.items.forEach((text, idx) => {
+      sec.items.forEach((itemDef, idx) => {
+        const text = typeof itemDef === "string" ? itemDef : itemDef.text;
         const k = itemKey(sec.id, idx);
         if (!active.includes(k)) return;
         if (reswapState.checked.includes(k)) moved.push(text);
@@ -1266,7 +1269,8 @@ buildShareText = function() {
   const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
   const moved = [], hadIt = [], pending = [];
   SECTIONS.forEach(sec => {
-    sec.items.forEach((text, idx) => {
+    sec.items.forEach((itemDef, idx) => {
+      const text = typeof itemDef === "string" ? itemDef : itemDef.text;
       const k = itemKey(sec.id, idx);
       if (state.checked.includes(k)) moved.push(text);
       else if (state.skipped.includes(k)) hadIt.push(text);
