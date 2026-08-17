@@ -326,6 +326,8 @@
   }
   .skip-btn:active { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
   .item.skipped .skip-btn { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
+  .item.checked .item-skip { display: none; }
+  .item.skipped .check-box { font-size: 9px; font-weight: 700; letter-spacing: 0; }
 
   /* Warn items */
   .section.warn .item-text { font-weight: 600; }
@@ -711,7 +713,6 @@ const SECTIONS = [
       "Cellar nozzle",
       "Portable master stream stand",
       "1 3/8\" smooth bore tip",
-      "Bungee cord",
     ]
   },
   {
@@ -819,11 +820,11 @@ function buildUI() {
       row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
       row.innerHTML = `
         <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div>
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div>
         </div>
         <div class="item-text">${text}</div>
         <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : "had it"}</button>
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : "N/A"}</button>
         </div>
       `;
 
@@ -831,7 +832,7 @@ function buildUI() {
       row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
       row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
 
-      // "had it" button → toggle skip
+      // N/A button → toggle skip
       row.querySelector(".skip-btn").addEventListener("click", e => {
         e.stopPropagation();
         toggleSkip(k);
@@ -935,9 +936,9 @@ function renderCustomItems() {
     const row = document.createElement("div");
     row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
     row.innerHTML = `
-      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div></div>
+      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div></div>
       <div class="item-text">${item.text}</div>
-      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "had it"}</button></div>
+      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "N/A"}</button></div>
       <div class="item-remove"><button class="remove-btn" type="button">✕</button></div>
     `;
     row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
@@ -1161,11 +1162,11 @@ buildUI = function() {
       row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
       row.innerHTML = `
         <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? "↷" : ""}</div>
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div>
         </div>
         <div class="item-text">${text}</div>
         <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "had it")}</button>
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "N/A")}</button>
         </div>
       `;
       row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
