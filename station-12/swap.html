@@ -586,7 +586,7 @@ const SECTIONS = [
       "Male to male adapter",
       "Air hose",
       "1 rubber mallet",
-      "WD-40",
+      { text: "WD-40", skipLabel: "N/A" },
       "2 flashlights",
       "1 wedge",
       "1 hydrant cap",
@@ -671,7 +671,6 @@ const SECTIONS = [
       "Crosslay #1 nozzle",
       "Crosslay #2 — 1¾\" × 200 ft",
       "Crosslay #2 nozzle",
-      "House pack — 1¾\" × 100 ft with gated Y",
     ]
   },
   {
@@ -837,11 +836,11 @@ function buildUI() {
       row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
       row.innerHTML = `
         <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div>
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? "RES" : ""}</div>
         </div>
         <div class="item-text">${text}</div>
         <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : "N/A"}</button>
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : "res had it"}</button>
         </div>
       `;
 
@@ -953,9 +952,9 @@ function renderCustomItems() {
     const row = document.createElement("div");
     row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
     row.innerHTML = `
-      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div></div>
+      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "RES" : ""}</div></div>
       <div class="item-text">${item.text}</div>
-      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "N/A"}</button></div>
+      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "res had it"}</button></div>
       <div class="item-remove"><button class="remove-btn" type="button">✕</button></div>
     `;
     row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
@@ -1238,11 +1237,11 @@ buildUI = function() {
       row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
       row.innerHTML = `
         <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? "N/A" : ""}</div>
+          <div class="check-box">${isChecked ? "✓" : isSkipped ? (itemSkipLabel === "N/A" ? "N/A" : itemSkipLabel === "left on truck" ? "–" : "RES") : ""}</div>
         </div>
         <div class="item-text">${text}</div>
         <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "N/A")}</button>
+          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "res had it")}</button>
         </div>
       `;
       row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
