@@ -361,6 +361,14 @@
   .notes-input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 2px rgba(214,40,40,0.15); }
   .notes-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
+  /* ── Photos ── */
+  .photo-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .photo-thumb-wrap { position: relative; width: 80px; height: 80px; }
+  .photo-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); display: block; }
+  .photo-remove { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: #dc2626; color: white; border: none; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .photo-add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; background: var(--panel-2); border: 1.5px dashed var(--line); border-radius: 10px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; box-sizing: border-box; }
+  .photo-add-btn:active { background: var(--panel); }
+
   /* ── Complete bar ── */
   .complete-bar {
     position: fixed;
@@ -483,6 +491,14 @@
   <div class="notes-label">Swap Notes</div>
   <textarea class="notes-input" id="swapNotes" placeholder="Anything the reserve already had, anything unusual, items left on E12..."></textarea>
   <div class="notes-hint">Saved automatically.</div>
+</div>
+
+<div class="notes-section" style="margin-top:8px">
+  <div class="notes-label">Photos</div>
+  <div id="photoGrid" class="photo-grid"></div>
+  <button class="photo-add-btn" id="photoAddBtn" type="button">📷 Add Photo</button>
+  <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+  <div class="notes-hint">Document missing items, damage, or anything unusual. Up to 10 photos.</div>
 </div>
 
 <div class="custom-section">
@@ -750,9 +766,9 @@ const TOTAL = allItems.length;
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() };
+    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], photos: [], startedAt: new Date().toISOString() };
     return JSON.parse(raw);
-  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], startedAt: new Date().toISOString() }; }
+  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], photos: [], startedAt: new Date().toISOString() }; }
 }
 function saveState() {
   try {
@@ -769,6 +785,7 @@ if (!state.reserveTo) state.reserveTo = "";
 if (!state.officer) state.officer = "";
 if (!state.driver) state.driver = "";
 if (!Array.isArray(state.customItems)) state.customItems = [];
+if (!Array.isArray(state.photos)) state.photos = [];
 if (!state.startedAt) state.startedAt = new Date().toISOString();
 
 // Re-swap state — declared early so renderCustomItems() can safely reference them
@@ -979,6 +996,65 @@ notesEl.addEventListener("input", () => {
   if (reswapMode) { reswapState.notes = notesEl.value; saveReswapState(); }
   else { state.notes = notesEl.value; saveState(); }
 });
+
+// ── Photos ───────────────────────────────────────────────────────
+function compressPhoto(file, cb) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL("image/jpeg", 0.6));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderPhotos() {
+  const grid = document.getElementById("photoGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  (state.photos || []).forEach((src, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "photo-thumb-wrap";
+    wrap.innerHTML = `<img class="photo-thumb" src="${src}"><button class="photo-remove" data-idx="${idx}" type="button">✕</button>`;
+    wrap.querySelector(".photo-remove").addEventListener("click", e => {
+      e.stopPropagation();
+      state.photos.splice(idx, 1);
+      saveState();
+      renderPhotos();
+    });
+    grid.appendChild(wrap);
+  });
+}
+
+document.getElementById("photoAddBtn").addEventListener("click", () => {
+  document.getElementById("photoInput").click();
+});
+
+document.getElementById("photoInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!Array.isArray(state.photos)) state.photos = [];
+  if (state.photos.length >= 10) { alert("Max 10 photos per swap."); e.target.value = ""; return; }
+  compressPhoto(file, dataUrl => {
+    state.photos.push(dataUrl);
+    saveState();
+    renderPhotos();
+    e.target.value = "";
+  });
+});
+
+renderPhotos();
 
 // ── Complete ─────────────────────────────────────────────────────
 document.getElementById("completeBtn").addEventListener("click", () => {
@@ -1323,9 +1399,10 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     reswapToEl.value = "";
     notesEl.value = "";
   } else {
-    state = { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: state.reserveTo, officer: state.officer, driver: state.driver, customItems: [], startedAt: new Date().toISOString() };
+    state = { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: state.reserveTo, officer: state.officer, driver: state.driver, customItems: [], photos: [], startedAt: new Date().toISOString() };
     saveState();
     notesEl.value = "";
+    renderPhotos();
   }
   renderCustomItems();
   buildUI();
