@@ -262,7 +262,12 @@
   .item:last-child { border-bottom: none; }
   .item:active { background: var(--panel-2); }
   .item.checked { background: rgba(22,101,52,0.06); }
-  .item.skipped { background: rgba(29,78,216,0.06); }
+
+  /* Status backgrounds */
+  .item.status-res { background: rgba(29,78,216,0.06); }
+  .item.status-lot { background: rgba(180,83,9,0.06); }
+  .item.status-na  { background: rgba(107,114,128,0.08); }
+  .item.status-oos { background: rgba(220,38,38,0.08); }
 
   .item-check {
     width: 58px;
@@ -288,11 +293,11 @@
     border-color: #16a34a;
     color: white;
   }
-  .item.skipped .check-box {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: white;
-  }
+  /* Status check-box colors */
+  .item.status-res .check-box { background: #2563eb; border-color: #2563eb; color: white; font-size: 9px; font-weight: 800; letter-spacing: 0; }
+  .item.status-lot .check-box { background: #b45309; border-color: #b45309; color: white; font-size: 9px; font-weight: 800; letter-spacing: 0; }
+  .item.status-na  .check-box { background: #6b7280; border-color: #6b7280; color: white; font-size: 9px; font-weight: 800; letter-spacing: 0; }
+  .item.status-oos .check-box { background: #dc2626; border-color: #dc2626; color: white; font-size: 9px; font-weight: 800; letter-spacing: 0; }
 
   .item-text {
     flex: 1;
@@ -305,14 +310,18 @@
     text-decoration: line-through;
     text-decoration-color: rgba(46,160,67,0.5);
   }
-  .item.skipped .item-text { color: var(--muted); }
+  .item.status-res .item-text,
+  .item.status-lot .item-text,
+  .item.status-na  .item-text,
+  .item.status-oos .item-text { color: var(--muted); }
 
-  .item-skip {
+  /* ── Status button ── */
+  .item-status-area {
     flex-shrink: 0;
     padding: 0 12px 0 0;
     display: flex; align-items: center;
   }
-  .skip-btn {
+  .status-pick-btn {
     background: transparent;
     border: 1px solid var(--line);
     border-radius: 6px;
@@ -324,10 +333,12 @@
     white-space: nowrap;
     line-height: 1.2;
   }
-  .skip-btn:active { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
-  .item.skipped .skip-btn { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
-  .item.checked .item-skip { display: none; }
-  .item.skipped .check-box { font-size: 9px; font-weight: 700; letter-spacing: 0; }
+  .status-pick-btn:active { background: rgba(0,0,0,0.06); }
+  .item.status-res .status-pick-btn { background: rgba(37,99,235,0.1); border-color: #2563eb; color: #1d4ed8; }
+  .item.status-lot .status-pick-btn { background: rgba(180,83,9,0.1); border-color: #b45309; color: #92400e; }
+  .item.status-na  .status-pick-btn { background: rgba(107,114,128,0.1); border-color: #6b7280; color: #4b5563; }
+  .item.status-oos .status-pick-btn { background: rgba(220,38,38,0.1); border-color: #dc2626; color: #b91c1c; }
+  .item.checked .item-status-area { display: none; }
 
   /* Warn items */
   .section.warn .item-text { font-weight: 600; }
@@ -368,6 +379,100 @@
   .photo-remove { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: #dc2626; color: white; border: none; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
   .photo-add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; background: var(--panel-2); border: 1.5px dashed var(--line); border-radius: 10px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; box-sizing: border-box; }
   .photo-add-btn:active { background: var(--panel); }
+
+  /* ── Status Picker Sheet ── */
+  .picker-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.45);
+  }
+  .picker-overlay.show { display: block; }
+  .picker-sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 401;
+    background: var(--panel);
+    border-radius: 20px 20px 0 0;
+    padding: 16px 16px calc(env(safe-area-inset-bottom) + 16px);
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+  }
+  .picker-handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: var(--line); margin: 0 auto 14px;
+  }
+  .picker-title {
+    font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); margin-bottom: 6px; text-align: center;
+  }
+  .picker-item-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--text); margin-bottom: 14px; text-align: center; line-height: 1.3;
+  }
+  .picker-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .picker-opt {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 16px; border-radius: 12px;
+    border: 1.5px solid var(--line);
+    background: var(--panel-2);
+    cursor: pointer; font-family: inherit;
+    width: 100%;
+  }
+  .picker-opt:active { opacity: 0.7; }
+  .picker-opt.active { border-width: 2px; }
+  .picker-opt[data-status="res"].active { border-color: #2563eb; background: rgba(37,99,235,0.06); }
+  .picker-opt[data-status="lot"].active { border-color: #b45309; background: rgba(180,83,9,0.06); }
+  .picker-opt[data-status="na"].active  { border-color: #6b7280; background: rgba(107,114,128,0.06); }
+  .picker-opt[data-status="oos"].active { border-color: #dc2626; background: rgba(220,38,38,0.06); }
+  .picker-opt-label { font-size: 15px; font-weight: 600; color: var(--text); }
+  .picker-opt-abbr {
+    font-size: 11px; font-weight: 800;
+    padding: 3px 8px; border-radius: 6px; color: white; flex-shrink: 0;
+  }
+  .picker-opt[data-status="res"] .picker-opt-abbr { background: #2563eb; }
+  .picker-opt[data-status="lot"] .picker-opt-abbr { background: #b45309; }
+  .picker-opt[data-status="na"]  .picker-opt-abbr { background: #6b7280; }
+  .picker-opt[data-status="oos"] .picker-opt-abbr { background: #dc2626; }
+  .picker-clear {
+    width: 100%; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--line); background: transparent;
+    cursor: pointer; font-family: inherit; font-size: 14px;
+    font-weight: 700; color: var(--muted); text-align: center;
+    margin-bottom: 6px;
+  }
+  .picker-cancel {
+    width: 100%; padding: 12px; border-radius: 12px;
+    border: none; background: transparent;
+    cursor: pointer; font-family: inherit;
+    font-size: 15px; font-weight: 700; color: var(--muted); text-align: center;
+  }
+
+  /* ── Legend ── */
+  .swap-legend {
+    margin: 12px 12px 0;
+    padding: 12px 14px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .legend-title {
+    font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-badge {
+    font-size: 10px; font-weight: 800;
+    padding: 2px 6px; border-radius: 4px;
+    color: white; flex-shrink: 0; letter-spacing: 0.02em;
+  }
+  .legend-badge.check { background: #16a34a; }
+  .legend-badge.res   { background: #2563eb; }
+  .legend-badge.lot   { background: #b45309; }
+  .legend-badge.na    { background: #6b7280; }
+  .legend-badge.oos   { background: #dc2626; }
+  .legend-item span:last-child { font-size: 12px; color: var(--muted); }
 
   /* ── Complete bar ── */
   .complete-bar {
@@ -473,6 +578,18 @@
 
 <div id="listContainer"></div>
 
+<!-- Status legend -->
+<div class="swap-legend">
+  <div class="legend-title">Status Key</div>
+  <div class="legend-items">
+    <div class="legend-item"><span class="legend-badge check">✓</span><span>Moved over</span></div>
+    <div class="legend-item"><span class="legend-badge res">RES</span><span>Reserve had it</span></div>
+    <div class="legend-item"><span class="legend-badge lot">LOT</span><span>Left on truck</span></div>
+    <div class="legend-item"><span class="legend-badge na">N/A</span><span>Not available</span></div>
+    <div class="legend-item"><span class="legend-badge oos">OOS</span><span>Out of service</span></div>
+  </div>
+</div>
+
 <div class="notes-section">
   <div class="notes-label" style="margin-bottom:8px">Crew on Duty</div>
   <div class="crew-row">
@@ -529,6 +646,35 @@
   </div>
 </div>
 
+<!-- Status picker bottom sheet -->
+<div class="picker-overlay" id="pickerOverlay">
+  <div class="picker-sheet">
+    <div class="picker-handle"></div>
+    <div class="picker-title">Set Item Status</div>
+    <div class="picker-item-name" id="pickerItemName"></div>
+    <div class="picker-opts">
+      <button class="picker-opt" data-status="res" type="button">
+        <span class="picker-opt-label">Reserve had it</span>
+        <span class="picker-opt-abbr">RES</span>
+      </button>
+      <button class="picker-opt" data-status="lot" type="button">
+        <span class="picker-opt-label">Left on truck</span>
+        <span class="picker-opt-abbr">LOT</span>
+      </button>
+      <button class="picker-opt" data-status="na" type="button">
+        <span class="picker-opt-label">Not Available</span>
+        <span class="picker-opt-abbr">N/A</span>
+      </button>
+      <button class="picker-opt" data-status="oos" type="button">
+        <span class="picker-opt-label">Out of Service</span>
+        <span class="picker-opt-abbr">OOS</span>
+      </button>
+    </div>
+    <button class="picker-clear" id="pickerClearBtn" type="button">Clear status</button>
+    <button class="picker-cancel" id="pickerCancelBtn" type="button">Cancel</button>
+  </div>
+</div>
+
 <script>
 "use strict";
 
@@ -557,7 +703,7 @@ const SECTIONS = [
       "Cell phone + charger & cigarette adapter",
       "Driver's yellow vest",
       "Garage door opener",
-      "Fuel card (E12 — reserves rarely have one)",
+      "Fuel card",
       "Gas & diesel fuel fob",
       "Driver's headset",
       "Halligan (driver door step)",
@@ -582,7 +728,7 @@ const SECTIONS = [
       "Male to male adapter",
       "Air hose",
       "1 rubber mallet",
-      { text: "WD-40", skipLabel: "N/A" },
+      "WD-40",
       "2 flashlights",
       "1 wedge",
       "1 hydrant cap",
@@ -652,8 +798,8 @@ const SECTIONS = [
     items: [
       "5-inch supply line — 1,000 ft",
       "3-inch hose — 600 ft",
-      { text: "2½-inch hose — 400 ft", skipLabel: "N/A" },
-      { text: "2½-inch blitz nozzle", skipLabel: "left on truck" },
+      "2½-inch hose — 400 ft",
+      "2½-inch blitz nozzle",
       "Estate lay — 2½\" × 200 ft",
     ]
   },
@@ -679,7 +825,7 @@ const SECTIONS = [
       "Hydrant assist",
       "Portable hydrant",
       "4 safety cones",
-      { text: "Portable Master Stream with Stand", skipLabel: "left on truck" },
+      "Portable Master Stream with Stand",
       "Hydrant bag",
       "CO2 extinguisher",
     ]
@@ -694,8 +840,8 @@ const SECTIONS = [
       "Kermantle rope",
       "Water rescue bag",
       "Decon bag",
-      { text: "Water cooler", skipLabel: "N/A" },
-      { text: "Water cups", skipLabel: "N/A" },
+      "Water cooler",
+      "Water cups",
     ]
   },
   {
@@ -760,22 +906,24 @@ SECTIONS.forEach(s => s.items.forEach((_, i) => allItems.push(`${s.id}-${i}`)));
 const TOTAL = allItems.length;
 
 // ── State ─────────────────────────────────────────────────────────
+function defaultState() {
+  return { checked: [], skipped: [], itemStatus: {}, notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], photos: [], startedAt: new Date().toISOString() };
+}
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], photos: [], startedAt: new Date().toISOString() };
+    if (!raw) return defaultState();
     return JSON.parse(raw);
-  } catch(_) { return { checked: [], skipped: [], notes: "", completedAt: null, fromEngine: "E12", reserveTo: "", officer: "", driver: "", customItems: [], photos: [], startedAt: new Date().toISOString() }; }
+  } catch(_) { return defaultState(); }
 }
 function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch(_) {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(_) {}
 }
 
 let state = loadState();
 if (!Array.isArray(state.checked)) state.checked = [];
 if (!Array.isArray(state.skipped)) state.skipped = [];
+if (!state.itemStatus || typeof state.itemStatus !== "object") state.itemStatus = {};
 if (typeof state.notes !== "string") state.notes = "";
 if (!state.fromEngine) state.fromEngine = "E12";
 if (!state.reserveTo) state.reserveTo = "";
@@ -784,75 +932,129 @@ if (!state.driver) state.driver = "";
 if (!Array.isArray(state.customItems)) state.customItems = [];
 if (!Array.isArray(state.photos)) state.photos = [];
 if (!state.startedAt) state.startedAt = new Date().toISOString();
+// Backward compat: old skipped entries with no itemStatus → default RES
+state.skipped.forEach(k => { if (!state.itemStatus[k]) state.itemStatus[k] = "res"; });
 
-// Re-swap state — declared early so renderCustomItems() can safely reference them
+// Re-swap state
 const RESWAP_KEY = "station12-reswap-v1";
 let reswapMode = false;
-let reswapState = { checked: [], skipped: [], notes: "" };
+let reswapState = { checked: [], skipped: [], itemStatus: {}, notes: "" };
+
+// ── Status picker state ───────────────────────────────────────────
+let pickerKey = null;
+
+function openPicker(key, itemText) {
+  pickerKey = key;
+  const as = reswapMode ? reswapState : state;
+  const currentStatus = (as.itemStatus && as.itemStatus[key]) || null;
+  document.getElementById("pickerItemName").textContent = itemText;
+  document.querySelectorAll(".picker-opt[data-status]").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.status === currentStatus);
+  });
+  document.getElementById("pickerOverlay").classList.add("show");
+}
+
+function closePicker() {
+  document.getElementById("pickerOverlay").classList.remove("show");
+  pickerKey = null;
+}
+
+// ── setItemStatus ─────────────────────────────────────────────────
+function setItemStatus(key, status) {
+  const as = reswapMode ? reswapState : state;
+  if (!as.itemStatus) as.itemStatus = {};
+  const ci = as.checked.indexOf(key);
+  const si = as.skipped.indexOf(key);
+  if (ci !== -1) as.checked.splice(ci, 1);
+  if (status === null) {
+    if (si !== -1) as.skipped.splice(si, 1);
+    delete as.itemStatus[key];
+  } else {
+    if (si === -1) as.skipped.push(key);
+    as.itemStatus[key] = status;
+  }
+  reswapMode ? saveReswapState() : saveState();
+  buildUI();
+  updateProgress();
+}
 
 // ── Render ────────────────────────────────────────────────────────
 function itemKey(sectionId, idx) { return `${sectionId}-${idx}`; }
 
+const STATUS_ABBR = { res: "RES", lot: "LOT", na: "N/A", oos: "OOS" };
+
+function buildItemRow(k, text, activeState) {
+  const isChecked = activeState.checked.includes(k);
+  const isSkipped = activeState.skipped.includes(k);
+  const effectiveStatus = (activeState.itemStatus && activeState.itemStatus[k]) || (isSkipped ? "res" : null);
+
+  const statusBtnLabel = effectiveStatus ? STATUS_ABBR[effectiveStatus] : "Status ▾";
+  const checkContent = isChecked ? "✓" : (effectiveStatus ? STATUS_ABBR[effectiveStatus] : "");
+
+  let rowClass = "item";
+  if (isChecked) rowClass += " checked";
+  else if (effectiveStatus) rowClass += " status-" + effectiveStatus;
+
+  const row = document.createElement("div");
+  row.className = rowClass;
+  row.innerHTML = `
+    <div class="item-check">
+      <div class="check-box">${checkContent}</div>
+    </div>
+    <div class="item-text">${text}</div>
+    <div class="item-status-area">
+      <button class="status-pick-btn" type="button">${statusBtnLabel}</button>
+    </div>
+  `;
+  row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
+  row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
+  row.querySelector(".status-pick-btn").addEventListener("click", e => {
+    e.stopPropagation();
+    openPicker(k, text);
+  });
+  return row;
+}
+
 function buildUI() {
   const container = document.getElementById("listContainer");
   container.innerHTML = "";
+  const activeState = reswapMode ? reswapState : state;
+  const activeItems = reswapMode ? reswapItems() : allItems;
 
   SECTIONS.forEach(sec => {
-    const sectionDone = sec.items.every((_, i) => {
+    const visibleIdxs = sec.items.map((_, i) => i).filter(i => activeItems.includes(itemKey(sec.id, i)));
+    if (visibleIdxs.length === 0) return;
+
+    const sectionDone = visibleIdxs.every(i => {
       const k = itemKey(sec.id, i);
-      return state.checked.includes(k) || state.skipped.includes(k);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
     });
-    const sectionChecked = sec.items.filter((_, i) => state.checked.includes(itemKey(sec.id, i))).length;
-    const sectionSkipped = sec.items.filter((_, i) => state.skipped.includes(itemKey(sec.id, i))).length;
-    const sectionDoneCount = sectionChecked + sectionSkipped;
+    const doneCount = visibleIdxs.filter(i => {
+      const k = itemKey(sec.id, i);
+      return activeState.checked.includes(k) || activeState.skipped.includes(k);
+    }).length;
 
     const div = document.createElement("div");
     div.className = "section" + (sec.warn ? " warn" : "") + (sectionDone ? " collapsed" : "");
-    div.dataset.id = sec.id;
 
-    // Section header
     const hdr = document.createElement("div");
     hdr.className = "section-header";
     hdr.innerHTML = `
       <span class="section-icon">${sec.icon}</span>
       <span class="section-label">${sec.label}</span>
-      <span class="section-count${sectionDone ? " done" : ""}">${sectionDoneCount}/${sec.items.length}</span>
+      <span class="section-count${sectionDone ? " done" : ""}">${doneCount}/${visibleIdxs.length}</span>
       <span class="section-chevron">▼</span>
     `;
     hdr.addEventListener("click", () => div.classList.toggle("collapsed"));
 
-    // Section body
     const body = document.createElement("div");
     body.className = "section-body";
 
-    sec.items.forEach((text, idx) => {
+    visibleIdxs.forEach(idx => {
       const k = itemKey(sec.id, idx);
-      const isChecked = state.checked.includes(k);
-      const isSkipped = state.skipped.includes(k);
-
-      const row = document.createElement("div");
-      row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
-      row.innerHTML = `
-        <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? "RES" : ""}</div>
-        </div>
-        <div class="item-text">${text}</div>
-        <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : "res had it"}</button>
-        </div>
-      `;
-
-      // Tap main row → toggle checked
-      row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
-      row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
-
-      // N/A button → toggle skip
-      row.querySelector(".skip-btn").addEventListener("click", e => {
-        e.stopPropagation();
-        toggleSkip(k);
-      });
-
-      body.appendChild(row);
+      const itemDef = sec.items[idx];
+      const text = typeof itemDef === "string" ? itemDef : itemDef.text;
+      body.appendChild(buildItemRow(k, text, activeState));
     });
 
     div.appendChild(hdr);
@@ -862,49 +1064,37 @@ function buildUI() {
 }
 
 function toggleCheck(key) {
-  const ci = state.checked.indexOf(key);
-  const si = state.skipped.indexOf(key);
-  if (si !== -1) state.skipped.splice(si, 1); // remove from skipped first
-  if (ci === -1) {
-    state.checked.push(key);
-  } else {
-    state.checked.splice(ci, 1);
-  }
-  saveState();
-  buildUI();
-  updateProgress();
-}
-
-function toggleSkip(key) {
-  const ci = state.checked.indexOf(key);
-  const si = state.skipped.indexOf(key);
-  if (ci !== -1) state.checked.splice(ci, 1); // remove from checked first
-  if (si === -1) {
-    state.skipped.push(key);
-  } else {
-    state.skipped.splice(si, 1);
-  }
-  saveState();
+  const as = reswapMode ? reswapState : state;
+  if (!as.itemStatus) as.itemStatus = {};
+  const ci = as.checked.indexOf(key);
+  const si = as.skipped.indexOf(key);
+  if (si !== -1) as.skipped.splice(si, 1);
+  delete as.itemStatus[key];
+  if (ci === -1) { as.checked.push(key); } else { as.checked.splice(ci, 1); }
+  reswapMode ? saveReswapState() : saveState();
   buildUI();
   updateProgress();
 }
 
 function updateProgress() {
-  const customCount = (state.customItems || []).length;
-  const total = TOTAL + customCount;
-  const done = state.checked.length + state.skipped.length;
+  const as = reswapMode ? reswapState : state;
+  const activeCount = reswapMode ? reswapItems().length : TOTAL;
+  const customCount = (as.customItems || []).length;
+  const total = activeCount + customCount;
+  const done = as.checked.length + as.skipped.length;
   const pct = total === 0 ? 0 : Math.round(done / total * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressLabel").textContent = `${done} of ${total} items`;
   document.getElementById("progressPct").textContent = pct + "%";
 
   const btn = document.getElementById("completeBtn");
+  const label = reswapMode ? "Re-Swap Complete" : "Swap Complete";
   if (done >= total) {
     btn.classList.remove("inactive"); btn.classList.add("active");
-    btn.textContent = "✓ Swap Complete — Tap to Confirm";
+    btn.textContent = `✓ ${label} — Tap to Confirm`;
   } else {
     btn.classList.remove("active"); btn.classList.add("inactive");
-    btn.textContent = `Swap Complete (${total - done} remaining)`;
+    btn.textContent = `${label} (${total - done} remaining)`;
   }
 }
 
@@ -926,46 +1116,40 @@ unitToEl.addEventListener("input", () => { state.reserveTo = unitToEl.value; sav
 updateHeaderSub();
 
 const reswapFromEl = document.getElementById("reswapFromInput");
-const reswapToEl = document.getElementById("reswapToInput");
+const reswapToEl   = document.getElementById("reswapToInput");
 reswapFromEl.addEventListener("input", () => { reswapState.fromRes = reswapFromEl.value; saveReswapState(); });
-reswapToEl.addEventListener("input", () => { reswapState.toRes = reswapToEl.value; saveReswapState(); });
+reswapToEl.addEventListener("input",   () => { reswapState.toRes   = reswapToEl.value;   saveReswapState(); });
 
 // ── Crew inputs ──────────────────────────────────────────────────
 const officerEl = document.getElementById("crewOfficer");
-const driverEl = document.getElementById("crewDriver");
+const driverEl  = document.getElementById("crewDriver");
 officerEl.value = state.officer;
-driverEl.value = state.driver;
+driverEl.value  = state.driver;
 officerEl.addEventListener("input", () => { state.officer = officerEl.value; saveState(); });
-driverEl.addEventListener("input", () => { state.driver = driverEl.value; saveState(); });
+driverEl.addEventListener("input",  () => { state.driver  = driverEl.value;  saveState(); });
 
 // ── Custom items ─────────────────────────────────────────────────
 function renderCustomItems() {
   const as = reswapMode ? reswapState : state;
+  if (!as.itemStatus) as.itemStatus = {};
   const container = document.getElementById("customItemsList");
   container.innerHTML = "";
   (as.customItems || []).forEach((item, idx) => {
     const k = `custom-${item.id}`;
-    const isChecked = as.checked.includes(k);
-    const isSkipped = as.skipped.includes(k);
-    const row = document.createElement("div");
-    row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
-    row.innerHTML = `
-      <div class="item-check"><div class="check-box">${isChecked ? "✓" : isSkipped ? "RES" : ""}</div></div>
-      <div class="item-text">${item.text}</div>
-      <div class="item-skip"><button class="skip-btn" type="button">${isSkipped ? "undo" : "res had it"}</button></div>
-      <div class="item-remove"><button class="remove-btn" type="button">✕</button></div>
-    `;
-    row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
-    row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
-    row.querySelector(".skip-btn").addEventListener("click", e => { e.stopPropagation(); toggleSkip(k); });
-    row.querySelector(".remove-btn").addEventListener("click", e => {
+    const row = buildItemRow(k, item.text, as);
+    const removeDiv = document.createElement("div");
+    removeDiv.className = "item-remove";
+    removeDiv.innerHTML = `<button class="remove-btn" type="button">✕</button>`;
+    removeDiv.querySelector(".remove-btn").addEventListener("click", e => {
       e.stopPropagation();
       const ci = as.checked.indexOf(k); if (ci !== -1) as.checked.splice(ci, 1);
       const si = as.skipped.indexOf(k); if (si !== -1) as.skipped.splice(si, 1);
+      if (as.itemStatus) delete as.itemStatus[k];
       as.customItems.splice(idx, 1);
       reswapMode ? saveReswapState() : saveState();
       renderCustomItems(); updateProgress();
     });
+    row.appendChild(removeDiv);
     container.appendChild(row);
   });
 }
@@ -1053,6 +1237,26 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 renderPhotos();
 
+// ── Picker event wiring ──────────────────────────────────────────
+document.getElementById("pickerOverlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("pickerOverlay")) closePicker();
+});
+document.querySelectorAll(".picker-opt[data-status]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (!pickerKey) return;
+    setItemStatus(pickerKey, btn.dataset.status);
+    closePicker();
+    renderCustomItems();
+  });
+});
+document.getElementById("pickerClearBtn").addEventListener("click", () => {
+  if (!pickerKey) return;
+  setItemStatus(pickerKey, null);
+  closePicker();
+  renderCustomItems();
+});
+document.getElementById("pickerCancelBtn").addEventListener("click", closePicker);
+
 // ── Complete ─────────────────────────────────────────────────────
 document.getElementById("completeBtn").addEventListener("click", () => {
   const as = reswapMode ? reswapState : state;
@@ -1066,52 +1270,85 @@ document.getElementById("completeBtn").addEventListener("click", () => {
   const fmt = d => new Date(d).toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
 
   const fromUnit = reswapMode ? (reswapState.fromRes ? `Res ${reswapState.fromRes}` : "Reserve") : (state.fromEngine || "Engine");
-  const toUnit = reswapMode ? (reswapState.toRes ? `Res ${reswapState.toRes}` : "New Reserve") : (state.reserveTo ? `Res ${state.reserveTo}` : "Reserve");
+  const toUnit   = reswapMode ? (reswapState.toRes   ? `Res ${reswapState.toRes}`   : "New Reserve") : (state.reserveTo ? `Res ${state.reserveTo}` : "Reserve");
 
   document.getElementById("doneSub").innerHTML = `${fromUnit} → ${toUnit}<br>Equipment transferred. Ready to roll.`;
   document.getElementById("doneTime").textContent = "Completed " + fmt(now.toISOString());
-
   document.getElementById("doneOverlay").classList.add("show");
 });
 
-document.getElementById("doneBackBtn").addEventListener("click", () => {
-  window.location.href = "index.html";
-});
-document.getElementById("doneStayBtn").addEventListener("click", () => {
-  document.getElementById("doneOverlay").classList.remove("show");
-});
+document.getElementById("doneBackBtn").addEventListener("click", () => { window.location.href = "index.html"; });
+document.getElementById("doneStayBtn").addEventListener("click", () => { document.getElementById("doneOverlay").classList.remove("show"); });
 
 // ── Share ────────────────────────────────────────────────────────
 function buildShareText() {
   const now = new Date();
   const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  const url = "https://g-lover10.github.io/grabcalls-website/station-12/swap.html";
 
-  const moved = [], hadIt = [], pending = [];
-  SECTIONS.forEach(sec => {
-    sec.items.forEach((text, idx) => {
-      const k = itemKey(sec.id, idx);
-      if (state.checked.includes(k)) moved.push(text);
-      else if (state.skipped.includes(k)) hadIt.push(text);
-      else pending.push(text);
+  function collectItems(as, itemList) {
+    const moved = [], byStatus = { res: [], lot: [], na: [], oos: [] }, pending = [];
+    SECTIONS.forEach(sec => {
+      sec.items.forEach((itemDef, idx) => {
+        const text = typeof itemDef === "string" ? itemDef : itemDef.text;
+        const k = itemKey(sec.id, idx);
+        if (itemList && !itemList.includes(k)) return;
+        if (as.checked.includes(k)) { moved.push(text); }
+        else if (as.skipped.includes(k)) {
+          const st = (as.itemStatus && as.itemStatus[k]) || "res";
+          (byStatus[st] || byStatus.res).push(text);
+        } else { pending.push(text); }
+      });
     });
-  });
+    (as.customItems || []).forEach(item => {
+      const k = `custom-${item.id}`;
+      if (itemList && !itemList.includes(k)) return;
+      if (as.checked.includes(k)) { moved.push(item.text + " ✎"); }
+      else if (as.skipped.includes(k)) {
+        const st = (as.itemStatus && as.itemStatus[k]) || "res";
+        (byStatus[st] || byStatus.res).push(item.text + " ✎");
+      } else { pending.push(item.text + " ✎"); }
+    });
+    return { moved, byStatus, pending };
+  }
 
-  let msg = `🚒 E12 → Reserve Swap | Station 12\n${dateStr}\n\n`;
-  msg += `✓ Moved from E12: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
-  msg += `↷ Reserve already had: ${hadIt.length} item${hadIt.length !== 1 ? "s" : ""}\n`;
+  if (reswapMode) {
+    const fromLabel = reswapState.fromRes ? `Res Eng ${reswapState.fromRes}` : "Reserve";
+    const toLabel   = reswapState.toRes   ? `Res Eng ${reswapState.toRes}`   : "New Reserve";
+    const active = reswapItems();
+    const { moved, byStatus, pending } = collectItems(reswapState, active);
 
+    let msg = `🔄 ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
+    if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
+    msg += `\n✓ Moved: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
+    if (byStatus.res.length)  msg += `RES — Reserve had it: ${byStatus.res.length}\n`;
+    if (byStatus.lot.length)  msg += `LOT — Left on truck: ${byStatus.lot.length}\n`;
+    if (byStatus.na.length)   msg += `N/A — Not available: ${byStatus.na.length}\n`;
+    if (byStatus.oos.length)  msg += `OOS — Out of service: ${byStatus.oos.length}\n`;
+    if (pending.length > 0) {
+      msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
+    } else { msg += `\n✅ New reserve fully equipped.\n`; }
+    if (reswapState.notes && reswapState.notes.trim()) msg += `\nNotes: ${reswapState.notes.trim()}\n`;
+    msg += `\n${url}`;
+    return msg;
+  }
+
+  const fromEngineLabel = state.fromEngine || "Engine";
+  const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
+  const { moved, byStatus, pending } = collectItems(state, null);
+
+  let msg = `🚒 ${fromEngineLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
+  if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
+  msg += `\n✓ Moved from ${fromEngineLabel}: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
+  if (byStatus.res.length)  msg += `RES — Reserve had it: ${byStatus.res.length}\n`;
+  if (byStatus.lot.length)  msg += `LOT — Left on truck: ${byStatus.lot.length}\n`;
+  if (byStatus.na.length)   msg += `N/A — Not available: ${byStatus.na.length}\n`;
+  if (byStatus.oos.length)  msg += `OOS — Out of service: ${byStatus.oos.length}\n`;
   if (pending.length > 0) {
-    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n`;
-    msg += pending.map(i => `  • ${i}`).join("\n") + "\n";
-  } else {
-    msg += `\n✅ Reserve fully equipped.\n`;
-  }
-
-  if (state.notes && state.notes.trim()) {
-    msg += `\nNotes: ${state.notes.trim()}\n`;
-  }
-
-  msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
+    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
+  } else { msg += `\n✅ Reserve fully equipped.\n`; }
+  if (state.notes && state.notes.trim()) msg += `\nNotes: ${state.notes.trim()}\n`;
+  msg += `\n${url}`;
   return msg;
 }
 
@@ -1132,20 +1369,17 @@ document.getElementById("shareBtn").addEventListener("click", shareSwap);
 document.getElementById("doneShareBtn").addEventListener("click", shareSwap);
 
 // ── Re-Swap Mode ─────────────────────────────────────────────────
-
 function loadReswapState() {
   try {
     const raw = localStorage.getItem(RESWAP_KEY);
-    if (!raw) return { checked: [], skipped: [], notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() };
+    if (!raw) return { checked: [], skipped: [], itemStatus: {}, notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() };
     return JSON.parse(raw);
-  } catch(_) { return { checked: [], skipped: [], notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() }; }
+  } catch(_) { return { checked: [], skipped: [], itemStatus: {}, notes: "", fromRes: "", toRes: "", customItems: [], startedAt: new Date().toISOString() }; }
 }
 function saveReswapState() {
   try { localStorage.setItem(RESWAP_KEY, JSON.stringify(reswapState)); } catch(_) {}
 }
 
-// Items currently on the reserve = what was ✓ moved from E12
-// If nothing was tracked, fall back to showing everything
 function reswapItems() {
   const moved = state.checked.length > 0 ? state.checked : allItems;
   return moved;
@@ -1156,18 +1390,22 @@ function enterReswapMode() {
   reswapState = loadReswapState();
   if (!Array.isArray(reswapState.checked)) reswapState.checked = [];
   if (!Array.isArray(reswapState.skipped)) reswapState.skipped = [];
+  if (!reswapState.itemStatus || typeof reswapState.itemStatus !== "object") reswapState.itemStatus = {};
   if (typeof reswapState.notes !== "string") reswapState.notes = "";
   if (!Array.isArray(reswapState.customItems)) reswapState.customItems = [];
   if (!reswapState.fromRes) reswapState.fromRes = state.reserveTo || "";
   if (!reswapState.toRes) reswapState.toRes = "";
   if (!reswapState.startedAt) reswapState.startedAt = new Date().toISOString();
+  // Backward compat for old reswap data
+  reswapState.skipped.forEach(k => { if (!reswapState.itemStatus[k]) reswapState.itemStatus[k] = "res"; });
+
   document.getElementById("reswapBanner").classList.add("show");
   document.getElementById("doneOverlay").classList.remove("show");
   document.querySelector(".header-sub").textContent = "Reserve → Reserve";
   document.getElementById("unitRowNormal").style.display = "none";
   document.getElementById("unitRowReswap").style.display = "flex";
   reswapFromEl.value = reswapState.fromRes;
-  reswapToEl.value = reswapState.toRes;
+  reswapToEl.value   = reswapState.toRes;
   notesEl.value = reswapState.notes;
   renderCustomItems();
   buildUI();
@@ -1185,118 +1423,6 @@ function exitReswapMode() {
   buildUI();
   updateProgress();
 }
-
-// Patch buildUI & toggles to use reswapState when active
-const _origBuildUI = buildUI;
-buildUI = function() {
-  const container = document.getElementById("listContainer");
-  container.innerHTML = "";
-  const activeState = reswapMode ? reswapState : state;
-  const activeItems = reswapMode ? reswapItems() : allItems;
-
-  SECTIONS.forEach(sec => {
-    const visibleIdxs = sec.items.map((_, i) => i).filter(i => activeItems.includes(itemKey(sec.id, i)));
-    if (visibleIdxs.length === 0) return;
-
-    const sectionDone = visibleIdxs.every(i => {
-      const k = itemKey(sec.id, i);
-      return activeState.checked.includes(k) || activeState.skipped.includes(k);
-    });
-    const doneCount = visibleIdxs.filter(i => {
-      const k = itemKey(sec.id, i);
-      return activeState.checked.includes(k) || activeState.skipped.includes(k);
-    }).length;
-
-    const div = document.createElement("div");
-    div.className = "section" + (sec.warn ? " warn" : "") + (sectionDone ? " collapsed" : "");
-
-    const hdr = document.createElement("div");
-    hdr.className = "section-header";
-    hdr.innerHTML = `
-      <span class="section-icon">${sec.icon}</span>
-      <span class="section-label">${sec.label}</span>
-      <span class="section-count${sectionDone ? " done" : ""}">${doneCount}/${visibleIdxs.length}</span>
-      <span class="section-chevron">▼</span>
-    `;
-    hdr.addEventListener("click", () => div.classList.toggle("collapsed"));
-
-    const body = document.createElement("div");
-    body.className = "section-body";
-
-    visibleIdxs.forEach(idx => {
-      const k = itemKey(sec.id, idx);
-      const itemDef = sec.items[idx];
-      const text = typeof itemDef === "string" ? itemDef : itemDef.text;
-      const itemSkipLabel = typeof itemDef === "string" ? null : itemDef.skipLabel;
-      const isChecked = activeState.checked.includes(k);
-      const isSkipped = activeState.skipped.includes(k);
-
-      const row = document.createElement("div");
-      row.className = "item" + (isChecked ? " checked" : isSkipped ? " skipped" : "");
-      row.innerHTML = `
-        <div class="item-check">
-          <div class="check-box">${isChecked ? "✓" : isSkipped ? (itemSkipLabel === "N/A" ? "N/A" : itemSkipLabel === "left on truck" ? "–" : "RES") : ""}</div>
-        </div>
-        <div class="item-text">${text}</div>
-        <div class="item-skip">
-          <button class="skip-btn" data-key="${k}" type="button">${isSkipped ? "undo" : itemSkipLabel || (reswapMode ? "new res has it" : "res had it")}</button>
-        </div>
-      `;
-      row.querySelector(".item-check").addEventListener("click", () => toggleCheck(k));
-      row.querySelector(".item-text").addEventListener("click", () => toggleCheck(k));
-      row.querySelector(".skip-btn").addEventListener("click", e => { e.stopPropagation(); toggleSkip(k); });
-      body.appendChild(row);
-    });
-
-    div.appendChild(hdr);
-    div.appendChild(body);
-    container.appendChild(div);
-  });
-};
-
-const _origToggleCheck = toggleCheck;
-toggleCheck = function(key) {
-  if (reswapMode) {
-    const ci = reswapState.checked.indexOf(key);
-    const si = reswapState.skipped.indexOf(key);
-    if (si !== -1) reswapState.skipped.splice(si, 1);
-    if (ci === -1) reswapState.checked.push(key); else reswapState.checked.splice(ci, 1);
-    saveReswapState(); buildUI(); updateProgress();
-  } else { _origToggleCheck(key); }
-};
-
-const _origToggleSkip = toggleSkip;
-toggleSkip = function(key) {
-  if (reswapMode) {
-    const ci = reswapState.checked.indexOf(key);
-    const si = reswapState.skipped.indexOf(key);
-    if (ci !== -1) reswapState.checked.splice(ci, 1);
-    if (si === -1) reswapState.skipped.push(key); else reswapState.skipped.splice(si, 1);
-    saveReswapState(); buildUI(); updateProgress();
-  } else { _origToggleSkip(key); }
-};
-
-// Patch updateProgress for reswap mode
-const _origUpdateProgress = updateProgress;
-updateProgress = function() {
-  if (!reswapMode) { _origUpdateProgress(); return; }
-  const active = reswapItems();
-  const customCount = (reswapState.customItems || []).length;
-  const total = active.length + customCount;
-  const done = reswapState.checked.length + reswapState.skipped.length;
-  const pct = total === 0 ? 0 : Math.round(done / total * 100);
-  document.getElementById("progressBar").style.width = pct + "%";
-  document.getElementById("progressLabel").textContent = `${done} of ${total} items`;
-  document.getElementById("progressPct").textContent = pct + "%";
-  const btn = document.getElementById("completeBtn");
-  if (done >= total) {
-    btn.classList.remove("inactive"); btn.classList.add("active");
-    btn.textContent = "✓ Re-Swap Complete — Tap to Confirm";
-  } else {
-    btn.classList.remove("active"); btn.classList.add("inactive");
-    btn.textContent = `Re-Swap Complete (${total - done} remaining)`;
-  }
-};
 
 // ── Share App link ───────────────────────────────────────────────
 document.getElementById("shareAppBtn").addEventListener("click", () => {
@@ -1318,85 +1444,17 @@ document.getElementById("reswapBtn").addEventListener("click", enterReswapMode);
 document.getElementById("doneReswapBtn").addEventListener("click", enterReswapMode);
 document.getElementById("reswapExitBtn").addEventListener("click", exitReswapMode);
 
-// Share text patches for unit numbers, crew, custom items
-const _origBuildShareText = buildShareText;
-buildShareText = function() {
-  const now = new Date();
-  const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
-
-  if (reswapMode) {
-    const fromLabel = reswapState.fromRes ? `Res Eng ${reswapState.fromRes}` : "Reserve";
-    const toLabel = reswapState.toRes ? `Res Eng ${reswapState.toRes}` : "New Reserve";
-    const active = reswapItems();
-    const moved = [], hadIt = [], pending = [];
-    SECTIONS.forEach(sec => {
-      sec.items.forEach((itemDef, idx) => {
-        const text = typeof itemDef === "string" ? itemDef : itemDef.text;
-        const k = itemKey(sec.id, idx);
-        if (!active.includes(k)) return;
-        if (reswapState.checked.includes(k)) moved.push(text);
-        else if (reswapState.skipped.includes(k)) hadIt.push(text);
-        else pending.push(text);
-      });
-    });
-    (reswapState.customItems || []).forEach(item => {
-      const k = `custom-${item.id}`;
-      if (reswapState.checked.includes(k)) moved.push(item.text + " ✎");
-      else if (reswapState.skipped.includes(k)) hadIt.push(item.text + " ✎");
-      else pending.push(item.text + " ✎");
-    });
-    let msg = `🔄 ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
-    if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
-    msg += `\n✓ Moved: ${moved.length} items\n↷ New reserve had: ${hadIt.length} items\n`;
-    if (pending.length > 0) {
-      msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
-    } else { msg += `\n✅ New reserve fully equipped.\n`; }
-    if (reswapState.notes && reswapState.notes.trim()) msg += `\nNotes: ${reswapState.notes.trim()}\n`;
-    msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
-    return msg;
-  }
-
-  // Normal Engine → Reserve mode
-  const fromEngineLabel = state.fromEngine || "Engine";
-  const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
-  const moved = [], hadIt = [], pending = [];
-  SECTIONS.forEach(sec => {
-    sec.items.forEach((itemDef, idx) => {
-      const text = typeof itemDef === "string" ? itemDef : itemDef.text;
-      const k = itemKey(sec.id, idx);
-      if (state.checked.includes(k)) moved.push(text);
-      else if (state.skipped.includes(k)) hadIt.push(text);
-      else pending.push(text);
-    });
-  });
-  (state.customItems || []).forEach(item => {
-    const k = `custom-${item.id}`;
-    if (state.checked.includes(k)) moved.push(item.text + " ✎");
-    else if (state.skipped.includes(k)) hadIt.push(item.text + " ✎");
-    else pending.push(item.text + " ✎");
-  });
-  let msg = `🚒 ${fromEngineLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
-  if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
-  msg += `\n✓ Moved from ${fromEngineLabel}: ${moved.length} items\n↷ Reserve had: ${hadIt.length} items\n`;
-  if (pending.length > 0) {
-    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
-  } else { msg += `\n✅ Reserve fully equipped.\n`; }
-  if (state.notes && state.notes.trim()) msg += `\nNotes: ${state.notes.trim()}\n`;
-  msg += `\nhttps://g-lover10.github.io/grabcalls-website/station-12/swap.html`;
-  return msg;
-};
-
 // ── Reset ────────────────────────────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
   const label = reswapMode ? "Reset re-swap? This clears all re-swap progress." : "Reset the checklist? This clears all checked items and notes.";
   if (!confirm(label)) return;
   if (reswapMode) {
-    reswapState = { checked: [], skipped: [], notes: "", fromRes: reswapState.fromRes, toRes: "", customItems: [], startedAt: new Date().toISOString() };
+    reswapState = { checked: [], skipped: [], itemStatus: {}, notes: "", fromRes: reswapState.fromRes, toRes: "", customItems: [], startedAt: new Date().toISOString() };
     saveReswapState();
     reswapToEl.value = "";
     notesEl.value = "";
   } else {
-    state = { checked: [], skipped: [], notes: "", completedAt: null, reserveTo: state.reserveTo, officer: state.officer, driver: state.driver, customItems: [], photos: [], startedAt: new Date().toISOString() };
+    state = { checked: [], skipped: [], itemStatus: {}, notes: "", completedAt: null, fromEngine: state.fromEngine, reserveTo: state.reserveTo, officer: state.officer, driver: state.driver, customItems: [], photos: [], startedAt: new Date().toISOString() };
     saveState();
     notesEl.value = "";
     renderPhotos();
