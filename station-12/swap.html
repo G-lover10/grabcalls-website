@@ -497,7 +497,7 @@
   <div class="notes-label">Photos</div>
   <div id="photoGrid" class="photo-grid"></div>
   <button class="photo-add-btn" id="photoAddBtn" type="button">📷 Add Photo</button>
-  <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+  <input type="file" id="photoInput" accept="image/*" style="display:none">
   <div class="notes-hint">Document missing items, damage, or anything unusual. Up to 10 photos.</div>
 </div>
 
@@ -537,19 +537,6 @@ const STORAGE_KEY = "station12-swap-v1";
 // ── Checklist data ──────────────────────────────────────────────────
 const SECTIONS = [
   {
-    id: "critical",
-    icon: "⚠️",
-    label: "Check First — Often Missing on Reserve",
-    warn: true,
-    items: [
-      "5-inch intake elbow + rope & hook (from E12 tailboard rail)",
-      "Pump intake connection (from E12 intake — reserve may not have one)",
-      "Pump panel hydrant wrenches × 2 (check pump panel — often missing)",
-      { text: "Blitz nozzle (3-inch line)", skipLabel: "left on truck" },
-      "Monitor gun nozzle + tip",
-    ]
-  },
-  {
     id: "cab",
     icon: "🚒",
     label: "Cab — Seats & Door Steps",
@@ -575,6 +562,15 @@ const SECTIONS = [
       "Driver's headset",
       "Halligan (driver door step)",
       "Nozzleman headset",
+    ]
+  },
+  {
+    id: "pumppanel",
+    icon: "🔧",
+    label: "Pump Panel",
+    items: [
+      "Pump intake connection",
+      "Pump panel hydrant wrenches × 2",
     ]
   },
   {
@@ -657,7 +653,8 @@ const SECTIONS = [
       "5-inch supply line — 1,000 ft",
       "3-inch hose — 600 ft",
       { text: "2½-inch hose — 400 ft", skipLabel: "N/A" },
-      "Estate lay — 2½\" × 200 ft (standpipe pack)",
+      { text: "2½-inch blitz nozzle", skipLabel: "left on truck" },
+      "Estate lay — 2½\" × 200 ft",
     ]
   },
   {
@@ -678,10 +675,11 @@ const SECTIONS = [
     icon: "🔴",
     label: "Rear Compartment",
     items: [
+      "5-inch intake elbow + rope & hook",
       "Hydrant assist",
       "Portable hydrant",
       "4 safety cones",
-      { text: "Blitz nozzle (rear compartment)", skipLabel: "left on truck" },
+      { text: "Portable Master Stream with Stand", skipLabel: "left on truck" },
       "Hydrant bag",
       "CO2 extinguisher",
     ]
@@ -696,8 +694,8 @@ const SECTIONS = [
       "Kermantle rope",
       "Water rescue bag",
       "Decon bag",
-      "Water cooler",
-      "Water cups",
+      { text: "Water cooler", skipLabel: "N/A" },
+      { text: "Water cups", skipLabel: "N/A" },
     ]
   },
   {
@@ -726,7 +724,6 @@ const SECTIONS = [
       "7 adapters",
       "Hose roller",
       "Cellar nozzle",
-      "Portable master stream stand",
       "1 3/8\" smooth bore tip",
     ]
   },
@@ -735,6 +732,7 @@ const SECTIONS = [
     icon: "🪜",
     label: "Crow's Nest & Top",
     items: [
+      "Monitor gun nozzle + tip",
       "Pike pole (driver's side top)",
       "Shovel",
       "Fire Bull foam (crow's nest platform)",
