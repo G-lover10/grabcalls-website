@@ -2135,8 +2135,17 @@ function openMealIdeas() {
   details.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-const MEAL_CATS = ["Beef","Chicken","Pasta","Pork","Lamb","Seafood","Miscellaneous"];
-const MEAL_CACHE_KEY = "station12-meal-picks-v1";
+// Firehouse-friendly categories (skips Dessert / Vegan / Vegetarian / Breakfast)
+const MEAL_CATS = ["Beef","Chicken","Lamb","Pasta","Pork","Seafood","Miscellaneous","Side","Starter"];
+const MEAL_CACHE_KEY = "station12-meal-picks-v2";
+
+// Deterministic hash — same date always gives same number, feels random day-to-day
+function dHash(n) {
+  let h = n >>> 0;
+  h = Math.imul(h ^ h >>> 16, 0x45d9f3b) >>> 0;
+  h = Math.imul(h ^ h >>> 16, 0x45d9f3b) >>> 0;
+  return (h ^ h >>> 16) >>> 0;
+}
 
 async function initShiftPicks() {
   const today  = new Date().toISOString().split("T")[0];
@@ -2145,7 +2154,6 @@ async function initShiftPicks() {
   document.getElementById("shiftPickDate").textContent =
     new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
-  // Fallback: use hardcoded meals if API is unavailable
   const lunchItems  = Array.from(document.querySelectorAll("#lunchList .meal-item"));
   const dinnerItems = Array.from(document.querySelectorAll("#dinnerList .meal-item"));
 
@@ -2163,7 +2171,7 @@ async function initShiftPicks() {
     const card = document.getElementById(cardId);
     if (!card) return;
     const tag = card.querySelector(".pick-tag").outerHTML;
-    const url = data.source || ("https://www.themealdb.com/meal.php?c=" + data.id);
+    const url = data.source || ("https://www.themealdb.com/meal/" + data.id);
     card.innerHTML = tag +
       `<div class="pick-thumb-wrap"><img class="pick-thumb" src="${data.thumb}/preview" loading="lazy" alt="${data.name}"></div>` +
       `<div class="pick-name">${data.name}</div>` +
@@ -2172,7 +2180,7 @@ async function initShiftPicks() {
     card.style.cursor = "default";
   }
 
-  // Check cache first
+  // Check cache
   try {
     const cached = JSON.parse(localStorage.getItem(MEAL_CACHE_KEY) || "{}");
     if (cached.date === today && cached.lunch && cached.dinner) {
@@ -2182,12 +2190,16 @@ async function initShiftPicks() {
     }
   } catch(e) {}
 
-  // Show loading placeholder
   ["pickLunchName","pickDinnerName"].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "Finding today's pick…"; });
 
   try {
-    const lunchCat  = MEAL_CATS[dayIdx % MEAL_CATS.length];
-    const dinnerCat = MEAL_CATS[(dayIdx + 3) % MEAL_CATS.length];
+    // Use seeded hash to pick categories — feels random, not sequential
+    const lCatIdx = dHash(dayIdx * 7 + 1) % MEAL_CATS.length;
+    let   dCatIdx = dHash(dayIdx * 13 + 5) % MEAL_CATS.length;
+    if (dCatIdx === lCatIdx) dCatIdx = (dCatIdx + 1) % MEAL_CATS.length;
+
+    const lunchCat  = MEAL_CATS[lCatIdx];
+    const dinnerCat = MEAL_CATS[dCatIdx];
 
     const [lRes, dRes] = await Promise.all([
       fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + lunchCat),
@@ -2196,8 +2208,9 @@ async function initShiftPicks() {
     const lMeals = (await lRes.json()).meals || [];
     const dMeals = (await dRes.json()).meals || [];
 
-    const lPick = lMeals[dayIdx % lMeals.length];
-    const dPick = dMeals[(dayIdx + 7) % dMeals.length];
+    // Seeded pick within category — not sequential
+    const lPick = lMeals[dHash(dayIdx * 17 + 3) % lMeals.length];
+    const dPick = dMeals[dHash(dayIdx * 19 + 7) % dMeals.length];
 
     const [lDet, dDet] = await Promise.all([
       fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + lPick.idMeal),
@@ -2216,9 +2229,8 @@ async function initShiftPicks() {
     renderApiPick("pickLunch",  result.lunch);
     renderApiPick("pickDinner", result.dinner);
   } catch(e) {
-    // API unavailable — fall back to hardcoded meals
-    renderFallback("pickLunch",  lunchItems[dayIdx % lunchItems.length] || null);
-    renderFallback("pickDinner", dinnerItems[dayIdx % dinnerItems.length] || null);
+    renderFallback("pickLunch",  lunchItems[dHash(dayIdx) % lunchItems.length] || null);
+    renderFallback("pickDinner", dinnerItems[dHash(dayIdx + 1) % dinnerItems.length] || null);
   }
 }
 initShiftPicks();
