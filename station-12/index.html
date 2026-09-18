@@ -627,8 +627,13 @@
   .shift-pick-card { flex: 1; min-width: 0; background: rgba(245,197,24,0.08); border: 1.5px solid rgba(245,197,24,0.3); border-radius: 12px; padding: 12px; cursor: pointer; transition: background 0.1s; }
   .shift-pick-card:active { background: rgba(245,197,24,0.16); }
   .pick-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 5px; }
-  .pick-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+  .pick-thumb-wrap { border-radius: 8px; overflow: hidden; margin: 6px 0 8px; background: var(--line); line-height: 0; }
+  .pick-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+  .pick-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; line-height: 1.3; }
+  .pick-meta { font-size: 11px; color: var(--gold); font-weight: 600; opacity: 0.8; margin-bottom: 4px; }
   .pick-desc { font-size: 11px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pick-link { display: block; text-align: center; padding: 7px 10px; background: rgba(245,197,24,0.15); border-radius: 8px; color: var(--gold); font-size: 12px; font-weight: 700; text-decoration: none; margin-top: 8px; border: 1px solid rgba(245,197,24,0.25); }
+  .pick-link:active { background: rgba(245,197,24,0.3); }
 
   /* Meal ideas */
   .meal-intro, .meal-help {
@@ -2130,30 +2135,91 @@ function openMealIdeas() {
   details.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function initShiftPicks() {
-  const lunchItems  = Array.from(document.querySelectorAll("#lunchList .meal-item"));
-  const dinnerItems = Array.from(document.querySelectorAll("#dinnerList .meal-item"));
-  if (!lunchItems.length || !dinnerItems.length) return;
+const MEAL_CATS = ["Beef","Chicken","Pasta","Pork","Lamb","Seafood","Miscellaneous"];
+const MEAL_CACHE_KEY = "station12-meal-picks-v1";
 
+async function initShiftPicks() {
+  const today  = new Date().toISOString().split("T")[0];
   const dayIdx = Math.floor(Date.now() / 86400000);
-  const lunchPick  = lunchItems[dayIdx % lunchItems.length];
-  const dinnerPick = dinnerItems[dayIdx % dinnerItems.length];
 
   document.getElementById("shiftPickDate").textContent =
     new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-  document.getElementById("pickLunchName").textContent  = lunchPick.querySelector(".meal-name").textContent;
-  document.getElementById("pickLunchDesc").textContent  = lunchPick.querySelector(".meal-desc").textContent;
-  document.getElementById("pickDinnerName").textContent = dinnerPick.querySelector(".meal-name").textContent;
-  document.getElementById("pickDinnerDesc").textContent = dinnerPick.querySelector(".meal-desc").textContent;
 
-  document.getElementById("pickLunch").addEventListener("click", () => {
-    lunchPick.open = true;
-    lunchPick.scrollIntoView({ behavior: "smooth", block: "center" });
-  });
-  document.getElementById("pickDinner").addEventListener("click", () => {
-    dinnerPick.open = true;
-    dinnerPick.scrollIntoView({ behavior: "smooth", block: "center" });
-  });
+  // Fallback: use hardcoded meals if API is unavailable
+  const lunchItems  = Array.from(document.querySelectorAll("#lunchList .meal-item"));
+  const dinnerItems = Array.from(document.querySelectorAll("#dinnerList .meal-item"));
+
+  function renderFallback(cardId, el) {
+    if (!el) return;
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    card.querySelector(".pick-name").textContent = el.querySelector(".meal-name").textContent;
+    card.querySelector(".pick-desc").textContent = el.querySelector(".meal-desc").textContent;
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => { el.open = true; el.scrollIntoView({ behavior: "smooth", block: "center" }); });
+  }
+
+  function renderApiPick(cardId, data) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const tag = card.querySelector(".pick-tag").outerHTML;
+    const url = data.source || ("https://www.themealdb.com/meal.php?c=" + data.id);
+    card.innerHTML = tag +
+      `<div class="pick-thumb-wrap"><img class="pick-thumb" src="${data.thumb}/preview" loading="lazy" alt="${data.name}"></div>` +
+      `<div class="pick-name">${data.name}</div>` +
+      (data.area ? `<div class="pick-meta">${data.area} · ${data.category}</div>` : `<div class="pick-meta">${data.category}</div>`) +
+      `<a class="pick-link" href="${url}" target="_blank" rel="noopener">📖 View Recipe</a>`;
+    card.style.cursor = "default";
+  }
+
+  // Check cache first
+  try {
+    const cached = JSON.parse(localStorage.getItem(MEAL_CACHE_KEY) || "{}");
+    if (cached.date === today && cached.lunch && cached.dinner) {
+      renderApiPick("pickLunch",  cached.lunch);
+      renderApiPick("pickDinner", cached.dinner);
+      return;
+    }
+  } catch(e) {}
+
+  // Show loading placeholder
+  ["pickLunchName","pickDinnerName"].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "Finding today's pick…"; });
+
+  try {
+    const lunchCat  = MEAL_CATS[dayIdx % MEAL_CATS.length];
+    const dinnerCat = MEAL_CATS[(dayIdx + 3) % MEAL_CATS.length];
+
+    const [lRes, dRes] = await Promise.all([
+      fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + lunchCat),
+      fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + dinnerCat)
+    ]);
+    const lMeals = (await lRes.json()).meals || [];
+    const dMeals = (await dRes.json()).meals || [];
+
+    const lPick = lMeals[dayIdx % lMeals.length];
+    const dPick = dMeals[(dayIdx + 7) % dMeals.length];
+
+    const [lDet, dDet] = await Promise.all([
+      fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + lPick.idMeal),
+      fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + dPick.idMeal)
+    ]);
+    const lFull = (await lDet.json()).meals[0];
+    const dFull = (await dDet.json()).meals[0];
+
+    const result = {
+      date: today,
+      lunch:  { name: lFull.strMeal, category: lFull.strCategory, area: lFull.strArea, thumb: lFull.strMealThumb, source: lFull.strSource, id: lFull.idMeal },
+      dinner: { name: dFull.strMeal, category: dFull.strCategory, area: dFull.strArea, thumb: dFull.strMealThumb, source: dFull.strSource, id: dFull.idMeal }
+    };
+    try { localStorage.setItem(MEAL_CACHE_KEY, JSON.stringify(result)); } catch(e) {}
+
+    renderApiPick("pickLunch",  result.lunch);
+    renderApiPick("pickDinner", result.dinner);
+  } catch(e) {
+    // API unavailable — fall back to hardcoded meals
+    renderFallback("pickLunch",  lunchItems[dayIdx % lunchItems.length] || null);
+    renderFallback("pickDinner", dinnerItems[dayIdx % dinnerItems.length] || null);
+  }
 }
 initShiftPicks();
 
