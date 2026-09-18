@@ -623,8 +623,8 @@
   /* Shift picks */
   .shift-picks { margin-bottom: 14px; }
   .shift-pick-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 8px; }
-  .shift-picks-row { display: flex; gap: 10px; }
-  .shift-pick-card { flex: 1; min-width: 0; background: rgba(245,197,24,0.08); border: 1.5px solid rgba(245,197,24,0.3); border-radius: 12px; padding: 12px; cursor: pointer; transition: background 0.1s; }
+  .shift-picks-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .shift-pick-card { min-width: 0; background: rgba(245,197,24,0.08); border: 1.5px solid rgba(245,197,24,0.3); border-radius: 12px; padding: 12px; cursor: pointer; transition: background 0.1s; }
   .shift-pick-card:active { background: rgba(245,197,24,0.16); }
   .pick-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 5px; }
   .pick-thumb-wrap { border-radius: 8px; overflow: hidden; margin: 6px 0 8px; background: var(--line); line-height: 0; }
@@ -1386,15 +1386,25 @@
         <div class="shift-picks" id="shiftPicks">
           <div class="shift-pick-label">🔄 Today's Picks · <span id="shiftPickDate"></span></div>
           <div class="shift-picks-row">
-            <div class="shift-pick-card" id="pickLunch">
-              <div class="pick-tag">Lunch</div>
-              <div class="pick-name" id="pickLunchName"></div>
-              <div class="pick-desc" id="pickLunchDesc"></div>
+            <div class="shift-pick-card" id="pick1">
+              <div class="pick-tag">Pick 1</div>
+              <div class="pick-name" id="pick1Name"></div>
+              <div class="pick-desc" id="pick1Desc"></div>
             </div>
-            <div class="shift-pick-card" id="pickDinner">
-              <div class="pick-tag">Dinner</div>
-              <div class="pick-name" id="pickDinnerName"></div>
-              <div class="pick-desc" id="pickDinnerDesc"></div>
+            <div class="shift-pick-card" id="pick2">
+              <div class="pick-tag">Pick 2</div>
+              <div class="pick-name" id="pick2Name"></div>
+              <div class="pick-desc" id="pick2Desc"></div>
+            </div>
+            <div class="shift-pick-card" id="pick3">
+              <div class="pick-tag">Pick 3</div>
+              <div class="pick-name" id="pick3Name"></div>
+              <div class="pick-desc" id="pick3Desc"></div>
+            </div>
+            <div class="shift-pick-card" id="pick4">
+              <div class="pick-tag">Pick 4</div>
+              <div class="pick-name" id="pick4Name"></div>
+              <div class="pick-desc" id="pick4Desc"></div>
             </div>
           </div>
         </div>
@@ -1799,7 +1809,7 @@
           <ol style="margin:6px 0 0 20px; padding:0; color:var(--muted);">
             <li><strong>Detail break:</strong> if one of the tied crew was detailed off last shift, they lose the tie (give them a breather).</li>
             <li><strong>Medic break (watch/backup only):</strong> medics on Rescue lose ties — they're acting officer, so the non-medic takes it.</li>
-            <li><strong>Newest first:</strong> if still tied, newest member takes it (Smart → Wilson → … → Andrews).</li>
+            <li><strong>Newest first:</strong> if still tied, newest member takes it (Smart → Bentley → Holt → Andrews).</li>
           </ol>
           <br>
           <strong>Backup Watch:</strong> Always from the <em>opposite rig</em> of primary. Uses today's lineup, so if you put Bentley on Engine for the night, the algorithm respects that.
@@ -1861,8 +1871,7 @@ function defaultState() {
     { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
     { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine", isMedic: false, isCook: true,  isRookie: false },
     { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
-    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
-    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
+    { id: "smart",    name: "Smart",       seniority: 4, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
     { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine", isMedic: false, isCook: false, isRookie: false },
     { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "engine", isMedic: true,  isCook: false, isRookie: false },
   ];
@@ -2137,7 +2146,7 @@ function openMealIdeas() {
 
 // Firehouse-friendly categories (skips Dessert / Vegan / Vegetarian / Breakfast)
 const MEAL_CATS = ["Beef","Chicken","Lamb","Pasta","Pork","Seafood","Miscellaneous","Side","Starter"];
-const MEAL_CACHE_KEY = "station12-meal-picks-v2";
+const MEAL_CACHE_KEY = "station12-meal-picks-v3";
 
 // Deterministic hash — same date always gives same number, feels random day-to-day
 function dHash(n) {
@@ -2154,8 +2163,8 @@ async function initShiftPicks() {
   document.getElementById("shiftPickDate").textContent =
     new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
-  const lunchItems  = Array.from(document.querySelectorAll("#lunchList .meal-item"));
-  const dinnerItems = Array.from(document.querySelectorAll("#dinnerList .meal-item"));
+  const allItems = Array.from(document.querySelectorAll("#lunchList .meal-item, #dinnerList .meal-item"));
+  const PICKS = ["pick1","pick2","pick3","pick4"];
 
   function renderFallback(cardId, el) {
     if (!el) return;
@@ -2183,54 +2192,42 @@ async function initShiftPicks() {
   // Check cache
   try {
     const cached = JSON.parse(localStorage.getItem(MEAL_CACHE_KEY) || "{}");
-    if (cached.date === today && cached.lunch && cached.dinner) {
-      renderApiPick("pickLunch",  cached.lunch);
-      renderApiPick("pickDinner", cached.dinner);
+    if (cached.date === today && cached.picks && cached.picks.length === 4) {
+      cached.picks.forEach((p, i) => renderApiPick(PICKS[i], p));
       return;
     }
   } catch(e) {}
 
-  ["pickLunchName","pickDinnerName"].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "Finding today's pick…"; });
+  PICKS.forEach(id => { const el = document.getElementById(id + "Name"); if (el) el.textContent = "Finding today's pick…"; });
 
   try {
-    // Use seeded hash to pick categories — feels random, not sequential
-    const lCatIdx = dHash(dayIdx * 7 + 1) % MEAL_CATS.length;
-    let   dCatIdx = dHash(dayIdx * 13 + 5) % MEAL_CATS.length;
-    if (dCatIdx === lCatIdx) dCatIdx = (dCatIdx + 1) % MEAL_CATS.length;
+    // Pick 4 distinct categories using seeded hash
+    const seeds = [7, 13, 19, 23];
+    const catIdxs = [];
+    seeds.forEach((s, i) => {
+      let idx = dHash(dayIdx * s + i * 3) % MEAL_CATS.length;
+      while (catIdxs.includes(idx)) idx = (idx + 1) % MEAL_CATS.length;
+      catIdxs.push(idx);
+    });
+    const cats = catIdxs.map(i => MEAL_CATS[i]);
 
-    const lunchCat  = MEAL_CATS[lCatIdx];
-    const dinnerCat = MEAL_CATS[dCatIdx];
+    const catLists = await Promise.all(cats.map(c =>
+      fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + c).then(r => r.json()).then(d => d.meals || [])
+    ));
 
-    const [lRes, dRes] = await Promise.all([
-      fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + lunchCat),
-      fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=" + dinnerCat)
-    ]);
-    const lMeals = (await lRes.json()).meals || [];
-    const dMeals = (await dRes.json()).meals || [];
+    const mealSeeds = [17, 29, 31, 37];
+    const pickedIds = catLists.map((meals, i) => meals[dHash(dayIdx * mealSeeds[i] + i) % meals.length].idMeal);
 
-    // Seeded pick within category — not sequential
-    const lPick = lMeals[dHash(dayIdx * 17 + 3) % lMeals.length];
-    const dPick = dMeals[dHash(dayIdx * 19 + 7) % dMeals.length];
+    const details = await Promise.all(pickedIds.map(id =>
+      fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id).then(r => r.json()).then(d => d.meals[0])
+    ));
 
-    const [lDet, dDet] = await Promise.all([
-      fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + lPick.idMeal),
-      fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + dPick.idMeal)
-    ]);
-    const lFull = (await lDet.json()).meals[0];
-    const dFull = (await dDet.json()).meals[0];
+    const picks = details.map(m => ({ name: m.strMeal, category: m.strCategory, area: m.strArea, thumb: m.strMealThumb, source: m.strSource, id: m.idMeal }));
+    try { localStorage.setItem(MEAL_CACHE_KEY, JSON.stringify({ date: today, picks })); } catch(e) {}
 
-    const result = {
-      date: today,
-      lunch:  { name: lFull.strMeal, category: lFull.strCategory, area: lFull.strArea, thumb: lFull.strMealThumb, source: lFull.strSource, id: lFull.idMeal },
-      dinner: { name: dFull.strMeal, category: dFull.strCategory, area: dFull.strArea, thumb: dFull.strMealThumb, source: dFull.strSource, id: dFull.idMeal }
-    };
-    try { localStorage.setItem(MEAL_CACHE_KEY, JSON.stringify(result)); } catch(e) {}
-
-    renderApiPick("pickLunch",  result.lunch);
-    renderApiPick("pickDinner", result.dinner);
+    picks.forEach((p, i) => renderApiPick(PICKS[i], p));
   } catch(e) {
-    renderFallback("pickLunch",  lunchItems[dHash(dayIdx) % lunchItems.length] || null);
-    renderFallback("pickDinner", dinnerItems[dHash(dayIdx + 1) % dinnerItems.length] || null);
+    PICKS.forEach((id, i) => renderFallback(id, allItems[dHash(dayIdx + i) % allItems.length] || null));
   }
 }
 initShiftPicks();
