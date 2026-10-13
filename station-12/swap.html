@@ -1328,9 +1328,9 @@ function buildShareText() {
   function block(title, group) {
     const n = count(group);
     if (!n) return "";
-    let out = `\n━━━━━━━━━━━━━━━━\n${title} (${n})\n━━━━━━━━━━━━━━━━\n`;
+    let out = `\n${title}\n`;
     for (const [label, items] of Object.entries(group)) {
-      out += `\n▸ ${label}\n` + items.map(i => `   • ${i}`).join("\n") + "\n";
+      out += `${label}:\n` + items.map(i => `  • ${i}`).join("\n") + "\n";
     }
     return out;
   }
@@ -1340,22 +1340,14 @@ function buildShareText() {
     let msg = `${headerIcon} ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
     if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
 
-    const parts = [`Moved: ${count(b.moved)}`];
-    if (count(b.res))     parts.push(`${toLabel} already had: ${count(b.res)}`);
-    if (count(b.lot))     parts.push(`Left on ${fromLabel}: ${count(b.lot)}`);
-    if (count(b.na))      parts.push(`Not available: ${count(b.na)}`);
-    if (count(b.oos))     parts.push(`Out of service: ${count(b.oos)}`);
-    if (count(b.pending)) parts.push(`Still needed: ${count(b.pending)}`);
-    msg += `\nSUMMARY: ${parts.join(" · ")}\n`;
-
-    if (count(b.pending)) msg += block(`⚠️ STILL NEEDED — not done yet`, b.pending);
+    if (count(b.pending)) msg += block(`⚠️ STILL NEEDED`, b.pending);
     else msg += `\n✅ ${toLabel} fully equipped.\n`;
     msg += block(`✅ MOVED from ${fromLabel} → ${toLabel}`, b.moved);
-    msg += block(`🟦 ${toLabel} ALREADY HAD (not moved)`, b.res);
+    msg += block(`🟦 ${toLabel} ALREADY HAD`, b.res);
     msg += block(`🟨 LEFT ON ${fromLabel}`, b.lot);
     msg += block(`⛔ NOT AVAILABLE`, b.na);
     msg += block(`🔧 OUT OF SERVICE`, b.oos);
-    if (notes && notes.trim()) msg += `\n━━━━━━━━━━━━━━━━\n📝 NOTES\n━━━━━━━━━━━━━━━━\n${notes.trim()}\n`;
+    if (notes && notes.trim()) msg += `\n📝 NOTES\n${notes.trim()}\n`;
     msg += `\n${url}`;
     return msg;
   }
