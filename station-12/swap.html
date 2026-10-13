@@ -1288,70 +1288,78 @@ function buildShareText() {
   const dateStr = now.toLocaleString("en-US", { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
   const url = "https://g-lover10.github.io/grabcalls-website/station-12/swap.html";
 
+  // Each bucket holds { section label -> [item text] } so the report reads compartment by compartment.
   function collectItems(as, itemList) {
-    const moved = [], byStatus = { res: [], lot: [], na: [], oos: [] }, pending = [];
+    const buckets = { moved: {}, res: {}, lot: {}, na: {}, oos: {}, pending: {} };
+    const add = (bucket, label, text) => { (buckets[bucket][label] = buckets[bucket][label] || []).push(text); };
+    const place = (k, label, text) => {
+      if (as.checked.includes(k)) add("moved", label, text);
+      else if (as.skipped.includes(k)) {
+        const st = (as.itemStatus && as.itemStatus[k]) || "res";
+        add(buckets[st] ? st : "res", label, text);
+      } else add("pending", label, text);
+    };
     SECTIONS.forEach(sec => {
       sec.items.forEach((itemDef, idx) => {
         const text = typeof itemDef === "string" ? itemDef : itemDef.text;
         const k = itemKey(sec.id, idx);
         if (itemList && !itemList.includes(k)) return;
-        if (as.checked.includes(k)) { moved.push(text); }
-        else if (as.skipped.includes(k)) {
-          const st = (as.itemStatus && as.itemStatus[k]) || "res";
-          (byStatus[st] || byStatus.res).push(text);
-        } else { pending.push(text); }
+        place(k, sec.label, text);
       });
     });
     (as.customItems || []).forEach(item => {
       const k = `custom-${item.id}`;
       if (itemList && !itemList.includes(k)) return;
-      if (as.checked.includes(k)) { moved.push(item.text + " ✎"); }
-      else if (as.skipped.includes(k)) {
-        const st = (as.itemStatus && as.itemStatus[k]) || "res";
-        (byStatus[st] || byStatus.res).push(item.text + " ✎");
-      } else { pending.push(item.text + " ✎"); }
+      place(k, "Custom Items", item.text);
     });
-    return { moved, byStatus, pending };
+    return buckets;
+  }
+
+  const count = g => Object.values(g).reduce((n, arr) => n + arr.length, 0);
+  function block(title, group) {
+    const n = count(group);
+    if (!n) return "";
+    let out = `\n━━━━━━━━━━━━━━━━\n${title} (${n})\n━━━━━━━━━━━━━━━━\n`;
+    for (const [label, items] of Object.entries(group)) {
+      out += `\n▸ ${label}\n` + items.map(i => `   • ${i}`).join("\n") + "\n";
+    }
+    return out;
+  }
+
+  function report(headerIcon, fromLabel, toLabel, as, itemList, notes) {
+    const b = collectItems(as, itemList);
+    let msg = `${headerIcon} ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
+    if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
+
+    const parts = [`Moved: ${count(b.moved)}`];
+    if (count(b.res))     parts.push(`${toLabel} already had: ${count(b.res)}`);
+    if (count(b.lot))     parts.push(`Left on ${fromLabel}: ${count(b.lot)}`);
+    if (count(b.na))      parts.push(`Not available: ${count(b.na)}`);
+    if (count(b.oos))     parts.push(`Out of service: ${count(b.oos)}`);
+    if (count(b.pending)) parts.push(`Still needed: ${count(b.pending)}`);
+    msg += `\nSUMMARY: ${parts.join(" · ")}\n`;
+
+    if (count(b.pending)) msg += block(`⚠️ STILL NEEDED — not done yet`, b.pending);
+    else msg += `\n✅ ${toLabel} fully equipped.\n`;
+    msg += block(`✅ MOVED from ${fromLabel} → ${toLabel}`, b.moved);
+    msg += block(`🟦 ${toLabel} ALREADY HAD (not moved)`, b.res);
+    msg += block(`🟨 LEFT ON ${fromLabel}`, b.lot);
+    msg += block(`⛔ NOT AVAILABLE`, b.na);
+    msg += block(`🔧 OUT OF SERVICE`, b.oos);
+    if (notes && notes.trim()) msg += `\n━━━━━━━━━━━━━━━━\n📝 NOTES\n━━━━━━━━━━━━━━━━\n${notes.trim()}\n`;
+    msg += `\n${url}`;
+    return msg;
   }
 
   if (reswapMode) {
     const fromLabel = reswapState.fromRes ? `Res Eng ${reswapState.fromRes}` : "Reserve";
     const toLabel   = reswapState.toRes   ? `Res Eng ${reswapState.toRes}`   : "New Reserve";
-    const active = reswapItems();
-    const { moved, byStatus, pending } = collectItems(reswapState, active);
-
-    let msg = `🔄 ${fromLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
-    if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
-    msg += `\n✓ Moved: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
-    if (byStatus.res.length)  msg += `RES — Reserve had it: ${byStatus.res.length}\n`;
-    if (byStatus.lot.length)  msg += `LOT — Left on truck: ${byStatus.lot.length}\n`;
-    if (byStatus.na.length)   msg += `N/A — Not available: ${byStatus.na.length}\n`;
-    if (byStatus.oos.length)  msg += `OOS — Out of service: ${byStatus.oos.length}\n`;
-    if (pending.length > 0) {
-      msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
-    } else { msg += `\n✅ New reserve fully equipped.\n`; }
-    if (reswapState.notes && reswapState.notes.trim()) msg += `\nNotes: ${reswapState.notes.trim()}\n`;
-    msg += `\n${url}`;
-    return msg;
+    return report("🔄", fromLabel, toLabel, reswapState, reswapItems(), reswapState.notes);
   }
 
   const fromEngineLabel = state.fromEngine || "Engine";
   const toLabel = state.reserveTo ? `Res Eng ${state.reserveTo}` : "Reserve";
-  const { moved, byStatus, pending } = collectItems(state, null);
-
-  let msg = `🚒 ${fromEngineLabel} → ${toLabel} | Station 12\n${dateStr}\n`;
-  if (state.officer || state.driver) msg += `Officer: ${state.officer || "—"} | Driver: ${state.driver || "—"}\n`;
-  msg += `\n✓ Moved from ${fromEngineLabel}: ${moved.length} item${moved.length !== 1 ? "s" : ""}\n`;
-  if (byStatus.res.length)  msg += `RES — Reserve had it: ${byStatus.res.length}\n`;
-  if (byStatus.lot.length)  msg += `LOT — Left on truck: ${byStatus.lot.length}\n`;
-  if (byStatus.na.length)   msg += `N/A — Not available: ${byStatus.na.length}\n`;
-  if (byStatus.oos.length)  msg += `OOS — Out of service: ${byStatus.oos.length}\n`;
-  if (pending.length > 0) {
-    msg += `\n⚠️ STILL NEEDED (${pending.length}):\n` + pending.map(i => `  • ${i}`).join("\n") + "\n";
-  } else { msg += `\n✅ Reserve fully equipped.\n`; }
-  if (state.notes && state.notes.trim()) msg += `\nNotes: ${state.notes.trim()}\n`;
-  msg += `\n${url}`;
-  return msg;
+  return report("🚒", fromEngineLabel, toLabel, state, null, state.notes);
 }
 
 function shareSwap() {
