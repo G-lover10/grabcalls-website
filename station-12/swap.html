@@ -1300,6 +1300,15 @@ function buildShareText() {
       } else add("pending", label, text);
     };
     SECTIONS.forEach(sec => {
+      // Tool box goes as one unit: if every item in it was moved, report one line.
+      if (sec.id === "toolbox") {
+        const keys = sec.items.map((_, idx) => itemKey(sec.id, idx))
+          .filter(k => !itemList || itemList.includes(k));
+        if (keys.length && keys.every(k => as.checked.includes(k))) {
+          add("moved", "Tool Box", "Complete tool box (all contents)");
+          return;
+        }
+      }
       sec.items.forEach((itemDef, idx) => {
         const text = typeof itemDef === "string" ? itemDef : itemDef.text;
         const k = itemKey(sec.id, idx);
