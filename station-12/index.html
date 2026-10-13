@@ -1788,7 +1788,7 @@
             <input type="checkbox" id="useRevealToggle" />
           </label>
           <label class="toggle-row">
-            <span>Rookie weight (Smart picks this many times more)</span>
+            <span>Rookie weight (rookie picks this many times more)</span>
             <input type="number" id="rookieMult" min="1" max="5" step="1" style="width:60px;" />
           </label>
         </div>
@@ -1799,7 +1799,7 @@
           <ol style="margin:6px 0 0 20px; padding:0; color:var(--muted);">
             <li><strong>Detail break:</strong> if one of the tied crew was detailed off last shift, they lose the tie (give them a breather).</li>
             <li><strong>Medic break (watch/backup only):</strong> medics on Rescue lose ties — they're acting officer, so the non-medic takes it.</li>
-            <li><strong>Newest first:</strong> if still tied, newest member takes it (Smart → Wilson → … → Andrews).</li>
+            <li><strong>Newest first:</strong> if still tied, newest member takes it (Kearns → Bentley → Holt → Andrews).</li>
           </ol>
           <br>
           <strong>Backup Watch:</strong> Always from the <em>opposite rig</em> of primary. Uses today's lineup, so if you put Bentley on Engine for the night, the algorithm respects that.
@@ -1861,8 +1861,7 @@ function defaultState() {
     { id: "andrews",  name: "Andrews",     seniority: 1, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: false },
     { id: "holt",     name: "Holt",        seniority: 2, exempt: false, rig: "engine", isMedic: false, isCook: true,  isRookie: false },
     { id: "bentley",  name: "Bentley",     seniority: 3, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
-    { id: "wilson",   name: "Wilson",      seniority: 4, exempt: false, rig: "rescue", isMedic: true,  isCook: false, isRookie: false },
-    { id: "smart",    name: "Smart",       seniority: 5, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
+    { id: "kearns",   name: "Kearns",      seniority: 4, exempt: false, rig: "engine", isMedic: false, isCook: false, isRookie: true  },
     { id: "martin",   name: "Lt. Martin",  seniority: 0, exempt: true,  rig: "engine", isMedic: false, isCook: false, isRookie: false },
     { id: "glover",   name: "Sgt. Glover", seniority: 0, exempt: true,  rig: "engine", isMedic: true,  isCook: false, isRookie: false },
   ];
@@ -1883,9 +1882,7 @@ function defaultState() {
       // Birmingham Fire & Rescue special-events schedule, Station 12 B-shift.
       // B-shift cycle: every 3rd day starting (confirmed) Sun 2026-05-24.
       // Extracted from the BFRS May/June 2026 calendar photo.
-      "2026-06-05": ["wilson"], // Fri
       "2026-06-08": ["holt"],   // Mon
-      "2026-06-29": ["smart"],  // Mon
     },
     fillIns: [],
     detailOuts: [],
@@ -1927,10 +1924,42 @@ function loadState() {
     for (const m of parsed.crew) {
       if (!("isMedic" in m)) m.isMedic = false;
       if (!("isCook" in m))  m.isCook  = false;
-      if (!("isRookie" in m)) m.isRookie = m.id === "smart";
+      if (!("isRookie" in m)) m.isRookie = m.id === "kearns";
       if (m.id === "andrews" && m.name === "Cam Andrews") m.name = "Andrews";
     }
     if (!parsed.kellyDays)        parsed.kellyDays = {};
+    // One-time roster update (Oct 2026): Wilson no longer employed; rookie
+    // Leena Kearns takes Tamarius Smart's rookie spot (inherits his counts so
+    // she isn't stuck catching up from zero). Logged history is left as-is.
+    if (parsed.rosterRev !== "2026-10-kearns") {
+      const smart = parsed.crew.find(m => m.id === "smart");
+      parsed.crew = parsed.crew.filter(m => m.id !== "wilson" && m.id !== "smart");
+      parsed.presence = (parsed.presence || []).filter(id => id !== "wilson" && id !== "smart");
+      if (!parsed.crew.some(m => m.id === "kearns")) {
+        const maxSen = Math.max(0, ...parsed.crew.filter(m => !m.exempt).map(m => m.seniority));
+        parsed.crew.push({ id: "kearns", name: "Kearns", seniority: maxSen + 1, exempt: false,
+          rig: smart ? smart.rig : "engine", isMedic: false, isCook: false, isRookie: true });
+        parsed.presence.push("kearns");
+        for (const r of Object.values(parsed.rotations || {})) {
+          if (r.counts && smart && "smart" in r.counts) r.counts.kearns = r.counts.smart;
+        }
+      }
+      for (const m of parsed.crew) if (m.id !== "kearns") m.isRookie = false;
+      for (const r of Object.values(parsed.rotations || {})) {
+        for (const k of ["wilson", "smart"]) {
+          if (r.counts) delete r.counts[k];
+          if (r.lastDate) delete r.lastDate[k];
+        }
+      }
+      for (const [date, ids] of Object.entries(parsed.kellyDays)) {
+        parsed.kellyDays[date] = ids.filter(id => id !== "wilson" && id !== "smart");
+        if (!parsed.kellyDays[date].length) delete parsed.kellyDays[date];
+      }
+      // Re-number non-exempt seniority 1..n, keeping order (Kearns stays newest).
+      parsed.crew.filter(m => !m.exempt).sort((a, b) => a.seniority - b.seniority)
+        .forEach((m, i) => { m.seniority = i + 1; });
+      parsed.rosterRev = "2026-10-kearns";
+    }
     // One-time migration: drop placeholder Kelly days that were on non-B-shift dates,
     // then merge in the real BFRS schedule from defaults. Anything the user added via
     // the Settings UI is preserved.
