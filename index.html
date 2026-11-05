@@ -720,6 +720,7 @@
   var active=false, starting=false, opened=false;
   var ws=null, micStream=null, inCtx=null, outCtx=null, procNode=null, srcNode=null, playHead=0;
   var PHONE='(205) 880-3630';
+  var serverVadSeen=false, speaking=false, silenceMs=0, spokeThisTurn=false;
 
   function setStatus(t){ statusEl.textContent=t; }
   function setLabel(t){ var l=btn.querySelector('.vd-label'); if(l) l.textContent=t; }
@@ -777,6 +778,11 @@
           opened=true; active=true; starting=false;
           btn.classList.add('listening'); setLabel('Tap to end'); btn.disabled=false;
           setStatus('Connected. Go ahead and talk - the AI is listening.');
+          // Assert the input format and server-side VAD so the agent knows the
+          // mic is 24kHz PCM16 and auto-commits each turn. Harmless if the agent
+          // already has these; a client-side fallback commit covers the case
+          // where server VAD never fires (see maybeHandleTurn).
+          try{ ws.send(JSON.stringify({type:'session.update',session:{input_audio_format:'pcm16',turn_detection:{type:'server_vad',threshold:0.5,prefix_padding_ms:300,silence_duration_ms:700}}})); }catch(e){}
           startAudio();
         };
         ws.onmessage=function(ev){ handleMsg(ev.data); };
@@ -797,7 +803,12 @@
   function startAudio(){
     var AC=window.AudioContext||window.webkitAudioContext;
     outCtx=new AC({sampleRate:RATE}); playHead=0; if(outCtx.resume) outCtx.resume();
-    inCtx=new AC(); if(inCtx.resume) inCtx.resume();
+    // Prefer a 24kHz capture context so mic samples are already at the rate the
+    // agent expects; if the browser refuses, we fall back to native rate and
+    // resample in toInt16(). Either way we send 24kHz mono PCM16.
+    try{ inCtx=new AC({sampleRate:RATE}); }catch(e){ inCtx=new AC(); }
+    if(inCtx.resume) inCtx.resume();
+    serverVadSeen=false; speaking=false; silenceMs=0; spokeThisTurn=false;
     srcNode=inCtx.createMediaStreamSource(micStream);
     procNode=inCtx.createScriptProcessor(4096,1,1);
     srcNode.connect(procNode); procNode.connect(inCtx.destination);
@@ -806,20 +817,45 @@
       var input=e.inputBuffer.getChannelData(0);
       var int16=toInt16(input,inCtx.sampleRate);
       ws.send(JSON.stringify({type:'input_audio_buffer.append',audio:bytesToB64(new Uint8Array(int16.buffer))}));
+      maybeHandleTurn(input);
     };
+  }
+
+  // Fallback end-of-turn detection for when the agent is NOT running server VAD.
+  // If we ever see a server VAD event, this disables itself to avoid double
+  // commits. Otherwise it commits the buffer and asks for a response after a
+  // short silence following speech.
+  function maybeHandleTurn(float32){
+    if(serverVadSeen) return;
+    var sum=0; for(var i=0;i<float32.length;i++){ sum+=float32[i]*float32[i]; }
+    var rms=Math.sqrt(sum/float32.length);
+    var frameMs=(float32.length/(inCtx.sampleRate||RATE))*1000;
+    if(rms>0.015){ speaking=true; spokeThisTurn=true; silenceMs=0; }
+    else if(speaking){ silenceMs+=frameMs; if(silenceMs>=700){ endTurn(); } }
+  }
+  function endTurn(){
+    speaking=false; silenceMs=0;
+    if(!spokeThisTurn||!ws||ws.readyState!==1) return;
+    spokeThisTurn=false;
+    try{ ws.send(JSON.stringify({type:'input_audio_buffer.commit'})); ws.send(JSON.stringify({type:'response.create'})); }catch(e){}
   }
 
   function handleMsg(data){
     if(typeof data!=='string'){ try{ playChunk(new Int16Array(data)); }catch(e){} return; }
     var msg; try{ msg=JSON.parse(data); }catch(e){ return; }
     var type=msg.type||'';
+    // Any server-side VAD / commit signal means the agent is handling turns
+    // itself -> disable our client-side fallback commit.
+    if(type.indexOf('input_audio_buffer.speech_')===0 || type==='input_audio_buffer.committed'){ serverVadSeen=true; }
+    if(type==='input_audio_buffer.speech_started'){ setStatus('Listening...'); }
     if(type==='response.output_audio.delta' && msg.delta){ try{ playChunk(new Int16Array(b64ToBytes(msg.delta).buffer)); }catch(e){} }
     else if(type==='response.output_audio_transcript.delta' && msg.delta){ appendTranscript(msg.delta); }
     else if(type==='error'){ var m=(msg.error&&(msg.error.message||msg.error.code))||''; setStatus('The AI reported an error'+(m?(': '+m):'')+'. Please try again or call '+PHONE+'.'); }
   }
 
   function cleanup(){
-    active=false; btn.classList.remove('listening'); setLabel('Talk to our AI live'); btn.disabled=false;
+    active=false; serverVadSeen=false; speaking=false; silenceMs=0; spokeThisTurn=false;
+    btn.classList.remove('listening'); setLabel('Talk to our AI live'); btn.disabled=false;
     try{ if(procNode){ procNode.onaudioprocess=null; procNode.disconnect(); } }catch(e){}
     try{ if(srcNode) srcNode.disconnect(); }catch(e){}
     try{ if(inCtx) inCtx.close(); }catch(e){}
