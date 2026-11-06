@@ -185,6 +185,101 @@ a:hover{text-decoration:underline}
 
 /* SEPARATOR */
 .gap{height:16px}
+html{color-scheme:dark}
+html,body{max-width:100%;overflow-x:hidden}
+#layout,#main,#sidebar,#rpanel,.tab-row{min-width:0}
+#main,#sidebar,#rpanel{padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px))}
+#topbar{
+  height:auto;min-height:52px;flex-wrap:wrap;
+  padding-top:8px;padding-bottom:8px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+#main,#sidebar,#rpanel{
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.cmd-code{max-width:100%;white-space:pre-wrap;word-break:break-word}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media (max-width:980px){
+  #layout{flex-direction:column}
+  #sidebar{width:100%;max-height:200px;border-right:none;border-bottom:1px solid var(--border)}
+  #rpanel{width:100%;border-left:none;border-top:1px solid var(--border)}
+}
+@media (max-width:400px){
+  .g2,.g3,.g4,.kanban,.items-grid{grid-template-columns:1fr !important}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+
+.edit-note{font-size:12px;color:var(--muted);line-height:1.5;margin:-8px 0 14px}
+.filters{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.filter-row{display:flex;flex-wrap:wrap;gap:6px}
+.mc-search{
+  width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);
+  border-radius:6px;padding:10px 12px;font:inherit;font-size:14px;
+}
+.chip-btn{
+  background:var(--s1);border:1px solid var(--border);color:var(--muted);
+  border-radius:999px;padding:6px 10px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
+.chip-btn[aria-pressed="true"]{background:var(--s3);color:var(--text);border-color:var(--cyan)}
+.items-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.group-label{grid-column:1 / -1;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-top:4px}
+.group-label.calm{color:var(--muted)}
+.item-card{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;min-width:0}
+.item-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.item-title{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.35}
+.item-title.struck{text-decoration:line-through;color:var(--muted)}
+.item-next{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0}
+.item-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.type-chip{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:var(--s3);color:var(--text)}
+.open-session{font-size:12px;font-weight:700}
+.tag-mini{font-size:10px;color:var(--dim);letter-spacing:.04em}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media (max-width:700px){.status-grid{grid-template-columns:1fr 1fr}}
+.check-list{display:flex;flex-direction:column}
+.problem{font-size:12px;color:var(--amber);margin-top:8px}
+
+#chat-toggle{
+  position:fixed;z-index:220;
+  right:max(16px, env(safe-area-inset-right, 0px));
+  bottom:max(16px, env(safe-area-inset-bottom, 0px));
+  width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),#0082C8);color:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+  display:flex;align-items:center;justify-content:center;
+}
+#chat-toggle svg{width:24px;height:24px;fill:#fff}
+#chat-panel{
+  position:fixed;z-index:220;display:none;flex-direction:column;
+  right:max(16px, env(safe-area-inset-right, 0px));
+  bottom:calc(80px + env(safe-area-inset-bottom, 0px));
+  width:min(400px, calc(100vw - 32px));
+  max-height:min(70vh, 640px);
+  background:var(--s1);border:1px solid var(--border);border-radius:12px;
+  box-shadow:0 16px 48px rgba(0,0,0,.45);overflow:hidden;
+}
+#chat-panel.open{display:flex}
+.chat-hd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.chat-hd-title{font-weight:700;font-size:13px;flex:1}
+.chat-hd-sub{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.icon-btn{
+  background:var(--s2);border:1px solid var(--border);color:var(--text);
+  border-radius:6px;padding:6px 8px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;
+}
+.icon-btn[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
+.chat-log{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:180px}
+.bubble{max-width:92%;padding:8px 10px;border-radius:8px;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.bubble.user{align-self:flex-end;background:var(--blue-bg);border:1px solid rgba(46,134,255,.25)}
+.bubble.assistant{align-self:flex-start;background:var(--s2);border:1px solid var(--border)}
+.bubble.thinking{color:var(--muted);font-style:italic}
+.chat-form{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border);align-items:center}
+.chat-form input{flex:1;min-width:0}
+.voice-note{font-size:11px;color:var(--amber);padding:0 12px 8px}
+
 </style>
 </head>
 <body>
@@ -197,7 +292,9 @@ a:hover{text-decoration:underline}
     <div class="v-badge">v6</div>
   </div>
   <div class="tab-row">
-    <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab active" role="tab" aria-selected="true" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="switchTab('items',this)">Items</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="switchTab('handoff',this)">For Claude</button>
     <button class="tab" onclick="switchTab('systems',this)">Systems</button>
     <button class="tab" onclick="switchTab('agents',this)">Agents</button>
     <button class="tab" onclick="switchTab('tasks',this)">Tasks</button>
@@ -257,6 +354,9 @@ a:hover{text-decoration:underline}
       <button class="sb-item" onclick="switchTab('projects',this)">
         <div class="dot dot-dim"></div>TrueTag
       </button>
+      <button class="sb-item" onclick="switchTab('items',this)">
+        <div class="dot dot-amber"></div>Items board
+      </button>
     </div>
     <div class="sb-section">
       <div class="sb-label">Quick Links</div>
@@ -275,8 +375,17 @@ a:hover{text-decoration:underline}
     <div id="view-overview" class="view active">
       <div class="sec-hd">
         <div class="sec-title">Mission Control</div>
-        <div class="sec-sub">Last updated Jul 16, 2026 · v6 reflects actual running systems</div>
+        <div class="sec-sub">Live status is from the server. Notes below were written Jul 16, 2026.</div>
       </div>
+
+      <div class="card" id="live-status" data-state="loading" style="margin-bottom:16px" aria-live="polite">
+        <div class="sec-hd">
+          <div class="sec-title" style="font-size:14px">Live server status</div>
+          <div class="sec-sub" id="live-status-sub">Checking the ops snapshot…</div>
+        </div>
+        <div id="live-status-body"><span class="badge badge-dim">CHECKING</span></div>
+      </div>
+
 
       <!-- STATS -->
       <div class="g4" style="margin-bottom:16px">
@@ -291,14 +400,15 @@ a:hover{text-decoration:underline}
           <div class="stat-change neutral">Goal: first paying client</div>
         </div>
         <div class="stat-tile">
-          <div class="stat-num" style="color:var(--cyan)">5</div>
+          <div class="stat-num" style="color:var(--amber)">—</div>
           <div class="stat-lbl">Models in Stack</div>
-          <div class="stat-change up">Fable 5 · Sonnet · Laguna · Ling-1T</div>
+          <div class="stat-change"><s style="color:var(--muted)">Fable 5 · Sonnet · Laguna · Ling-1T</s></div>
+          <div class="stat-change" style="color:var(--amber)">OUTDATED</div>
         </div>
         <div class="stat-tile">
-          <div class="stat-num" style="color:var(--amber)">2</div>
+          <div class="stat-num" style="color:var(--amber)" id="blocked-count">—</div>
           <div class="stat-lbl">Blocked Items</div>
-          <div class="stat-change down">Hetzner SSH · GrabCalls client #1</div>
+          <div class="stat-change down">From the items board</div>
         </div>
       </div>
 
@@ -355,6 +465,52 @@ a:hover{text-decoration:underline}
         <div class="idea-item"><strong>"Relevance beats volume" outbound for GrabCalls</strong>Score accounts for fit, send one targeted email instead of stacking follow-ups to non-fits (UpLead).</div>
         <div style="margin-top:10px"><a href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank" style="font-size:12px">→ See full Brain for all ideas</a></div>
       </div>
+    </div>
+
+
+    <!-- FOR CLAUDE -->
+    <div id="view-handoff" class="view">
+      <div class="sec-hd">
+        <div class="sec-title">Send this to Claude</div>
+        <div class="sec-sub">Copy from this page. Nothing to download.</div>
+      </div>
+      <p class="edit-note">Tap Copy prompt first and paste it into Claude. Then tap Copy all files and paste that as the next message. If Copy is blocked, the text is in the box: tap it, select all, and copy.</p>
+      <div class="filter-row" style="margin-bottom:12px">
+        <button type="button" class="icon-btn" id="copy-prompt">Copy prompt</button>
+        <button type="button" class="icon-btn" id="copy-all">Copy all files</button>
+      </div>
+      <p id="copy-status" class="edit-note" aria-live="polite"></p>
+      <label class="sr-only" for="copy-box">Text to paste into Claude</label>
+      <textarea id="copy-box" class="mc-search" readonly style="min-height:280px;white-space:pre;font-family:ui-monospace,monospace;font-size:12px"></textarea>
+    </div>
+
+    <!-- ITEMS -->
+    <div id="view-items" class="view">
+      <div class="sec-hd">
+        <div class="sec-title">Items</div>
+        <div class="sec-sub">Ideas, tasks, projects, apps</div>
+      </div>
+      <p class="edit-note">Needs cleanup is anything outdated, or untouched for more than 14 days. Edits go through a pull request. This page cannot change the repo.</p>
+      <div class="filters">
+        <label class="sr-only" for="item-search">Search items</label>
+        <input id="item-search" class="mc-search" type="search" placeholder="Search title, next step, or tag" autocomplete="off">
+        <div class="filter-row" role="group" aria-label="Filter by type">
+          <button type="button" class="chip-btn" data-filter-type="all" aria-pressed="true">All types</button>
+          <button type="button" class="chip-btn" data-filter-type="idea" aria-pressed="false">Ideas</button>
+          <button type="button" class="chip-btn" data-filter-type="task" aria-pressed="false">Tasks</button>
+          <button type="button" class="chip-btn" data-filter-type="project" aria-pressed="false">Projects</button>
+          <button type="button" class="chip-btn" data-filter-type="app" aria-pressed="false">Apps</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter by status">
+          <button type="button" class="chip-btn" data-filter-status="all" aria-pressed="true">All statuses</button>
+          <button type="button" class="chip-btn" data-filter-status="active" aria-pressed="false">Active</button>
+          <button type="button" class="chip-btn" data-filter-status="blocked" aria-pressed="false">Blocked</button>
+          <button type="button" class="chip-btn" data-filter-status="paused" aria-pressed="false">Paused</button>
+          <button type="button" class="chip-btn" data-filter-status="done" aria-pressed="false">Done</button>
+          <button type="button" class="chip-btn" data-filter-status="outdated" aria-pressed="false">Outdated</button>
+        </div>
+      </div>
+      <div id="items-root" class="items-grid" aria-live="polite"></div>
     </div>
 
     <!-- SYSTEMS -->
@@ -455,7 +611,12 @@ a:hover{text-decoration:underline}
 
     <!-- AGENTS -->
     <div id="view-agents" class="view">
-      <div class="sec-hd"><div class="sec-title">Agent Stack</div><div class="sec-sub">All routed via OpenRouter · one API key</div></div>
+      <div class="sec-hd"><div class="sec-title">Agent Stack</div><div class="sec-sub">Jul 16 cards. The model list is outdated.</div></div>
+      <div style="background:var(--amber-bg);border:1px solid rgba(245,166,35,.3);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5">
+        <s style="color:var(--muted)">Fable 5 · Sonnet · Laguna · Ling-1T</s>
+        <div style="margin-top:6px">That model list is <strong style="color:var(--amber)">outdated</strong>. Do not treat these cards as the current stack. GoHighLevel is retired. The Grok voice agent is the current voice tool, and Mission Control chat uses Grok.</div>
+      </div>
+
 
       <div style="background:var(--cyan-bg);border:1px solid rgba(0,197,181,.2);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text)">
         <strong>Run from GitHub Actions:</strong> Actions tab → GrabCalls Daily Agent → Run workflow → pick task. Or push code that calls <code style="color:var(--cyan)">node agents/index.js &lt;task&gt;</code>
@@ -703,7 +864,7 @@ node agents/index.js campaign-analysis</code>
         <div class="sys-row"><div class="sys-name">Master Brain URL</div><div class="sys-detail"><a href="https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7" target="_blank">app.notion.com/p/3629f925...</a></div></div>
         <div class="sys-row"><div class="sys-name">ListSnap Hub</div><div class="sys-detail"><a href="https://www.notion.so/35c9f92593e581e19e87eae0bf6f2780" target="_blank">Full context on ListSnap build</a></div></div>
         <div class="sys-row"><div class="sys-name">BFRS Hub</div><div class="sys-detail"><a href="https://www.notion.so/35c9f92593e5814fab94e5abc6eacb3d" target="_blank">BFRS handoff status</a></div></div>
-        <div class="sys-row"><div class="sys-name">Owner</div><div class="sys-detail">Eric Glover · medicglover@gmail.com · (205) 914-3390</div></div>
+        <div class="sys-row"><div class="sys-name">Owner</div><div class="sys-detail">Eric Glover · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e8858d8c818b8f84879e8d9aa88f85898184c68b8785">[email&#160;protected]</a> · (205) 914-3390</div></div>
         <div class="sys-row"><div class="sys-name">GrabCalls demo</div><div class="sys-detail">(205) 605-9842</div></div>
         <div class="sys-row"><div class="sys-name">GitHub</div><div class="sys-detail"><a href="https://github.com/G-lover10" target="_blank">github.com/G-lover10</a></div></div>
       </div>
@@ -764,7 +925,27 @@ node agents/index.js campaign-analysis</code>
 
 </div><!-- /layout -->
 
-<script>
+
+<button id="chat-toggle" type="button" aria-label="Open assistant" aria-expanded="false" aria-controls="chat-panel">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 3V6a1 1 0 0 1 1-1z"/></svg>
+</button>
+<section id="chat-panel" role="dialog" aria-label="Mission Control assistant">
+  <div class="chat-hd">
+    <div class="chat-hd-title">Assistant<span class="chat-hd-sub">Grok, read-only. Answers from your items.</span></div>
+    <button type="button" class="icon-btn" id="chat-mute" aria-pressed="false" aria-label="Mute spoken replies">Mute</button>
+    <button type="button" class="icon-btn" id="chat-stop" aria-label="Stop speaking">Stop</button>
+  </div>
+  <div id="chat-log" class="chat-log" aria-live="polite"></div>
+  <p id="voice-note" class="voice-note"></p>
+  <form id="chat-form" class="chat-form">
+    <label class="sr-only" for="chat-input">Message</label>
+    <input id="chat-input" class="mc-search" maxlength="2000" placeholder="Ask about an item" autocomplete="off">
+    <button type="button" class="icon-btn" id="chat-mic" aria-label="Speak a question" aria-pressed="false">Mic</button>
+    <button type="submit" class="icon-btn" aria-label="Send">Send</button>
+  </form>
+</section>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Clock
 function tick(){
   const n=new Date();
@@ -779,12 +960,496 @@ function switchTab(id,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   const v=document.getElementById('view-'+id);
   if(v)v.classList.add('active');
-  if(btn)btn.classList.add('active');
-  // sync topbar tabs
+  if(btn && btn.classList.contains('tab')) btn.classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>{
-    if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+id+"'")){t.classList.add('active');}
+    const on = !!(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+id+"'"));
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
   });
 }
+</script>
+<script>
+const STATUS_URL = 'https://n8n.grabcalls.com/webhook/ops-status-92cfbede15b161c850df0601';
+const STATUS_MAX_AGE_MS = 6 * 60 * 60 * 1000;
+const STALE_DAYS = 14;
+// Paste the n8n production webhook here after importing MC Assistant Chat.
+// Leave empty until then. Preview hosts fall back to the same-origin helper.
+const MC_CHAT_WEBHOOK = '';
+
+const itemState = { items: [], type: 'all', status: 'all', q: '' };
+const chatState = { history: [], muted: false, recognizing: false };
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
+}
+
+function safeUrl(u) {
+  try {
+    const x = new URL(u);
+    if (x.protocol === 'https:' || x.protocol === 'http:') return esc(x.href);
+  } catch (e) { /* ignore bad urls */ }
+  return '';
+}
+
+function daysAgo(iso) {
+  const then = new Date(String(iso) + 'T00:00:00');
+  if (Number.isNaN(then.getTime())) return 9999;
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startThen = new Date(then.getFullYear(), then.getMonth(), then.getDate());
+  return Math.round((startToday - startThen) / 86400000);
+}
+
+function isStale(item) {
+  return daysAgo(item.last_updated) > STALE_DAYS;
+}
+
+function needsCleanup(item) {
+  return item.status === 'outdated' || isStale(item);
+}
+
+function statusBadgeClass(status) {
+  if (status === 'active' || status === 'done') return 'badge-green';
+  if (status === 'blocked' || status === 'outdated') return 'badge-red';
+  if (status === 'paused') return 'badge-amber';
+  return 'badge-dim';
+}
+
+function updatedLabel(item) {
+  const n = daysAgo(item.last_updated);
+  if (n <= 0) return 'Last updated today';
+  if (n === 1) return 'Last updated 1 day ago';
+  return 'Last updated ' + n + ' days ago';
+}
+
+function itemCard(item) {
+  const href = safeUrl(item.session_url);
+  const stale = isStale(item);
+  const struck = item.status === 'outdated' ? ' struck' : '';
+  const session = href
+    ? '<a class="open-session" href="' + href + '" target="_blank" rel="noopener noreferrer" aria-label="Open session for ' + esc(item.title) + '">Open session</a>'
+    : '';
+  const staleBadge = stale ? '<span class="badge badge-amber">STALE</span>' : '';
+  const tags = (item.tags || []).map((t) => esc(t)).join(' · ');
+  return '<article class="item-card">' +
+    '<div class="item-top"><span class="type-chip">' + esc(item.type) + '</span>' +
+    '<span class="badge ' + statusBadgeClass(item.status) + '">' + esc(item.status) + '</span>' +
+    staleBadge + '</div>' +
+    '<h3 class="item-title' + struck + '">' + esc(item.title) + '</h3>' +
+    '<p class="item-next">Next: ' + esc(item.next_step || 'none') + '</p>' +
+    '<div class="item-foot"><span>' + esc(updatedLabel(item)) + '</span>' + session + '</div>' +
+    (tags ? '<div class="tag-mini" style="margin-top:8px">' + tags + '</div>' : '') +
+    '</article>';
+}
+
+function matches(item) {
+  if (itemState.type !== 'all' && item.type !== itemState.type) return false;
+  if (itemState.status !== 'all' && item.status !== itemState.status) return false;
+  const q = itemState.q.trim().toLowerCase();
+  if (!q) return true;
+  const hay = [item.title, item.next_step, item.type, item.status, item.owner, ...(item.tags || [])].join(' ').toLowerCase();
+  return hay.includes(q);
+}
+
+function renderItems() {
+  const root = document.getElementById('items-root');
+  if (!root) return;
+  const shown = itemState.items.filter(matches);
+  const cleanup = shown.filter(needsCleanup).sort((a, b) => String(b.last_updated).localeCompare(String(a.last_updated)));
+  const rest = shown.filter((item) => !needsCleanup(item)).sort((a, b) => String(b.last_updated).localeCompare(String(a.last_updated)));
+  if (!shown.length) {
+    root.innerHTML = '<p class="edit-note">No items match.</p>';
+    return;
+  }
+  let html = '';
+  if (cleanup.length) {
+    html += '<div class="group-label">Needs cleanup</div>';
+    html += cleanup.map(itemCard).join('');
+  }
+  if (rest.length) {
+    html += '<div class="group-label calm">Current</div>';
+    html += rest.map(itemCard).join('');
+  }
+  root.innerHTML = html;
+}
+
+function paintBlocked(items) {
+  const el = document.getElementById('blocked-count');
+  if (el) el.textContent = String(items.filter((item) => item.status === 'blocked').length);
+}
+
+async function loadItems() {
+  const root = document.getElementById('items-root');
+  try {
+    const res = await fetch('./items.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('items ' + res.status);
+    const data = await res.json();
+    itemState.items = Array.isArray(data) ? data : (data.items || []);
+    paintBlocked(itemState.items);
+    renderItems();
+  } catch (e) {
+    if (root) root.innerHTML = '<p class="edit-note">Could not load items.json.</p>';
+  }
+}
+
+function wireFilters() {
+  document.querySelectorAll('[data-filter-type]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      itemState.type = btn.getAttribute('data-filter-type');
+      document.querySelectorAll('[data-filter-type]').forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      renderItems();
+    });
+  });
+  document.querySelectorAll('[data-filter-status]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      itemState.status = btn.getAttribute('data-filter-status');
+      document.querySelectorAll('[data-filter-status]').forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      renderItems();
+    });
+  });
+  const search = document.getElementById('item-search');
+  if (search) search.addEventListener('input', () => { itemState.q = search.value; renderItems(); });
+}
+
+function ageLabel(ms) {
+  if (!Number.isFinite(ms) || ms < 0) return 'unknown age';
+  const min = Math.round(ms / 60000);
+  if (min < 1) return 'just now';
+  if (min < 60) return min + ' min ago';
+  const hr = Math.round(min / 60);
+  return hr + (hr === 1 ? ' hour ago' : ' hours ago');
+}
+
+function checkRow(name, detail, badgeText, badgeClass) {
+  return '<div class="sys-row"><div class="sys-name">' + esc(name) + '</div><div class="sys-detail">' + esc(detail) + '</div><span class="badge ' + badgeClass + '">' + esc(badgeText) + '</span></div>';
+}
+
+function renderStatusUnavailable() {
+  const sub = document.getElementById('live-status-sub');
+  const body = document.getElementById('live-status-body');
+  const card = document.getElementById('live-status');
+  if (card) card.setAttribute('data-state', 'unavailable');
+  if (sub) sub.textContent = 'The status feed did not respond.';
+  if (body) {
+    body.innerHTML = '<span class="badge badge-red">UNAVAILABLE</span>' +
+      '<p class="problem">No live snapshot. This is not treated as healthy.</p>';
+  }
+}
+
+function renderStatus(data) {
+  const card = document.getElementById('live-status');
+  const sub = document.getElementById('live-status-sub');
+  const body = document.getElementById('live-status-body');
+  if (!body) return;
+  const parsed = Date.parse(data && data.generated_at);
+  const age = Number.isFinite(parsed) ? Date.now() - parsed : Infinity;
+  const fresh = age >= -60000 && age <= STATUS_MAX_AGE_MS;
+  const problems = Array.isArray(data && data.problems) ? data.problems : [];
+  const healthy = !!(data && data.healthy === true && problems.length === 0);
+  let state = 'healthy';
+  let label = 'HEALTHY';
+  let badge = 'badge-green';
+  if (!fresh) { state = 'stale'; label = 'STALE'; badge = 'badge-amber'; }
+  else if (!healthy) { state = 'degraded'; label = 'CHECK'; badge = 'badge-amber'; }
+  if (card) card.setAttribute('data-state', state);
+  if (sub) sub.textContent = (data && data.host ? data.host + ' · ' : '') + 'snapshot ' + ageLabel(age);
+  const tiles = [
+    ['Disk', data.disk_used_pct || '—'],
+    ['Free', data.disk_free || '—'],
+    ['Memory', (data.mem_available_mb || '—') + (data.mem_available_mb ? ' MB' : '')],
+    ['Uptime', data.uptime || '—']
+  ];
+  let html = '<div style="margin-bottom:10px"><span class="badge ' + badge + '">' + label + '</span></div>';
+  html += '<div class="status-grid">' + tiles.map((t) =>
+    '<div class="stat-tile"><div class="stat-num" style="font-size:16px">' + esc(t[1]) + '</div><div class="stat-lbl">' + esc(t[0]) + '</div></div>'
+  ).join('') + '</div>';
+  html += '<div class="check-list">';
+  const endpoints = data.endpoints || {};
+  Object.keys(endpoints).forEach((name) => {
+    const code = String(endpoints[name]);
+    const ok = /^2\d\d$/.test(code);
+    const cls = !fresh ? 'badge-dim' : (ok ? 'badge-green' : 'badge-red');
+    html += checkRow(name, 'HTTP result', code, cls);
+  });
+  const gw = data.openclaw_gateway || {};
+  const tg = data.telegram_bot || {};
+  if (gw.state) html += checkRow('openclaw_gateway', 'restarts ' + (gw.restarts ?? '—'), gw.state, fresh && gw.state === 'active' ? 'badge-green' : 'badge-dim');
+  if (tg.state) html += checkRow('telegram_bot', 'systemd', tg.state, fresh && tg.state === 'active' ? 'badge-green' : 'badge-dim');
+  (data.containers || []).forEach((c) => {
+    const up = /up/i.test(c.status || '');
+    html += checkRow(c.name, c.status || '', up ? 'UP' : 'DOWN', !fresh ? 'badge-dim' : (up ? 'badge-green' : 'badge-red'));
+  });
+  (data.services || []).forEach((s) => {
+    const online = s.status === 'online';
+    html += checkRow(s.name, 'restarts ' + (s.restarts ?? 0), s.status || '—', !fresh ? 'badge-dim' : (online ? 'badge-green' : 'badge-red'));
+  });
+  html += '</div>';
+  if (!fresh) html += '<p class="problem">STALE. Snapshot is older than 6 hours, so nothing above is shown as healthy.</p>';
+  problems.forEach((p) => { html += '<p class="problem">' + esc(typeof p === 'string' ? p : JSON.stringify(p)) + '</p>'; });
+  body.innerHTML = html;
+}
+
+async function loadLiveStatus(url) {
+  const target = url || statusEndpoint();
+  try {
+    const res = await fetch(target, { cache: 'no-store' });
+    if (!res.ok) throw new Error('status ' + res.status);
+    const data = await res.json();
+    if (!data || typeof data !== 'object') throw new Error('bad json');
+    renderStatus(data);
+  } catch (e) {
+    renderStatusUnavailable();
+  }
+}
+
+function statusEndpoint() {
+  const host = location.hostname;
+  if (host === 'grabcalls.com' || host === 'www.grabcalls.com') return STATUS_URL;
+  return '/api/ops-status';
+}
+
+function chatEndpoint() {
+  if (MC_CHAT_WEBHOOK) return MC_CHAT_WEBHOOK;
+  const host = location.hostname;
+  if (host === 'grabcalls.com' || host === 'www.grabcalls.com') return '';
+  return '/api/chat';
+}
+
+function addBubble(role, text) {
+  const log = document.getElementById('chat-log');
+  if (!log) return null;
+  const el = document.createElement('div');
+  el.className = 'bubble ' + role;
+  el.textContent = text;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+  return el;
+}
+
+function errorText(code) {
+  if (code === 'origin') return 'This site is not allowed to use the assistant.';
+  if (code === 'too_long') return 'That message is too long. Keep it under 2000 characters.';
+  if (code === 'empty') return 'Type a question first.';
+  return 'The assistant is unavailable right now.';
+}
+
+// HOSTED VOICE PLUG-IN
+// Browser speechSynthesis is the default. To use xAI or ElevenLabs, post {text}
+// to a second n8n webhook from here and play the audio. Return true if handled.
+async function hostedSpeak(text) {
+  void text;
+  return false;
+}
+
+function browserSpeak(text) {
+  if (chatState.muted || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1;
+  window.speechSynthesis.speak(utter);
+}
+
+async function speakReply(text) {
+  if (await hostedSpeak(text)) return;
+  browserSpeak(text);
+}
+
+function stopSpeaking() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (chatState.rec) {
+    try { chatState.rec.stop(); } catch (e) { /* already stopped */ }
+  }
+}
+
+async function sendMessage(text) {
+  const message = String(text || '').trim();
+  const input = document.getElementById('chat-input');
+  if (!message) return;
+  if (input) input.value = '';
+  addBubble('user', message);
+  const endpoint = chatEndpoint();
+  if (!endpoint) {
+    addBubble('assistant', 'The assistant webhook is not connected yet. Import MC Assistant Chat, then set MC_CHAT_WEBHOOK in the page.');
+    return;
+  }
+  const thinking = addBubble('thinking', 'Thinking…');
+  const history = chatState.history.slice(-10);
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history })
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+    if (thinking) thinking.remove();
+    if (!res.ok || !data.reply) {
+      addBubble('assistant', errorText(data.error));
+      return;
+    }
+    addBubble('assistant', data.reply);
+    chatState.history.push({ role: 'user', content: message }, { role: 'assistant', content: data.reply });
+    chatState.history = chatState.history.slice(-10);
+    speakReply(data.reply);
+  } catch (e) {
+    if (thinking) thinking.remove();
+    addBubble('assistant', 'The assistant is unavailable right now.');
+  }
+}
+
+function setupVoice() {
+  const mic = document.getElementById('chat-mic');
+  const note = document.getElementById('voice-note');
+  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!mic) return;
+  if (!Rec) {
+    mic.disabled = true;
+    mic.textContent = 'No mic';
+    if (note) note.textContent = 'Voice is not supported here. Type instead. Chrome and Edge can use the mic.';
+    return;
+  }
+  const rec = new Rec();
+  rec.lang = 'en-US';
+  rec.interimResults = true;
+  rec.continuous = false;
+  chatState.rec = rec;
+  rec.onresult = (event) => {
+    let finalText = '';
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const bit = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalText += bit;
+      else interim += bit;
+    }
+    const input = document.getElementById('chat-input');
+    if (input) input.value = (finalText || interim).trim();
+    if (finalText.trim()) sendMessage(finalText.trim());
+  };
+  rec.onerror = (event) => {
+    chatState.recognizing = false;
+    mic.setAttribute('aria-pressed', 'false');
+    if (note) {
+      note.textContent = event.error === 'not-allowed'
+        ? 'Microphone permission was blocked.'
+        : 'Voice failed. You can type the question instead.';
+    }
+  };
+  rec.onend = () => {
+    chatState.recognizing = false;
+    mic.setAttribute('aria-pressed', 'false');
+  };
+  mic.addEventListener('click', () => {
+    if (note) note.textContent = '';
+    if (chatState.recognizing) {
+      rec.stop();
+      return;
+    }
+    try {
+      rec.start();
+      chatState.recognizing = true;
+      mic.setAttribute('aria-pressed', 'true');
+    } catch (e) {
+      if (note) note.textContent = 'Voice is not supported here.';
+    }
+  });
+}
+
+function setupChat() {
+  const toggle = document.getElementById('chat-toggle');
+  const panel = document.getElementById('chat-panel');
+  const form = document.getElementById('chat-form');
+  const mute = document.getElementById('chat-mute');
+  const stop = document.getElementById('chat-stop');
+  if (!toggle || !panel) return;
+  toggle.addEventListener('click', () => {
+    const open = panel.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close assistant' : 'Open assistant');
+    if (open) {
+      const input = document.getElementById('chat-input');
+      if (input) input.focus();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && panel.classList.contains('open')) {
+      panel.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+  });
+  if (form) form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const input = document.getElementById('chat-input');
+    sendMessage(input ? input.value : '');
+  });
+  if (mute) mute.addEventListener('click', () => {
+    chatState.muted = !chatState.muted;
+    mute.setAttribute('aria-pressed', chatState.muted ? 'true' : 'false');
+    mute.textContent = chatState.muted ? 'Muted' : 'Mute';
+    if (chatState.muted) stopSpeaking();
+  });
+  if (stop) stop.addEventListener('click', stopSpeaking);
+  setupVoice();
+}
+
+wireFilters();
+setupChat();
+loadItems();
+loadLiveStatus();
+setupHandoff();
+
+function setupHandoff() {
+  const box = document.getElementById('copy-box');
+  const status = document.getElementById('copy-status');
+  const promptBtn = document.getElementById('copy-prompt');
+  const allBtn = document.getElementById('copy-all');
+  if (!box || !promptBtn || !allBtn) return;
+  const prompt = [
+    'Read the files below. Put the mission-control folder on branch claude/mission-control-assistant in G-lover10/grabcalls-website. Open a pull request into main. Do not merge.',
+    'Do not put API keys in the repo. Leave MC_CHAT_WEBHOOK empty. Do not change Telegram or OpenClaw.',
+    'You can commit the files and open the PR. I will create the xAI key, import the n8n workflow, and merge after I review. Phase 2 is not built. Do not start the email work.',
+    'Each file starts with a line ===== FILE: path =====.'
+  ].join('\n');
+  box.value = prompt;
+  async function copyText(text) {
+    box.value = text;
+    box.focus();
+    box.select();
+    let note = 'Selected. If it did not copy, use the phone Copy command on the box.';
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        note = 'Copied. Switch to Claude and paste.';
+      }
+    } catch (e) { /* selection is the fallback */ }
+    if (status) status.textContent = note;
+  }
+  promptBtn.addEventListener('click', () => copyText(prompt));
+  allBtn.addEventListener('click', async () => {
+    if (status) status.textContent = 'Gathering files…';
+    const files = [
+      ['mission-control/HANDOFF.md', './HANDOFF.md'],
+      ['mission-control/README.md', './README.md'],
+      ['mission-control/items.json', './items.json'],
+      ['mission-control/n8n/mc-assistant-chat.json', './n8n/mc-assistant-chat.json'],
+      ['mission-control/index.html', './index.html']
+    ];
+    const parts = [prompt];
+    for (let i = 0; i < files.length; i++) {
+      const res = await fetch(files[i][1], { cache: 'no-store' });
+      if (!res.ok) throw new Error(files[i][0]);
+      parts.push('\n\n===== FILE: ' + files[i][0] + ' =====\n' + await res.text());
+    }
+    await copyText(parts.join('\n'));
+  });
+}
+
 </script>
 </body>
 </html>
