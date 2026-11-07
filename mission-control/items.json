@@ -1,0 +1,159 @@
+{
+  "note": "Edits go through a pull request. The browser cannot write this file. Never put secrets, tokens, or passwords here.",
+  "items": [
+    {
+      "id": "grabcalls-first-client",
+      "type": "project",
+      "title": "GrabCalls: first paying client",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Run campaign-analysis and pick the next outreach channel. Target is $0 of $300/mo.",
+      "session_url": "",
+      "tags": ["grabcalls", "revenue"]
+    },
+    {
+      "id": "listsnap",
+      "type": "project",
+      "title": "ListSnap",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Check the eBay user token (Settings > eBay connection). Regenerate it if it is expired.",
+      "session_url": "",
+      "tags": ["listsnap", "ebay"]
+    },
+    {
+      "id": "bfrs",
+      "type": "project",
+      "title": "BFRS",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Postgres 14 to 15 upgrade is past its deadline. Handle it in the BFRS project, not here.",
+      "session_url": "",
+      "tags": ["bfrs", "hands-off"]
+    },
+    {
+      "id": "realorai",
+      "type": "project",
+      "title": "RealOrAI",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Unknown. Owner to fill the next step after the server check.",
+      "session_url": "",
+      "tags": ["realorai"]
+    },
+    {
+      "id": "truetag",
+      "type": "project",
+      "title": "TrueTag",
+      "status": "paused",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Trademark conflict is unresolved. On hold until GrabCalls has a paying client.",
+      "session_url": "",
+      "tags": ["truetag"]
+    },
+    {
+      "id": "hetzner-ssh",
+      "type": "task",
+      "title": "Hetzner server SSH recovery",
+      "status": "blocked",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Recover access via the web console, then decide whether to keep the box.",
+      "session_url": "",
+      "tags": ["hetzner", "system"]
+    },
+    {
+      "id": "benchmark-sol",
+      "type": "idea",
+      "title": "Benchmark GPT-5.6 \"Sol\" for coding tasks",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-10",
+      "next_step": "Captured 2026-07-10. Compare it on a real coding task before changing the stack.",
+      "session_url": "https://app.notion.com/p/3629f92593e5814ea7c8dc4e1d4c93e7",
+      "tags": ["models", "brain"]
+    },
+    {
+      "id": "outbound-emails-flyers",
+      "type": "task",
+      "title": "GrabCalls outbound emails and flyers",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-11-06",
+      "next_step": "The ready-or-not answer lives in a Claude session, not in this file. Do not say the work is missing. The session link is not on the board yet.",
+      "session_url": "",
+      "tags": ["grabcalls", "email", "flyers", "claude"]
+    },
+    {
+      "id": "congressional-alerts",
+      "type": "app",
+      "title": "Congressional trade alerts",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "None. Daily weekday email from the owner's server. Confirm it is still sending.",
+      "session_url": "",
+      "tags": ["email", "alerts"]
+    },
+    {
+      "id": "grok-voice-agent",
+      "type": "app",
+      "title": "Grok voice agent",
+      "status": "active",
+      "owner": "Eric",
+      "last_updated": "2026-11-06",
+      "next_step": "This replaces GoHighLevel. Mission Control voice is the free browser mic until a hosted voice webhook is plugged in.",
+      "session_url": "",
+      "tags": ["grok", "voice"]
+    },
+    {
+      "id": "gohighlevel",
+      "type": "app",
+      "title": "GoHighLevel",
+      "status": "outdated",
+      "owner": "Eric",
+      "last_updated": "2026-11-06",
+      "next_step": "Retired. Replaced by the Grok voice agent. Do not route new work here.",
+      "session_url": "",
+      "tags": ["ghl", "voice"]
+    },
+    {
+      "id": "rotate-telegram-tokens",
+      "type": "task",
+      "title": "Rotate Telegram bot tokens (both bots)",
+      "status": "blocked",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Owner action in @BotFather. Do not paste the new tokens into this file.",
+      "session_url": "",
+      "tags": ["telegram", "security"]
+    },
+    {
+      "id": "openclaw-insecure-auth",
+      "type": "task",
+      "title": "Decide whether OpenClaw keeps allowInsecureAuth=true",
+      "status": "blocked",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "Owner decision. Do not change the OpenClaw config from Mission Control.",
+      "session_url": "",
+      "tags": ["openclaw", "security"]
+    },
+    {
+      "id": "outdated-model-list",
+      "type": "idea",
+      "title": "Model list: Fable 5 - Sonnet - Laguna - Ling-1T",
+      "status": "outdated",
+      "owner": "Eric",
+      "last_updated": "2026-07-16",
+      "next_step": "This stack list is retired. Do not treat it as current. The Mission Control assistant uses Grok.",
+      "session_url": "",
+      "tags": ["models"]
+    }
+  ]
+}
