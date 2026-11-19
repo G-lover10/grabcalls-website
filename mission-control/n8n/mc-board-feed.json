@@ -1,0 +1,243 @@
+[
+  {
+    "name": "MC Board Feed",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "GET",
+          "path": "mc-board-feed-69197b92",
+          "responseMode": "responseNode",
+          "options": {
+            "allowedOrigins": "https://grabcalls.com"
+          }
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "42d68774e1c0a71a",
+        "webhookId": "cb4bdd5fcf2d658e"
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst item = $input.first().json;\nconst headers = item.headers || {};\nconst origin = String(headers.origin || headers.Origin || '');\nif (origin !== 'https://grabcalls.com') {\n  return [{ json: { ok: false, statusCode: 403, response: { error: 'origin' } } }];\n}\nreturn [{ json: { ok: true } }];\n"
+        },
+        "name": "Check origin",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          0
+        ],
+        "id": "143fdb9789908ac2"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "614fec64f3da0b6e",
+                "leftValue": "={{ $json.ok }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "name": "Allowed",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          440,
+          0
+        ],
+        "id": "239e84282621230c"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ $json.response }}",
+          "options": {
+            "responseCode": "={{ $json.statusCode }}",
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "https://grabcalls.com"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Respond Error",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          660,
+          200
+        ],
+        "id": "1c3a14e4134b5d18"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.notion.com/v1/data_sources/41c9f925-93e5-81a7-b91a-000bf6627120/query",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "notionApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Notion-Version",
+                "value": "2025-09-03"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"page_size\": 100}",
+          "options": {}
+        },
+        "name": "Read board",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          660,
+          0
+        ],
+        "id": "805cdd1e7c7a28d9",
+        "credentials": {
+          "notionApi": {
+            "id": "REPLACE_WITH_NOTION_CREDENTIAL",
+            "name": "Notion Mission Control (read only)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst typeMap = { 'Project': 'project', 'Open item': 'task' };\nconst statusMap = { Running: 'active', Broken: 'blocked', Stale: 'outdated', Paused: 'paused', Planned: 'paused', Unknown: 'paused' };\nconst plain = (arr) => (Array.isArray(arr) ? arr.map((t) => t.plain_text || '').join('') : '');\nconst sel = (p) => (p && p.select ? p.select.name : '');\nconst raw = $input.first().json;\nconst pages = Array.isArray(raw.results) ? raw.results : [];\nconst items = pages.map((pg) => {\n  const p = pg.properties || {};\n  const boardType = sel(p['Type']);\n  const boardStatus = sel(p['Status']) || 'Unknown';\n  const venture = sel(p['Venture']);\n  const needs = !!(p['Needs Eric'] && p['Needs Eric'].checkbox);\n  const checked = p['Last checked'] && p['Last checked'].date ? p['Last checked'].date.start : '';\n  const tags = [boardType, venture, 'board: ' + boardStatus].filter(Boolean);\n  if (needs) tags.unshift('Needs Eric');\n  return {\n    id: pg.id,\n    type: typeMap[boardType] || 'app',\n    title: plain(p['Name'] && p['Name'].title) || '(untitled)',\n    status: statusMap[boardStatus] || 'paused',\n    owner: plain(p['Owner/agent'] && p['Owner/agent'].rich_text),\n    last_updated: (checked || String(pg.last_edited_time || '')).slice(0, 10),\n    next_step: plain(p['Next action'] && p['Next action'].rich_text),\n    health_note: plain(p['Health note'] && p['Health note'].rich_text),\n    session_url: pg.url || '',\n    needs_eric: needs,\n    tags\n  };\n});\nitems.sort((a, b) => Number(b.needs_eric) - Number(a.needs_eric));\nreturn [{ json: { ok: true, statusCode: 200, response: { source: 'notion-board', generated_at: new Date().toISOString(), items } } }];\n"
+        },
+        "name": "Shape rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          0
+        ],
+        "id": "48e5e09e9baa0e48"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ $json.response }}",
+          "options": {
+            "responseCode": "={{ $json.statusCode }}",
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "https://grabcalls.com"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Respond",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          0
+        ],
+        "id": "eeefd068723ba469"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Check origin",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check origin": {
+        "main": [
+          [
+            {
+              "node": "Allowed",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Allowed": {
+        "main": [
+          [
+            {
+              "node": "Read board",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Respond Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read board": {
+        "main": [
+          [
+            {
+              "node": "Shape rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Shape rows": {
+        "main": [
+          [
+            {
+              "node": "Respond",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "meta": {
+      "templateCredsSetupCompleted": false,
+      "notes": "Read only. Reads the Notion Mission Control Board and returns rows in the items.json shape. The Notion key stays in an n8n Notion credential; share only the board page with that integration. Never writes to Notion."
+    }
+  }
+]

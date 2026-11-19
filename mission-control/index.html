@@ -509,7 +509,11 @@ html,body{max-width:100%;overflow-x:hidden}
           <button type="button" class="chip-btn" data-filter-status="done" aria-pressed="false">Done</button>
           <button type="button" class="chip-btn" data-filter-status="outdated" aria-pressed="false">Outdated</button>
         </div>
+        <div class="filter-row" role="group" aria-label="Filter by what needs Eric">
+          <button type="button" class="chip-btn" data-filter-needs aria-pressed="false">Needs Eric</button>
+        </div>
       </div>
+      <p class="edit-note" id="items-source">Source: items.json in the repo.</p>
       <div id="items-root" class="items-grid" aria-live="polite"></div>
     </div>
 
@@ -974,8 +978,10 @@ const STATUS_MAX_AGE_MS = 6 * 60 * 60 * 1000;
 const STALE_DAYS = 14;
 // Chat uses the preview server. Leave this empty. Do not ask Eric to import n8n.
 const MC_CHAT_WEBHOOK = '';
+// Read-only Notion board feed (n8n workflow "MC Board Feed"). Empty keeps items.json.
+const MC_BOARD_FEED = '';
 
-const itemState = { items: [], type: 'all', status: 'all', q: '' };
+const itemState = { items: [], type: 'all', status: 'all', q: '', needs: false };
 const chatState = { history: [], muted: false, recognizing: false };
 
 function esc(s) {
@@ -1050,6 +1056,7 @@ function itemCard(item) {
 function matches(item) {
   if (itemState.type !== 'all' && item.type !== itemState.type) return false;
   if (itemState.status !== 'all' && item.status !== itemState.status) return false;
+  if (itemState.needs && !item.needs_eric) return false;
   const q = itemState.q.trim().toLowerCase();
   if (!q) return true;
   const hay = [item.title, item.next_step, item.type, item.status, item.owner, ...(item.tags || [])].join(' ').toLowerCase();
@@ -1083,14 +1090,37 @@ function paintBlocked(items) {
   if (el) el.textContent = String(items.filter((item) => item.status === 'blocked').length);
 }
 
+async function fetchItems(url) {
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('items ' + res.status);
+  const data = await res.json();
+  return Array.isArray(data) ? data : (data.items || []);
+}
+
+function paintSource(fromBoard) {
+  const note = document.getElementById('items-source');
+  if (note) note.textContent = fromBoard
+    ? 'Source: the Notion board. Edit rows in Notion.'
+    : 'Source: items.json in the repo.';
+  const chip = document.querySelector('[data-filter-needs]');
+  if (chip) chip.textContent = 'Needs Eric (' + itemState.items.filter((i) => i.needs_eric).length + ')';
+}
+
 async function loadItems() {
   const root = document.getElementById('items-root');
+  if (MC_BOARD_FEED) {
+    try {
+      itemState.items = await fetchItems(MC_BOARD_FEED);
+      paintBlocked(itemState.items);
+      paintSource(true);
+      renderItems();
+      return;
+    } catch (e) { /* board feed down: fall back to items.json */ }
+  }
   try {
-    const res = await fetch('./items.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('items ' + res.status);
-    const data = await res.json();
-    itemState.items = Array.isArray(data) ? data : (data.items || []);
+    itemState.items = await fetchItems('./items.json');
     paintBlocked(itemState.items);
+    paintSource(false);
     renderItems();
   } catch (e) {
     if (root) root.innerHTML = '<p class="edit-note">Could not load items.json.</p>';
@@ -1111,6 +1141,12 @@ function wireFilters() {
       document.querySelectorAll('[data-filter-status]').forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
       renderItems();
     });
+  });
+  const needsBtn = document.querySelector('[data-filter-needs]');
+  if (needsBtn) needsBtn.addEventListener('click', () => {
+    itemState.needs = !itemState.needs;
+    needsBtn.setAttribute('aria-pressed', itemState.needs ? 'true' : 'false');
+    renderItems();
   });
   const search = document.getElementById('item-search');
   if (search) search.addEventListener('input', () => { itemState.q = search.value; renderItems(); });

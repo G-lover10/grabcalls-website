@@ -36,3 +36,16 @@ Voice is the browser mic and `speechSynthesis`. The hosted-voice hook is the fun
 Live status uses the existing ops webhook. If that call fails, or the snapshot is older than 6 hours, the panel says **UNAVAILABLE** or **STALE** and does not turn green.
 
 Do not merge the pull request until you have reviewed it. Do not change Telegram or OpenClaw config from this page.
+
+## Notion board feed (optional, read only)
+
+The Items tab can read the Notion "Mission Control Board" instead of `items.json`. Nothing changes until you turn it on. The voice chat is not touched by this.
+
+1. In Notion, make an internal integration with read content only, and share just the Mission Control page with it.
+2. In n8n, add a Notion credential with that key. The key stays in n8n, never in this repo.
+3. Import `n8n/mc-board-feed.json`, pick that credential in the "Read board" node, and activate it.
+4. Copy the production webhook address into `MC_BOARD_FEED` in `index.html`, or ask Claude to.
+
+If the feed is down, the page falls back to `items.json`. Board rows map to items like this: Project is a project, Open item is a task, everything else is an app. Running is active, Broken is blocked, Stale is outdated, and Paused, Planned and Unknown show as paused. The original board type, venture and status show as tags, and "Needs Eric" rows get their own filter.
+
+Anything on the board becomes readable by anyone who has the page, the same as `items.json` today. Keep tokens, server addresses and private paths off the board.

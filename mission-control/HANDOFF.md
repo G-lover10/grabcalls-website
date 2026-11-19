@@ -56,3 +56,12 @@ https://n8n.grabcalls.com/webhook/ops-status-92cfbede15b161c850df0601
 Shape that matters: `generated_at`, `healthy`, `problems[]`, `host`, `uptime`, `disk_used_pct`, `disk_free`, `mem_available_mb`, `openclaw_gateway`, `telegram_bot`, `services[]`, `containers[]`, `endpoints` (HTTP codes as strings). Age is the snapshot time. Older than 6 hours, or a failed fetch, is STALE or UNAVAILABLE. Never a false green.
 
 `https://grabcalls.com/status.json` is 404. Do not build that. Use the webhook.
+
+## Update 2026-11-19: Notion board feed
+
+Eric asked to bring the Notion board into this Mission Control and keep the voice chat exactly as it is. Added only:
+
+- `n8n/mc-board-feed.json`: inactive, read-only workflow "MC Board Feed" (origin limited to https://grabcalls.com, Notion credential placeholder `REPLACE_WITH_NOTION_CREDENTIAL`).
+- `index.html`: `MC_BOARD_FEED` constant (empty), Items reads the feed when set and falls back to `items.json`, a "Needs Eric" filter and a source line.
+
+Not changed: chat and voice functions, `MC_CHAT_WEBHOOK`, the chat workflow, the model, the status panel.
