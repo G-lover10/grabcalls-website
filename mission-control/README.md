@@ -44,7 +44,7 @@ The Items tab can read the Notion "Mission Control Board" instead of `items.json
 1. In Notion, make an internal integration with read content only, and share just the Mission Control page with it.
 2. In n8n, add a Notion credential with that key. The key stays in n8n, never in this repo.
 3. Import `n8n/mc-board-feed.json`, pick that credential in the "Read board" node, and activate it.
-4. Copy the production webhook address into `MC_BOARD_FEED` in `index.html`, or ask Claude to.
+4. `MC_BOARD_FEED` in `index.html` already points at this workflow's production address, so once it is active the Items tab reads the board.
 
 If the feed is down, the page falls back to `items.json`. Board rows map to items like this: Project is a project, Open item is a task, everything else is an app. Running is active, Broken is blocked, Stale is outdated, and Paused, Planned and Unknown show as paused. The original board type, venture and status show as tags, and "Needs Eric" rows get their own filter.
 

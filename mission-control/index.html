@@ -978,8 +978,8 @@ const STATUS_MAX_AGE_MS = 6 * 60 * 60 * 1000;
 const STALE_DAYS = 14;
 // Chat uses the preview server. Leave this empty. Do not ask Eric to import n8n.
 const MC_CHAT_WEBHOOK = '';
-// Read-only Notion board feed (n8n workflow "MC Board Feed"). Empty keeps items.json.
-const MC_BOARD_FEED = '';
+// Read-only Notion board feed (n8n workflow "MC Board Feed"). If it is off or down, Items falls back to items.json.
+const MC_BOARD_FEED = 'https://n8n.grabcalls.com/webhook/mc-board-feed-69197b92';
 
 const itemState = { items: [], type: 'all', status: 'all', q: '', needs: false };
 const chatState = { history: [], muted: false, recognizing: false };
