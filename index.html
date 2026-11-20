@@ -68,6 +68,8 @@
       margin: 0 auto 40px; color: rgba(255,255,255,0.85); font-weight: 400;
     }
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero-phone { margin-top: 20px; font-size: 15px; color: rgba(255,255,255,0.85); }
+    .hero-phone a { color: #fff; font-weight: 700; text-decoration: none; white-space: nowrap; }
     .btn-primary {
       background: #fff; color: var(--blue); font-weight: 700;
       padding: 16px 36px; border-radius: 10px; text-decoration: none;
@@ -305,6 +307,7 @@
     <a href="#talk" class="btn-primary" data-open-voice>Talk to our AI live →</a>
     <a href="#contact" class="btn-secondary">Get a Free Demo</a>
   </div>
+  <p class="hero-phone">Call or text Eric: <a href="tel:2059143390">(205) 914-3390</a> &nbsp;&middot;&nbsp; AI demo line: <a href="tel:2058803630">(205) 880-3630</a></p>
   <div class="hero-stats">
     <div class="stat">
       <div class="stat-num">62%</div>
@@ -523,6 +526,7 @@
         </div>
         <button type="submit" class="form-submit">Book My Free Demo →</button>
         <p class="form-note">🔒 No spam. No pressure. We'll reach out within 1 business day.</p>
+        <p class="form-note">Rather talk now? Call or text Eric at <a href="tel:2059143390">(205) 914-3390</a>.</p>
       </form>
     </div>
   </div>
@@ -533,7 +537,7 @@
   <p style="margin-bottom:8px;">
     <strong style="color:#fff;">GrabCalls</strong> — AI Automation for Local Business
   </p>
-  <p>Springville, AL &nbsp;|&nbsp; <a href="mailto:grabcalls@gmail.com">grabcalls@gmail.com</a> &nbsp;|&nbsp; <a href="tel:2058803630">(205) 880-3630</a></p>
+  <p>Springville, AL &nbsp;|&nbsp; <a href="mailto:grabcalls@gmail.com">grabcalls@gmail.com</a> &nbsp;|&nbsp; Call or text <a href="tel:2059143390">(205) 914-3390</a> &nbsp;|&nbsp; AI demo line <a href="tel:2058803630">(205) 880-3630</a></p>
   <p style="margin-top:16px; font-size:12px;">
     <a href="/privacy-policy.html">Privacy Policy</a> &nbsp;&nbsp;
     <a href="/terms-of-service.html">Terms of Service</a>
@@ -668,7 +672,7 @@
       {k:['dental','dentist','teeth'],r:"We work with several dental practices! Common use cases:\n\n🦷 Answering new patient inquiries\n🦷 Booking appointments and cleanings\n🦷 Insurance questions\n🦷 After-hours emergency routing\n\nA missed dental appointment = $200-$800 in lost revenue. Our AI catches those."},
       {k:['hvac','heating','air','cooling','ac'],r:"HVAC companies are one of our best fits! Here's why:\n\n❄️ Emergency calls at 2AM? AI answers instantly\n❄️ Seasonal rush? Handle 10x the call volume\n❄️ Common questions handled automatically\n❄️ Urgent calls forwarded to on-call tech\n\nA missed HVAC service call = $500-$5,000. Our AI catches every one."},
       {k:['plumb','pipe','water','drain'],r:"Plumbers love our service because:\n\n🔧 Emergency calls answered 24/7\n🔧 AI qualifies the job type and urgency\n🔧 Books appointments on your calendar\n🔧 Handles pricing questions for common jobs\n\nNever miss another midnight pipe burst call."},
-      {k:['contact','call','reach','talk','human','person','eric'],r:"You can reach us directly:\n\n📞 (205) 880-3630\n📧 grabcalls@gmail.com\n\nOr fill out the form below for a free demo. We respond within 24 hours!"},
+      {k:['contact','call','reach','talk','human','person','eric'],r:"You can reach us directly:\n\n📞 Call or text Eric: (205) 914-3390\n🤖 AI demo line: (205) 880-3630\n📧 grabcalls@gmail.com\n\nOr fill out the form below for a free demo. We respond within 24 hours!"},
       {k:['what','who','about','grabcalls','company'],r:"GrabCalls is an AI automation agency based in Springville, Alabama.\n\nWe install AI chatbots and voice agents for local businesses so they never miss a customer again. Our AI handles calls, chats, and appointments 24/7.\n\nFounded by Eric Glover — a local business automation specialist."}
     ]
   };
@@ -702,7 +706,7 @@
     for(const r of KB.responses){
       if(r.k.some(k=>m.includes(k)))return r.r;
     }
-    return "That's a great question! I'd love to help you with that. For the most detailed answer, I'd recommend booking a free demo call with Eric.\n\n📞 (205) 880-3630\n📧 grabcalls@gmail.com\n\nOr fill out the contact form below!";
+    return "That's a great question! I'd love to help you with that. For the most detailed answer, I'd recommend booking a free demo call with Eric.\n\n📞 Call or text Eric: (205) 914-3390\n📧 grabcalls@gmail.com\n\nOr fill out the contact form below!";
   }
 
   async function sendMessage(msg){
@@ -790,7 +794,7 @@
     } catch (err) {
       btn.textContent = 'Submit';
       btn.disabled = false;
-      alert('Something went wrong. Please call us directly at (205) 880-3630');
+      alert('Something went wrong. Please call or text Eric at (205) 914-3390');
     }
   });
 </script>
