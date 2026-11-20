@@ -18,8 +18,6 @@ grabcalls-website/
 ├── .github/workflows/
 │   ├── agent-daily.yml       # Cron 8:15am CT — manual tasks via workflow_dispatch
 │   └── grabcalls-health.yml  # Cron 8:07am CT — uptime check
-├── mission-control/
-│   └── index.html            # Dashboard → grabcalls.com/mission-control/
 ├── CLAUDE.md                 # Global context (read first)
 ├── AGENTS.md                 # This file — project context
 └── MEMORY.md                 # Session log — read at session start, update at session end
@@ -63,4 +61,4 @@ Adding `NOTION_TOKEN` enables the daily agent to write summaries to Notion Brain
 - **Target price:** $200–400/month per client
 - **Current MRR:** $0 — getting the first paying client is the only priority in this repo
 - **Best channel (from Brain):** Google Maps scrape → cold email → auto repair shops in Alabama
-- **Dashboard:** grabcalls.com/mission-control/
+- **Mission Control:** kept outside this website in a separate private repo. Do not add it back here.
